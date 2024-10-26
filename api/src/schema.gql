@@ -1,0 +1,39 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  imgSrc: String
+  roles: [Role!]
+}
+
+enum Role {
+  USER
+}
+
+type Query {
+  findOne(email: String!): User!
+}
+
+type Mutation {
+  createUser(createUserInput: UserCreateInput!): User!
+}
+
+input UserCreateInput {
+  id: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  imgSrc: String
+  roles: UserCreaterolesInput
+}
+
+input UserCreaterolesInput {
+  set: [Role!]!
+}
