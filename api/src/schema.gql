@@ -16,13 +16,40 @@ enum Role {
   USER
 }
 
+type LogInResponse {
+  accessToken: String!
+  user: User!
+}
+
+"""File upload scalar type"""
+scalar Upload
+
 type Query {
   findOne(email: String!): User!
 }
 
 type Mutation {
+  registerUser(registerUserInput: RegisterUserInput!): LogInResponse!
+  logInUser(logInUserInput: LogInUserInput!): LogInResponse!
   createUser(createUserInput: UserCreateInput!): User!
 }
+
+input RegisterUserInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+}
+
+input LogInUserInput {
+  email: EmailAddress!
+  password: String!
+}
+
+"""
+A field whose value conforms to the standard internet email address format as specified in HTML Spec: https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address.
+"""
+scalar EmailAddress @specifiedBy(url: "https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address")
 
 input UserCreateInput {
   id: String
