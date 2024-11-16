@@ -9,7 +9,7 @@ import {
   GraphQLFormattedError,
 } from 'graphql/error/GraphQLError';
 import { ConfigModule } from '@nestjs/config';
-import * as Joi from 'joi';
+import configuration from './config/configuration'
 
 @Module({
   imports: [
@@ -26,12 +26,9 @@ import * as Joi from 'joi';
       },
     }),
     ConfigModule.forRoot({
-      isGlobal: true,
-      validationSchema: Joi.object({
-        ACCESS_TOKEN_SECRET: Joi.string().required(),
-        ACCESS_TOKEN_EXPIRATION: Joi.number().required()
-      }),
-    }),
+			isGlobal: true,
+			load: [configuration],
+		}),
     AuthModule,
     UserModule,
   ],
