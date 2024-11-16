@@ -21,6 +21,9 @@ export class UserCountAggregate {
     password!: number;
 
     @Field(() => Int, {nullable:false})
+    phoneNumber!: number;
+
+    @Field(() => Int, {nullable:false})
     imgSrc!: number;
 
     @Field(() => Int, {nullable:false})

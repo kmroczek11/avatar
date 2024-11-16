@@ -20,6 +20,9 @@ export class UserCountAggregateInput {
     password?: true;
 
     @Field(() => Boolean, {nullable:true})
+    phoneNumber?: true;
+
+    @Field(() => Boolean, {nullable:true})
     imgSrc?: true;
 
     @Field(() => Boolean, {nullable:true})

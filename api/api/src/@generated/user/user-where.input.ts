@@ -31,6 +31,9 @@ export class UserWhereInput {
     @Field(() => StringFilter, {nullable:true})
     password?: StringFilter;
 
+    @Field(() => StringFilter, {nullable:true})
+    phoneNumber?: StringFilter;
+
     @Field(() => StringNullableFilter, {nullable:true})
     imgSrc?: StringNullableFilter;
 

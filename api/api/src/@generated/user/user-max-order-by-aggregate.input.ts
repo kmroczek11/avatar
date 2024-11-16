@@ -21,5 +21,8 @@ export class UserMaxOrderByAggregateInput {
     password?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})
+    phoneNumber?: keyof typeof SortOrder;
+
+    @Field(() => SortOrder, {nullable:true})
     imgSrc?: keyof typeof SortOrder;
 }

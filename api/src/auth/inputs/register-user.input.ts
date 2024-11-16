@@ -1,5 +1,5 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { UserCreaterolesInput } from 'src/@generated/user/user-createroles.input';
+import { EmailAddressResolver, PhoneNumberResolver } from 'graphql-scalars';
 
 @InputType()
 export class RegisterUserInput {
@@ -9,9 +9,12 @@ export class RegisterUserInput {
   @Field()
   lastName: string;
 
-  @Field()
+  @Field(() => EmailAddressResolver)
   email: string;
 
   @Field()
   password: string;
+
+  @Field(() => PhoneNumberResolver)
+  phoneNumber: string;
 }

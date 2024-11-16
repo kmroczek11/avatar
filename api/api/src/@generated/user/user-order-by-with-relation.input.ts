@@ -21,6 +21,9 @@ export class UserOrderByWithRelationInput {
     @Field(() => SortOrder, {nullable:true})
     password?: keyof typeof SortOrder;
 
+    @Field(() => SortOrder, {nullable:true})
+    phoneNumber?: keyof typeof SortOrder;
+
     @Field(() => SortOrderInput, {nullable:true})
     imgSrc?: SortOrderInput;
 

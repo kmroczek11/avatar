@@ -12,7 +12,7 @@ generator nestgraphql {
   provider = "node node_modules/prisma-nestjs-graphql"
   // for yarn monorepos
   // provider = "prisma-nestjs-graphql"
-  output   = "../api/src/@generated"
+  output   = "../src/@generated"
 }
 
 datasource db {
@@ -25,11 +25,12 @@ enum Role {
 }
 
 model User {
-  id        String  @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String  @unique
-  password  String
-  imgSrc    String?
-  roles     Role[]  @default([USER])
+  id          String  @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String  @unique
+  password    String
+  phoneNumber String  @unique
+  imgSrc      String?
+  roles       Role[]  @default([USER])
 }

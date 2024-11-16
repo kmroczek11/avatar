@@ -20,5 +20,8 @@ export class UserMinAggregate {
     password?: string;
 
     @Field(() => String, {nullable:true})
+    phoneNumber?: string;
+
+    @Field(() => String, {nullable:true})
     imgSrc?: string;
 }

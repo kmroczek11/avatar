@@ -21,6 +21,9 @@ export class User {
     @Field(() => String, {nullable:false})
     password!: string;
 
+    @Field(() => String, {nullable:false})
+    phoneNumber!: string;
+
     @Field(() => String, {nullable:true})
     imgSrc!: string | null;
 

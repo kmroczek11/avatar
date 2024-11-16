@@ -20,5 +20,8 @@ export class UserMaxAggregate {
     password?: string;
 
     @Field(() => String, {nullable:true})
+    phoneNumber?: string;
+
+    @Field(() => String, {nullable:true})
     imgSrc?: string;
 }
