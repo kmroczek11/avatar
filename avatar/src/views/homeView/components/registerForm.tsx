@@ -20,7 +20,8 @@ const defaultValues = {
 };
 
 export default function RegisterForm() {
-    return (<Formik
+    return (
+    <Formik
         initialValues={defaultValues}
         onSubmit={(values, { setSubmitting }) => {
             setSubmitting(true);
@@ -145,7 +146,8 @@ export default function RegisterForm() {
                                     required: true,
                                 }}
                                 inputStyle={{
-                                    width: "100%",
+                                    width: "294px",
+                                    height: "63.66px"
                                 }}
                                 specialLabel="Numer telefonu"
                                 country={"pl"}
@@ -187,7 +189,6 @@ export default function RegisterForm() {
                   )} */}
                         <ColorButton
                             variant="contained"
-                            color="success"
                             type="submit"
                             sx={{ my: 2 }}
                             disabled={isSubmitting}

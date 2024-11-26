@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid2';
 import RegisterForm from './components/registerForm';
 
-export default function RegisterView() {
+export default function HomeView() {
     return (
         <Grid container height="60vh">
             <Grid size={6}>Photo</Grid>
