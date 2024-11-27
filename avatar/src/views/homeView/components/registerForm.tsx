@@ -20,22 +20,36 @@ const defaultValues = {
 };
 
 export default function RegisterForm() {
+
+    const { isRegisterLoading, register } = useRegisterUser(
+        createAccessClient(),
+        setRegisterError,
+        (data) => {
+          localStorage.setItem(
+            process.env.REACT_APP_ACCESS_TOKEN_SECRET!,
+            data.registerUser.accessToken
+          );
+          setUser(data.registerUser.user);
+        }
+      );
+      
     return (
     <Formik
         initialValues={defaultValues}
         onSubmit={(values, { setSubmitting }) => {
             setSubmitting(true);
 
-            const { firstName, lastName, email, password } = values;
+            const { firstName, lastName, email, password,phoneNumber } = values;
 
-            // register({
-            //   input: {
-            //     firstName: firstName,
-            //     lastName: lastName,
-            //     email: email,
-            //     password: password,
-            //   },
-            // });
+            register({
+              input: {
+                firstName,
+                lastName,
+                email,
+                password,
+                phoneNumber
+              },
+            });
         }}
         validationSchema={Yup.object().shape({
             firstName: Yup.string().required("Wymagane"),

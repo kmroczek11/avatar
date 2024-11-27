@@ -10,12 +10,14 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/@generated/user/user.model';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly redisService: RedisService
   ) { }
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -61,9 +63,10 @@ export class AuthService {
   async logIn(user: User) {
     const payload = { sub: user.id, email: user.email };
 
-    return {
-      accessToken: await this.jwtService.signAsync(payload),
-      user,
-    };
+    const accessToken = await this.jwtService.signAsync(payload)
+
+    await this.redisService.saveAccessToken(user.id, accessToken)
+
+    await this.redisService.saveUser(user.id, user)
   }
 }

@@ -10,6 +10,7 @@ import {
 } from 'graphql/error/GraphQLError';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration'
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import configuration from './config/configuration'
 			isGlobal: true,
 			load: [configuration],
 		}),
+    RedisModule,
     AuthModule,
     UserModule,
   ],

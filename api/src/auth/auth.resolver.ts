@@ -15,7 +15,7 @@ export class AuthResolver {
   @Public()
   registerUser(
     @Args('registerUserInput') registerUserInput: RegisterUserInput,
-  ): Promise<LogInResponse> {
+  ): Promise<void> {
     return this.authService.register(registerUserInput);
   }
 
@@ -25,7 +25,7 @@ export class AuthResolver {
   logInUser(
     @Args('logInUserInput') logInUserInput: LogInUserInput,
     @Context() context,
-  ) {
+  ): Promise<void> {
     return this.authService.logIn(context.user);
   }
 }
