@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/@generated/user/user.model';
 import { RedisService } from 'src/redis/redis.service';
+import { AutoLogInUserInput } from './inputs/autoLogIn-user.input';
 
 @Injectable()
 export class AuthService {
@@ -68,5 +69,16 @@ export class AuthService {
     await this.redisService.saveAccessToken(user.id, accessToken)
 
     await this.redisService.saveUser(user.id, user)
+
+    return {
+      userId: user.id
+    }
+  }
+
+  async autoLogIn(autoLogInUserInput: AutoLogInUserInput) {
+    const user = await this.userService.findOneById(autoLogInUserInput.userId)
+    console.log(user)
+
+    return this.logIn(user)
   }
 }

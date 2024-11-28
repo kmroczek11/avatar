@@ -2,6 +2,7 @@ import { useRoutes } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { routes } from "./router/routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AutoLogIn from "./components/auth/components/AutoLogIn";
 
 const theme = createTheme({
   palette: {
@@ -47,6 +48,7 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AutoLogIn />
       <ThemeProvider theme={theme}>
         {element}
       </ThemeProvider>

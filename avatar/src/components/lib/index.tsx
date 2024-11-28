@@ -20,3 +20,5 @@ export const Logo = styled("img")`
 `;
 
 export { default as CustomAlert } from "./CustomAlert";
+export { default as CustomDialog } from "./CustomDialog";
+export { default as CustomAvatar } from "./CustomAvatar";

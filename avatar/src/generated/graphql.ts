@@ -29,10 +29,13 @@ export type Scalars = {
   Upload: { input: any; output: any; }
 };
 
+export type AutoLogInUserInput = {
+  userId: Scalars['String']['input'];
+};
+
 export type LogInResponse = {
   __typename?: 'LogInResponse';
-  accessToken: Scalars['String']['output'];
-  user: User;
+  userId: Scalars['String']['output'];
 };
 
 export type LogInUserInput = {
@@ -42,9 +45,15 @@ export type LogInUserInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  autoLogInUser: LogInResponse;
   createUser: User;
   logInUser: LogInResponse;
   registerUser: LogInResponse;
+};
+
+
+export type MutationAutoLogInUserArgs = {
+  autoLogInUserInput: AutoLogInUserInput;
 };
 
 
@@ -111,27 +120,52 @@ export type UserCreaterolesInput = {
   set: Array<Role>;
 };
 
+export type AutoLogInUserMutationVariables = Exact<{
+  input: AutoLogInUserInput;
+}>;
+
+
+export type AutoLogInUserMutation = { __typename?: 'Mutation', autoLogInUser: { __typename?: 'LogInResponse', userId: string } };
+
 export type RegisterUserMutationVariables = Exact<{
   input: RegisterUserInput;
 }>;
 
 
-export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'LogInResponse', accessToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc?: string | null, roles?: Array<Role> | null } } };
+export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'LogInResponse', userId: string } };
 
 
+
+export const AutoLogInUserDocument = `
+    mutation AutoLogInUser($input: AutoLogInUserInput!) {
+  autoLogInUser(autoLogInUserInput: $input) {
+    userId
+  }
+}
+    `;
+
+export const useAutoLogInUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<AutoLogInUserMutation, TError, AutoLogInUserMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<AutoLogInUserMutation, TError, AutoLogInUserMutationVariables, TContext>(
+      ['AutoLogInUser'],
+      (variables?: AutoLogInUserMutationVariables) => fetcher<AutoLogInUserMutation, AutoLogInUserMutationVariables>(client, AutoLogInUserDocument, variables, headers)(),
+      options
+    )};
+
+
+useAutoLogInUserMutation.fetcher = (client: GraphQLClient, variables: AutoLogInUserMutationVariables, headers?: RequestInit['headers']) => fetcher<AutoLogInUserMutation, AutoLogInUserMutationVariables>(client, AutoLogInUserDocument, variables, headers);
 
 export const RegisterUserDocument = `
     mutation RegisterUser($input: RegisterUserInput!) {
   registerUser(registerUserInput: $input) {
-    accessToken
-    user {
-      id
-      firstName
-      lastName
-      email
-      imgSrc
-      roles
-    }
+    userId
   }
 }
     `;

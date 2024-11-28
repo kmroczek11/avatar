@@ -7,10 +7,10 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class RedisService {
     constructor(
-        @Inject(RedisRepository) 
+        @Inject(RedisRepository)
         private readonly redisRepository: RedisRepository,
         private readonly configService: ConfigService
-    ) {}
+    ) { }
 
     async saveUser(userId: string, user: User): Promise<void> {
         await this.redisRepository.setWithExpiry(
@@ -22,8 +22,11 @@ export class RedisService {
     }
 
     async getUser(userId: string): Promise<User | null> {
-        const product = await this.redisRepository.get(RedisPrefixEnum.USER, userId);
-        return JSON.parse(product);
+        const user = await this.redisRepository.get(RedisPrefixEnum.USER, userId);
+        const parsedUser = JSON.parse(user)
+        delete parsedUser.password
+
+        return parsedUser;
     }
 
     async saveAccessToken(userId: string, token: string): Promise<void> {

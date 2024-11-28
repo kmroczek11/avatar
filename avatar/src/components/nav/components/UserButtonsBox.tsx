@@ -1,32 +1,32 @@
 import React, { useState } from "react";
-// import Tooltip from "@mui/material/Tooltip";
-// import Menu from "@mui/material/Menu";
-// import MenuItem from "@mui/material/MenuItem";
-// import { ColorButton, CustomDialog } from "../../lib";
-// import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { ColorButton, CustomDialog, CustomAvatar } from "../../lib";
+import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-// import IconButton from "@mui/material/IconButton";
-// import {
-//     LogOutUserMutation,
-//     LogOutUserMutationVariables,
-//     Role,
-//     useLogOutUserMutation,
-// } from "../../../generated/graphql";
-// import ListItemIcon from "@mui/material/ListItemIcon";
-// import SettingsIcon from "@mui/icons-material/Settings";
-// import CustomAvatar from "../../lib/CustomAvatar";
+import IconButton from "@mui/material/IconButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { useNavigate } from "react-router-dom";
-// import { useAuth } from "../../auth";
-// import createAccessClient from "../../../graphql/clients/accessClient";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const errorMessage =
     "Wystąpił nieoczekiwany błąd. Skontaktuj się z administratorem strony.";
 
-export default function UserButtonsBox(){
+export default function UserButtonsBox() {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-    // const { user, setUser } = useAuth();
     const navigate = useNavigate();
     const [logoutStatus, setLogoutStatus] = useState<string>("");
+
+    const { isLoading, error, data: user, isFetching } = useQuery({
+        queryKey: ['user'],
+        queryFn: () =>
+            axios
+                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${localStorage.getItem('userId')}`)
+                .then((res) => res.data),
+    })
 
     // const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
     //     createAccessClient(),
@@ -66,7 +66,7 @@ export default function UserButtonsBox(){
                 display: "flex",
             }}
         >
-            {/* {user && (
+            {user && (
                 <React.Fragment>
                     <Tooltip title="Otwórz panel użytkownika">
                         <IconButton onClick={handleOpenUserMenu}>
@@ -84,7 +84,7 @@ export default function UserButtonsBox(){
                     </Tooltip>
                     <Typography
                         variant="body2"
-                        color="primary"
+                        color="primary.contrastText"
                         sx={{ display: { xs: "none", md: "block" } }}
                     >
                         {user.firstName}
@@ -92,7 +92,7 @@ export default function UserButtonsBox(){
                     &nbsp;
                     <Typography
                         variant="body2"
-                        color="primary"
+                        color="primary.contrastText"
                         sx={{ display: { xs: "none", md: "block" } }}
                     >
                         {user.lastName}
@@ -113,7 +113,7 @@ export default function UserButtonsBox(){
                         open={Boolean(anchorElUser)}
                         onClose={handleCloseUserMenu}
                     >
-                        {user.roles.includes(Role.User) && (
+                        {/* {user.roles.includes(Role.User) && (
                             <MenuItem onClick={() => navigate("/ustawienia")}>
                                 <ListItemIcon>
                                     <SettingsIcon fontSize="small" />
@@ -129,7 +129,7 @@ export default function UserButtonsBox(){
                             >
                                 Wyloguj
                             </ColorButton>
-                        </MenuItem>
+                        </MenuItem> */}
                     </Menu>
                     {logoutStatus && (
                         <CustomDialog
@@ -139,7 +139,7 @@ export default function UserButtonsBox(){
                         />
                     )}
                 </React.Fragment>
-            )} */}
+            )}
         </Box>
     );
 };

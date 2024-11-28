@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type LogInResponse {
+  userId: String!
+}
+
 type User {
   id: ID!
   firstName: String!
@@ -17,11 +21,6 @@ enum Role {
   USER
 }
 
-type LogInResponse {
-  accessToken: String!
-  user: User!
-}
-
 """File upload scalar type"""
 scalar Upload
 
@@ -32,6 +31,7 @@ type Query {
 type Mutation {
   registerUser(registerUserInput: RegisterUserInput!): LogInResponse!
   logInUser(logInUserInput: LogInUserInput!): LogInResponse!
+  autoLogInUser(autoLogInUserInput: AutoLogInUserInput!): LogInResponse!
   createUser(createUserInput: UserCreateInput!): User!
 }
 
@@ -56,6 +56,10 @@ scalar PhoneNumber
 input LogInUserInput {
   email: EmailAddress!
   password: String!
+}
+
+input AutoLogInUserInput {
+  userId: String!
 }
 
 input UserCreateInput {
