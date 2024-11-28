@@ -11,6 +11,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import useRegisterUser from "../../../components/auth/hooks/useRegisterUser";
 import createRegisterUserClient from "../../../graphql/clients/registerUserClient";
+import { useCookies } from "react-cookie";
 
 YupPassword(Yup); // extend yup
 
@@ -26,12 +27,13 @@ const userExistsMessage = "Użytkownik o podanym adresie e-mail już istnieje.";
 
 export default function RegisterForm() {
     const [registerError, setRegisterError] = useState<string>("");
+    const [cookie, setCookie, removeCookie] = useCookies(['userId']);
 
     const { register } = useRegisterUser(
         createRegisterUserClient(),
         setRegisterError,
         (data) => {
-            localStorage.setItem('userId', data.registerUser.userId);
+            setCookie('userId', data.registerUser.userId);
         }
     );
 

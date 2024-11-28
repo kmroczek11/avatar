@@ -8,14 +8,15 @@ export default function HomeView() {
         queryKey: ['user'],
         queryFn: () =>
             axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${localStorage.getItem('userId')}}`)
+                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${localStorage.getItem('userId')}`)
                 .then((res) => {
                     return res.data
                 }),
+        enabled: localStorage.getItem('userId') ? true : false
     })
 
     return (
-        <Grid container height="60vh">
+        <Grid container height="62vh">
             {user ? null : <RegisterView />}
         </Grid>
     )

@@ -11,6 +11,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useCookies } from "react-cookie";
 
 const errorMessage =
     "Wystąpił nieoczekiwany błąd. Skontaktuj się z administratorem strony.";
@@ -19,13 +20,15 @@ export default function UserButtonsBox() {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
     const [logoutStatus, setLogoutStatus] = useState<string>("");
+    const [cookie, setCookie, removeCookie] = useCookies(['userId']);
 
     const { isLoading, error, data: user, isFetching } = useQuery({
         queryKey: ['user'],
         queryFn: () =>
             axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${localStorage.getItem('userId')}`)
+                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookie.userId}`)
                 .then((res) => res.data),
+        enabled: cookie.userId ? true : false
     })
 
     // const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
