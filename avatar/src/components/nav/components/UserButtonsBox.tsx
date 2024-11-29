@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import { LogOutUserMutation, LogOutUserMutationVariables, Role, useLogOutUserMutation } from "../../../generated/graphql";
+import createAccessClient from "../../../graphql/clients/accessClient";
 
 const errorMessage =
     "Wystąpił nieoczekiwany błąd. Skontaktuj się z administratorem strony.";
@@ -22,34 +24,41 @@ export default function UserButtonsBox() {
     const [logoutStatus, setLogoutStatus] = useState<string>("");
     const [cookie, setCookie, removeCookie] = useCookies(['userId']);
 
-    const { isLoading, error, data: user, isFetching } = useQuery({
+    const { isLoading: isGetUserLoading, error: userGetError, data: user, isFetching: isGetUserFetching } = useQuery({
         queryKey: ['user'],
         queryFn: () =>
             axios
                 .get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookie.userId}`)
                 .then((res) => res.data),
-        enabled: cookie.userId ? true : false
+        enabled: cookie ? true : false
     })
 
-    // const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
-    //     createAccessClient(),
-    //     {
-    //         onError: (error: Error) => {
-    //             let err: any = {};
-    //             err.data = error;
-    //             setLogoutStatus(err?.data?.response.errors[0].message);
-    //         },
-    //         onSuccess: (
-    //             data: LogOutUserMutation,
-    //             _variables: LogOutUserMutationVariables,
-    //             _context: unknown
-    //         ) => {
-    //             // queryClient.invalidateQueries('GetAllAuthors');
-    //             localStorage.removeItem(process.env.REACT_APP_ACCESS_TOKEN_SECRET!);
-    //             setUser(null);
-    //         },
-    //     }
-    // );
+    const { isLoading: isGetAccessTokenLoading, error, data: accessToken, isFetching: isGetAccessTokenFetching } = useQuery({
+        queryKey: ['accessToken'],
+        queryFn: () =>
+            axios
+                .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookie.userId}`)
+                .then((res) => res.data),
+        enabled: cookie ? true : false
+    })
+
+    const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
+        createAccessClient(accessToken),
+        {
+            onError: (error: Error) => {
+                let err: any = {};
+                err.data = error;
+                setLogoutStatus(err?.data?.response.errors[0].message);
+            },
+            onSuccess: (
+                data: LogOutUserMutation,
+                _variables: LogOutUserMutationVariables,
+                _context: unknown
+            ) => {
+                removeCookie('userId')
+            },
+        }
+    );
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
@@ -116,7 +125,7 @@ export default function UserButtonsBox() {
                         open={Boolean(anchorElUser)}
                         onClose={handleCloseUserMenu}
                     >
-                        {/* {user.roles.includes(Role.User) && (
+                        {user.roles.includes(Role.User) && (
                             <MenuItem onClick={() => navigate("/ustawienia")}>
                                 <ListItemIcon>
                                     <SettingsIcon fontSize="small" />
@@ -128,11 +137,17 @@ export default function UserButtonsBox() {
                             <ColorButton
                                 variant="contained"
                                 color="error"
-                                onClick={() => logOut({})}
+                                onClick={() =>
+                                    logOut({
+                                        input: {
+                                            userId: cookie.userId,
+                                            accessToken
+                                        }
+                                    })}
                             >
                                 Wyloguj
                             </ColorButton>
-                        </MenuItem> */}
+                        </MenuItem>
                     </Menu>
                     {logoutStatus && (
                         <CustomDialog

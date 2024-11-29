@@ -1,0 +1,5 @@
+mutation LogOutUser($input: LogOutUserInput!) {
+  logOutUser(logOutUserInput: $input) {
+    msg
+  }
+}

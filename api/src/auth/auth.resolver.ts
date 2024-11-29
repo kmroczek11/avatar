@@ -6,10 +6,14 @@ import { Public } from './decorators/public.decorator';
 import { LogInUserInput } from './inputs/logIn-user.input';
 import { LogInAuthGuard } from './guards/logIn-auth.guard';
 import { UseGuards } from '@nestjs/common';
-import { AutoLogInGuard } from './guards/autoLogIn-auth.guard';
+import { AutoLogInAuthGuard } from './guards/autoLogIn-auth.guard';
 import { AutoLogInUserInput } from './inputs/autoLogIn-user.input';
 import { CurrentUser } from './decorators/user.decorator';
 import { User } from 'src/@generated/user/user.model';
+import { LogOutResponse } from './responses/logOut-response';
+import { Roles } from './decorators/roles.decorator';
+import { Role } from 'src/@generated/prisma/role.enum';
+import { LogOutUserInput } from './inputs/logOut-user.input';
 
 @Resolver()
 export class AuthResolver {
@@ -24,21 +28,28 @@ export class AuthResolver {
   }
 
   @Mutation(() => LogInResponse)
-  @UseGuards(LogInAuthGuard)
   @Public()
+  @UseGuards(LogInAuthGuard)
   logInUser(
     @Args('logInUserInput') logInUserInput: LogInUserInput,
-    @CurrentUser() user: User,
   ): Promise<LogInResponse> {
-    return this.authService.logIn(user);
+    return this.authService.logIn(logInUserInput);
   }
 
   @Mutation(() => LogInResponse)
-  // @UseGuards(AutoLogInGuard)
   @Public()
+  @UseGuards(AutoLogInAuthGuard)
   autoLogInUser(
     @Args('autoLogInUserInput') autoLogInUserInput: AutoLogInUserInput,
   ) {
     return this.authService.autoLogIn(autoLogInUserInput);
+  }
+
+  @Mutation(() => LogOutResponse)
+  @Roles(Role.USER)
+  logOutUser(
+    @Args('logOutUserInput') logOutUserInput: LogOutUserInput,
+  ): Promise<LogOutResponse> {
+    return this.authService.logOut(logOutUserInput);
   }
 }

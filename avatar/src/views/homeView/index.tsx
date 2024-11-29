@@ -2,17 +2,20 @@ import Grid from '@mui/material/Grid2';
 import { useQuery } from '@tanstack/react-query';
 import axios from "axios";
 import RegisterView from '../registerView';
+import { useCookies } from 'react-cookie';
 
 export default function HomeView() {
+    const [cookie, setCookie, removeCookie] = useCookies(['userId']);
+
     const { isLoading, error, data: user, isFetching } = useQuery({
         queryKey: ['user'],
         queryFn: () =>
             axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${localStorage.getItem('userId')}`)
+                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookie.userId}`)
                 .then((res) => {
                     return res.data
                 }),
-        enabled: localStorage.getItem('userId') ? true : false
+        enabled: cookie ? true : false
     })
 
     return (

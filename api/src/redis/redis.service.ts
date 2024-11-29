@@ -32,13 +32,21 @@ export class RedisService {
     async saveAccessToken(userId: string, token: string): Promise<void> {
         await this.redisRepository.setWithExpiry(
             RedisPrefixEnum.ACCESS_TOKEN,
-            token,
             userId,
+            token,
             this.configService.get('accessTokenExpiration'),
         );
     }
 
     async getAccessToken(token: string): Promise<string | null> {
         return await this.redisRepository.get(RedisPrefixEnum.ACCESS_TOKEN, token);
+    }
+
+    async removeUser(userId: string): Promise<void> {
+        await this.redisRepository.delete(RedisPrefixEnum.USER, userId);
+    }
+
+    async removeAccessToken(token: string): Promise<void> {
+        return await this.redisRepository.delete(RedisPrefixEnum.ACCESS_TOKEN, token);
     }
 }

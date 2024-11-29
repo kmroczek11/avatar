@@ -1,0 +1,5 @@
+mutation LogInUser($input: LogInUserInput!) {
+  logInUser(logInUserInput: $input) {
+    userId
+  }
+}

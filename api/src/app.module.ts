@@ -11,6 +11,10 @@ import {
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration'
 import { RedisModule } from './redis/redis.module';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { AllExceptionsFilter } from './core/all-exceptions.filter';
+import { RolesGuard } from './auth/guards/roles.guard';
+import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
 
 @Module({
   imports: [
@@ -35,6 +39,19 @@ import { RedisModule } from './redis/redis.module';
     UserModule,
   ],
   controllers: [],
-  providers: [],
+    providers: [
+      {
+        provide: APP_FILTER,
+        useClass: AllExceptionsFilter,
+      },
+      // {
+      //   provide: APP_GUARD,
+      //   useClass: GqlAuthGuard,
+      // },
+      {
+        provide: APP_GUARD,
+        useClass: RolesGuard,
+      },
+  ],
 })
 export class AppModule {}

@@ -12,6 +12,8 @@ import { UserService } from 'src/user/user.service';
 import { User } from 'src/@generated/user/user.model';
 import { RedisService } from 'src/redis/redis.service';
 import { AutoLogInUserInput } from './inputs/autoLogIn-user.input';
+import { LogOutUserInput } from './inputs/logOut-user.input';
+import { LogInUserInput } from './inputs/logIn-user.input';
 
 @Injectable()
 export class AuthService {
@@ -58,10 +60,16 @@ export class AuthService {
       password,
     });
 
-    return this.logIn(newUser);
+    return this.sign(newUser);
   }
 
-  async logIn(user: User) {
+  async logIn(logInUserInput: LogInUserInput) {
+    const user = await this.userService.findOneByEmail(logInUserInput.email)
+
+    return this.sign(user)
+  }
+
+  async sign(user: User) {
     const payload = { sub: user.id, email: user.email };
 
     const accessToken = await this.jwtService.signAsync(payload)
@@ -77,8 +85,19 @@ export class AuthService {
 
   async autoLogIn(autoLogInUserInput: AutoLogInUserInput) {
     const user = await this.userService.findOneById(autoLogInUserInput.userId)
-    console.log(user)
 
-    return this.logIn(user)
+    return this.sign(user)
+  }
+
+  async logOut(logOutUserInput: LogOutUserInput) {
+    const { userId, accessToken } = logOutUserInput;
+
+    await this.redisService.removeUser(userId)
+
+    await this.redisService.removeAccessToken(accessToken)
+
+    return {
+      msg: 'Success',
+    };
   }
 }

@@ -15,6 +15,10 @@ import { useCookies } from "react-cookie";
 
 YupPassword(Yup); // extend yup
 
+interface RegisterFormProps {
+    setActive: (name: string) => void;
+}
+
 const defaultValues = {
     firstName: "",
     lastName: "",
@@ -25,7 +29,8 @@ const defaultValues = {
 
 const userExistsMessage = "Użytkownik o podanym adresie e-mail już istnieje.";
 
-export default function RegisterForm() {
+export default function RegisterForm(props: RegisterFormProps) {
+    const { setActive } = props;
     const [registerError, setRegisterError] = useState<string>("");
     const [cookie, setCookie, removeCookie] = useCookies(['userId']);
 
@@ -216,7 +221,7 @@ export default function RegisterForm() {
                             <Button
                                 variant="text"
                                 sx={{ color: "#000", textTransform: "none" }}
-                            // onClick={() => setActive("login")}
+                                onClick={() => setActive("login")}
                             >
                                 Masz już konto? Zaloguj się
                             </Button>

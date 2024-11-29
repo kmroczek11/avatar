@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@mui/material/Grid2';
 import RegisterForm from './components/registerForm';
+import LogInForm from './components/logInForm';
 
 export default function RegisterView() {
+    const [active, setActive] = useState('register')
+
     return (
         <React.Fragment>
             <Grid size={6}>Photo</Grid>
@@ -13,7 +16,10 @@ export default function RegisterView() {
                 justifyContent="center"
                 alignItems="center"
             >
-                <RegisterForm />
+                {active == "register" ?
+                    <RegisterForm setActive={setActive} /> :
+                    <LogInForm setActive={setActive} />
+                }
             </Grid>
         </React.Fragment>
 

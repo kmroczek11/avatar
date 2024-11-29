@@ -4,7 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthResolver } from './auth.resolver';
 import { Upload } from 'src/auth/helpers/upload.scalar';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { LoginStrategy } from './strategies/login.strategy';
+import { LogInStrategy } from './strategies/logIn.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { AutoLoginStrategy } from './strategies/autoLogin.strategy';
@@ -29,7 +29,7 @@ dotenv.config();
   providers: [
     AuthService,
     AuthResolver,
-    LoginStrategy,
+    LogInStrategy,
     AutoLoginStrategy,
     JwtStrategy,
   ],

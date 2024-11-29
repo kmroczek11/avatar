@@ -43,11 +43,22 @@ export type LogInUserInput = {
   password: Scalars['String']['input'];
 };
 
+export type LogOutResponse = {
+  __typename?: 'LogOutResponse';
+  msg: Scalars['String']['output'];
+};
+
+export type LogOutUserInput = {
+  accessToken: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   autoLogInUser: LogInResponse;
   createUser: User;
   logInUser: LogInResponse;
+  logOutUser: LogOutResponse;
   registerUser: LogInResponse;
 };
 
@@ -64,6 +75,11 @@ export type MutationCreateUserArgs = {
 
 export type MutationLogInUserArgs = {
   logInUserInput: LogInUserInput;
+};
+
+
+export type MutationLogOutUserArgs = {
+  logOutUserInput: LogOutUserInput;
 };
 
 
@@ -127,6 +143,20 @@ export type AutoLogInUserMutationVariables = Exact<{
 
 export type AutoLogInUserMutation = { __typename?: 'Mutation', autoLogInUser: { __typename?: 'LogInResponse', userId: string } };
 
+export type LogInUserMutationVariables = Exact<{
+  input: LogInUserInput;
+}>;
+
+
+export type LogInUserMutation = { __typename?: 'Mutation', logInUser: { __typename?: 'LogInResponse', userId: string } };
+
+export type LogOutUserMutationVariables = Exact<{
+  input: LogOutUserInput;
+}>;
+
+
+export type LogOutUserMutation = { __typename?: 'Mutation', logOutUser: { __typename?: 'LogOutResponse', msg: string } };
+
 export type RegisterUserMutationVariables = Exact<{
   input: RegisterUserInput;
 }>;
@@ -161,6 +191,58 @@ export const useAutoLogInUserMutation = <
 
 
 useAutoLogInUserMutation.fetcher = (client: GraphQLClient, variables: AutoLogInUserMutationVariables, headers?: RequestInit['headers']) => fetcher<AutoLogInUserMutation, AutoLogInUserMutationVariables>(client, AutoLogInUserDocument, variables, headers);
+
+export const LogInUserDocument = `
+    mutation LogInUser($input: LogInUserInput!) {
+  logInUser(logInUserInput: $input) {
+    userId
+  }
+}
+    `;
+
+export const useLogInUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<LogInUserMutation, TError, LogInUserMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<LogInUserMutation, TError, LogInUserMutationVariables, TContext>(
+      ['LogInUser'],
+      (variables?: LogInUserMutationVariables) => fetcher<LogInUserMutation, LogInUserMutationVariables>(client, LogInUserDocument, variables, headers)(),
+      options
+    )};
+
+
+useLogInUserMutation.fetcher = (client: GraphQLClient, variables: LogInUserMutationVariables, headers?: RequestInit['headers']) => fetcher<LogInUserMutation, LogInUserMutationVariables>(client, LogInUserDocument, variables, headers);
+
+export const LogOutUserDocument = `
+    mutation LogOutUser($input: LogOutUserInput!) {
+  logOutUser(logOutUserInput: $input) {
+    msg
+  }
+}
+    `;
+
+export const useLogOutUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<LogOutUserMutation, TError, LogOutUserMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<LogOutUserMutation, TError, LogOutUserMutationVariables, TContext>(
+      ['LogOutUser'],
+      (variables?: LogOutUserMutationVariables) => fetcher<LogOutUserMutation, LogOutUserMutationVariables>(client, LogOutUserDocument, variables, headers)(),
+      options
+    )};
+
+
+useLogOutUserMutation.fetcher = (client: GraphQLClient, variables: LogOutUserMutationVariables, headers?: RequestInit['headers']) => fetcher<LogOutUserMutation, LogOutUserMutationVariables>(client, LogOutUserDocument, variables, headers);
 
 export const RegisterUserDocument = `
     mutation RegisterUser($input: RegisterUserInput!) {
