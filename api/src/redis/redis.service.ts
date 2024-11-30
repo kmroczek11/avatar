@@ -46,7 +46,7 @@ export class RedisService {
         await this.redisRepository.delete(RedisPrefixEnum.USER, userId);
     }
 
-    async removeAccessToken(token: string): Promise<void> {
-        return await this.redisRepository.delete(RedisPrefixEnum.ACCESS_TOKEN, token);
+    async removeAccessToken(userId: string): Promise<void> {
+        return await this.redisRepository.delete(RedisPrefixEnum.ACCESS_TOKEN, userId);
     }
 }

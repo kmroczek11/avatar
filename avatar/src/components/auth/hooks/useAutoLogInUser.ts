@@ -5,11 +5,11 @@ import {
 } from "../../../generated/graphql";
 import { GraphQLClient } from "graphql-request";
 
-const useAutoLogInUser = (
+export default function useAutoLogInUser(
   client: GraphQLClient,
   onErrorCallback: React.Dispatch<React.SetStateAction<string>>,
   onSuccessCallback: (data: AutoLogInUserMutation) => void,
-) => {
+) {
   const { isLoading: isAutoLogInUserLoading, mutate: autoLogIn } =
     useAutoLogInUserMutation<Error>(client, {
       onError: (error: Error) => {
@@ -27,5 +27,3 @@ const useAutoLogInUser = (
 
   return { isAutoLogInUserLoading, autoLogIn };
 };
-
-export default useAutoLogInUser;

@@ -5,22 +5,22 @@ import RegisterView from '../registerView';
 import { useCookies } from 'react-cookie';
 
 export default function HomeView() {
-    const [cookie, setCookie, removeCookie] = useCookies(['userId']);
+    const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
     const { isLoading, error, data: user, isFetching } = useQuery({
         queryKey: ['user'],
         queryFn: () =>
             axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookie.userId}`)
+                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookies.userId}`)
                 .then((res) => {
                     return res.data
                 }),
-        enabled: cookie ? true : false
+        enabled: cookies.userId ? true : false
     })
 
     return (
         <Grid container height="62vh">
-            {user ? null : <RegisterView />}
+            {cookies.userId ? null : <RegisterView />}
         </Grid>
     )
 }

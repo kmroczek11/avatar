@@ -4,7 +4,4 @@ import { Field, InputType } from '@nestjs/graphql';
 export class LogOutUserInput {
   @Field()
   userId: string;
-
-  @Field()
-  accessToken: string;
 }

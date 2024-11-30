@@ -90,11 +90,11 @@ export class AuthService {
   }
 
   async logOut(logOutUserInput: LogOutUserInput) {
-    const { userId, accessToken } = logOutUserInput;
+    const { userId } = logOutUserInput;
 
     await this.redisService.removeUser(userId)
 
-    await this.redisService.removeAccessToken(accessToken)
+    await this.redisService.removeAccessToken(userId)
 
     return {
       msg: 'Success',

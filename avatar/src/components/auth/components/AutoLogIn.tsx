@@ -7,17 +7,17 @@ import axios from "axios";
 
 export default function AutoLogIn() {
     const [autoLoginUserError, setAutoLoginError] = useState<string>("");
-    const [cookie, setCookie, removeCookie] = useCookies(['userId']);
+    const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
     const { isLoading, error, data: accessToken, isFetching } = useQuery({
         queryKey: ['accessToken'],
         queryFn: () =>
             axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookie.userId}`)
+                .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
                 .then((res) => {
                     return res.data
                 }),
-        enabled: cookie ? true : false
+        enabled: cookies.userId ? true : false
     })
 
     const { isAutoLogInUserLoading, autoLogIn } = useAutoLogInUser(
@@ -27,14 +27,14 @@ export default function AutoLogIn() {
     );
 
     useEffect(() => {
-        if (!cookie.userId || !accessToken) return
+        if (!cookies.userId || !accessToken) return
 
         autoLogIn({
             input: {
-                userId: cookie.userId
+                userId: cookies.userId
             }
         })
-    }, [cookie, accessToken])
+    }, [])
 
     return null
 }

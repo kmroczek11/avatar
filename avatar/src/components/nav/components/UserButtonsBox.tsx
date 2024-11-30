@@ -22,24 +22,24 @@ export default function UserButtonsBox() {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
     const [logoutStatus, setLogoutStatus] = useState<string>("");
-    const [cookie, setCookie, removeCookie] = useCookies(['userId']);
+    const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
     const { isLoading: isGetUserLoading, error: userGetError, data: user, isFetching: isGetUserFetching } = useQuery({
         queryKey: ['user'],
         queryFn: () =>
             axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookie.userId}`)
+                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookies.userId}`)
                 .then((res) => res.data),
-        enabled: cookie ? true : false
+        enabled: cookies.userId ? true : false
     })
 
     const { isLoading: isGetAccessTokenLoading, error, data: accessToken, isFetching: isGetAccessTokenFetching } = useQuery({
         queryKey: ['accessToken'],
         queryFn: () =>
             axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookie.userId}`)
+                .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
                 .then((res) => res.data),
-        enabled: cookie ? true : false
+        enabled: cookies.userId ? true : false
     })
 
     const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
@@ -78,7 +78,7 @@ export default function UserButtonsBox() {
                 display: "flex",
             }}
         >
-            {user && (
+            {cookies.userId && user && (
                 <React.Fragment>
                     <Tooltip title="Otwórz panel użytkownika">
                         <IconButton onClick={handleOpenUserMenu}>
@@ -140,8 +140,7 @@ export default function UserButtonsBox() {
                                 onClick={() =>
                                     logOut({
                                         input: {
-                                            userId: cookie.userId,
-                                            accessToken
+                                            userId: cookies.userId
                                         }
                                     })}
                             >

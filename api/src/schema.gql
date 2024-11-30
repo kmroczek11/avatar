@@ -69,7 +69,6 @@ input AutoLogInUserInput {
 
 input LogOutUserInput {
   userId: String!
-  accessToken: String!
 }
 
 input UserCreateInput {

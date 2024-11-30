@@ -44,10 +44,10 @@ import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
         provide: APP_FILTER,
         useClass: AllExceptionsFilter,
       },
-      // {
-      //   provide: APP_GUARD,
-      //   useClass: GqlAuthGuard,
-      // },
+      {
+        provide: APP_GUARD,
+        useClass: GqlAuthGuard,
+      },
       {
         provide: APP_GUARD,
         useClass: RolesGuard,

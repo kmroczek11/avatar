@@ -49,7 +49,6 @@ export type LogOutResponse = {
 };
 
 export type LogOutUserInput = {
-  accessToken: Scalars['String']['input'];
   userId: Scalars['String']['input'];
 };
 
