@@ -38,7 +38,7 @@ export class AuthResolver {
 
   @Mutation(() => LogInResponse)
   @Public()
-  @UseGuards(AutoLogInAuthGuard)
+  // @UseGuards(AutoLogInAuthGuard)
   autoLogInUser(
     @Args('autoLogInUserInput') autoLogInUserInput: AutoLogInUserInput,
   ) {

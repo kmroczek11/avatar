@@ -4,37 +4,42 @@ import createAutoLogInUserClient from "../../../graphql/clients/autoLogInUserCli
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useInterval } from 'usehooks-ts'
 
 export default function AutoLogIn() {
     const [autoLoginUserError, setAutoLoginError] = useState<string>("");
     const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
-    const { isLoading, error, data: accessToken, isFetching } = useQuery({
-        queryKey: ['accessToken'],
-        queryFn: () =>
-            axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
-                .then((res) => {
-                    return res.data
-                }),
-        enabled: cookies.userId ? true : false
-    })
-
     const { isAutoLogInUserLoading, autoLogIn } = useAutoLogInUser(
-        createAutoLogInUserClient(accessToken),
+        createAutoLogInUserClient(),
         setAutoLoginError,
         (data) => { }
     );
 
+    useInterval(
+        () => {
+            console.log('autoLogIn')
+
+            autoLogIn({
+                input: {
+                    userId: cookies.userId
+                }
+            })
+        },
+        cookies.userId ? Number(process.env.REACT_APP_ACCESS_TOKEN_EXPIRATION) : null
+    )
+
     useEffect(() => {
-        if (!cookies.userId || !accessToken) return
+        if (!cookies.userId) return
+
+        console.log('autoLogIn')
 
         autoLogIn({
             input: {
                 userId: cookies.userId
             }
         })
-    }, [])
+    }, [cookies.userId])
 
     return null
 }

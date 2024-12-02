@@ -14,6 +14,7 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 import { LogOutUserMutation, LogOutUserMutationVariables, Role, useLogOutUserMutation } from "../../../generated/graphql";
 import createAccessClient from "../../../graphql/clients/accessClient";
+import { useAuth } from "../../auth/components/AuthProvider";
 
 const errorMessage =
     "Wystąpił nieoczekiwany błąd. Skontaktuj się z administratorem strony.";
@@ -23,15 +24,7 @@ export default function UserButtonsBox() {
     const navigate = useNavigate();
     const [logoutStatus, setLogoutStatus] = useState<string>("");
     const [cookies, setCookie, removeCookie] = useCookies(['userId']);
-
-    const { isLoading: isGetUserLoading, error: userGetError, data: user, isFetching: isGetUserFetching } = useQuery({
-        queryKey: ['user'],
-        queryFn: () =>
-            axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookies.userId}`)
-                .then((res) => res.data),
-        enabled: cookies.userId ? true : false
-    })
+    const { user, setUser } = useAuth();
 
     const { isLoading: isGetAccessTokenLoading, error, data: accessToken, isFetching: isGetAccessTokenFetching } = useQuery({
         queryKey: ['accessToken'],
@@ -56,6 +49,7 @@ export default function UserButtonsBox() {
                 _context: unknown
             ) => {
                 removeCookie('userId')
+                setUser(null)
             },
         }
     );
@@ -78,7 +72,7 @@ export default function UserButtonsBox() {
                 display: "flex",
             }}
         >
-            {cookies.userId && user && (
+            {user && (
                 <React.Fragment>
                     <Tooltip title="Otwórz panel użytkownika">
                         <IconButton onClick={handleOpenUserMenu}>

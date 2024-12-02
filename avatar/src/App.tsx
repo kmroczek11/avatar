@@ -3,6 +3,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { routes } from "./router/routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AutoLogIn from "./components/auth/components/AutoLogIn";
+import AuthProvider from "./components/auth/components/AuthProvider";
 
 const theme = createTheme({
   palette: {
@@ -50,7 +51,9 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <AutoLogIn />
       <ThemeProvider theme={theme}>
-        {element}
+        <AuthProvider>
+          {element}
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

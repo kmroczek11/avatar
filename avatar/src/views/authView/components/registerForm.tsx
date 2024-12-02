@@ -221,7 +221,7 @@ export default function RegisterForm(props: RegisterFormProps) {
                             <Button
                                 variant="text"
                                 sx={{ color: "#000", textTransform: "none" }}
-                                onClick={() => setActive("login")}
+                                onClick={() => setActive("logIn")}
                             >
                                 Masz już konto? Zaloguj się
                             </Button>

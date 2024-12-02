@@ -1,9 +1,8 @@
 import { GraphQLClient } from "graphql-request";
 
-export default function createAutoLogInUserClient(accessToken:string){
+export default function createAutoLogInUserClient(){
   return new GraphQLClient(`${process.env.REACT_APP_HOST}/graphql` as string, {
     headers: {
-      Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
   });
