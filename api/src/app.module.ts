@@ -15,6 +15,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AllExceptionsFilter } from './core/all-exceptions.filter';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
     RedisModule,
     AuthModule,
     UserModule,
+    ChatModule,
   ],
   controllers: [],
     providers: [
