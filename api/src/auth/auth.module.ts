@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { AuthResolver } from './auth.resolver';
-import { Upload } from 'src/auth/helpers/upload.scalar';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LogInStrategy } from './strategies/logIn.strategy';
 import { JwtModule } from '@nestjs/jwt';
@@ -18,7 +17,6 @@ dotenv.config();
   imports: [
     UserModule,
     PassportModule,
-    Upload,
     JwtModule.register({
       secret: process.env.ACCESS_TOKEN_SECRET,
       signOptions: { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION },

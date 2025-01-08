@@ -1,9 +1,11 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
+import { UserEmailPhoneNumberCompoundUniqueInput } from './user-email-phone-number-compound-unique.input';
 import { UserWhereInput } from './user-where.input';
 import { StringFilter } from '../prisma/string-filter.input';
 import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
 import { EnumRoleNullableListFilter } from '../prisma/enum-role-nullable-list-filter.input';
+import { FriendRequestListRelationFilter } from '../friend-request/friend-request-list-relation-filter.input';
 
 @InputType()
 export class UserWhereUniqueInput {
@@ -11,11 +13,8 @@ export class UserWhereUniqueInput {
     @Field(() => String, {nullable:true})
     id?: string;
 
-    @Field(() => String, {nullable:true})
-    email?: string;
-
-    @Field(() => String, {nullable:true})
-    phoneNumber?: string;
+    @Field(() => UserEmailPhoneNumberCompoundUniqueInput, {nullable:true})
+    email_phoneNumber?: UserEmailPhoneNumberCompoundUniqueInput;
 
     @Field(() => [UserWhereInput], {nullable:true})
     AND?: Array<UserWhereInput>;
@@ -33,11 +32,23 @@ export class UserWhereUniqueInput {
     lastName?: StringFilter;
 
     @Field(() => StringFilter, {nullable:true})
+    email?: StringFilter;
+
+    @Field(() => StringFilter, {nullable:true})
     password?: StringFilter;
+
+    @Field(() => StringFilter, {nullable:true})
+    phoneNumber?: StringFilter;
 
     @Field(() => StringNullableFilter, {nullable:true})
     imgSrc?: StringNullableFilter;
 
     @Field(() => EnumRoleNullableListFilter, {nullable:true})
     roles?: EnumRoleNullableListFilter;
+
+    @Field(() => FriendRequestListRelationFilter, {nullable:true})
+    friendRequestsSent?: FriendRequestListRelationFilter;
+
+    @Field(() => FriendRequestListRelationFilter, {nullable:true})
+    friendRequestsReceived?: FriendRequestListRelationFilter;
 }

@@ -1,6 +1,8 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { UserCreaterolesInput } from './user-createroles.input';
+import { FriendRequestUncheckedCreateNestedManyWithoutCreatorInput } from '../friend-request/friend-request-unchecked-create-nested-many-without-creator.input';
+import { FriendRequestUncheckedCreateNestedManyWithoutReceiverInput } from '../friend-request/friend-request-unchecked-create-nested-many-without-receiver.input';
 
 @InputType()
 export class UserUncheckedCreateInput {
@@ -28,4 +30,10 @@ export class UserUncheckedCreateInput {
 
     @Field(() => UserCreaterolesInput, {nullable:true})
     roles?: UserCreaterolesInput;
+
+    @Field(() => FriendRequestUncheckedCreateNestedManyWithoutCreatorInput, {nullable:true})
+    friendRequestsSent?: FriendRequestUncheckedCreateNestedManyWithoutCreatorInput;
+
+    @Field(() => FriendRequestUncheckedCreateNestedManyWithoutReceiverInput, {nullable:true})
+    friendRequestsReceived?: FriendRequestUncheckedCreateNestedManyWithoutReceiverInput;
 }

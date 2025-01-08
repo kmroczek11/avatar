@@ -16,6 +16,8 @@ import { AllExceptionsFilter } from './core/all-exceptions.filter';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
 import { ChatModule } from './chat/chat.module';
+import { FriendsModule } from './friends/friends.module';
+import { GraphQLUpload } from 'graphql-upload-ts';
 
 @Module({
   imports: [
@@ -30,6 +32,7 @@ import { ChatModule } from './chat/chat.module';
         };
         return graphQLFormattedError;
       },
+      resolvers: { Upload: GraphQLUpload }
     }),
     ConfigModule.forRoot({
 			isGlobal: true,
@@ -39,6 +42,7 @@ import { ChatModule } from './chat/chat.module';
     AuthModule,
     UserModule,
     ChatModule,
+    FriendsModule,
   ],
   controllers: [],
     providers: [

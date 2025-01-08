@@ -9,5 +9,5 @@ export class DeleteOneUserArgs {
 
     @Field(() => UserWhereUniqueInput, {nullable:false})
     @Type(() => UserWhereUniqueInput)
-    where!: Prisma.AtLeast<UserWhereUniqueInput, 'id' | 'email' | 'phoneNumber'>;
+    where!: Prisma.AtLeast<UserWhereUniqueInput, 'id' | 'email_phoneNumber'>;
 }

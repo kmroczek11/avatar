@@ -2,6 +2,8 @@ import { Field } from '@nestjs/graphql';
 import { ObjectType } from '@nestjs/graphql';
 import { ID } from '@nestjs/graphql';
 import { Role } from '../prisma/role.enum';
+import { FriendRequest } from '../friend-request/friend-request.model';
+import { UserCount } from './user-count.output';
 
 @ObjectType()
 export class User {
@@ -29,4 +31,13 @@ export class User {
 
     @Field(() => [Role], {nullable:true})
     roles!: Array<keyof typeof Role>;
+
+    @Field(() => [FriendRequest], {nullable:true})
+    friendRequestsSent?: Array<FriendRequest>;
+
+    @Field(() => [FriendRequest], {nullable:true})
+    friendRequestsReceived?: Array<FriendRequest>;
+
+    @Field(() => UserCount, {nullable:false})
+    _count?: UserCount;
 }

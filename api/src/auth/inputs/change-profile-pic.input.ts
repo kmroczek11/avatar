@@ -1,11 +1,11 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { Upload } from '../helpers/upload.scalar';
+import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
 
 @InputType()
 export class ChangeProfilePicInput {
   @Field()
   userId: string;
 
-  @Field()
-  image: Upload;
+  @Field(() => GraphQLUpload)
+  image: FileUpload;
 }

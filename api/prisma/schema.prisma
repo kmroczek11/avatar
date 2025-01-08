@@ -24,13 +24,33 @@ enum Role {
   USER
 }
 
+enum Status {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELED
+}
+
 model User {
-  id          String  @id @default(uuid())
-  firstName   String
-  lastName    String
-  email       String  @unique
-  password    String
-  phoneNumber String  @unique
-  imgSrc      String?
-  roles       Role[]  @default([USER])
+  id                     String          @id @default(uuid())
+  firstName              String
+  lastName               String
+  email                  String          @unique
+  password               String
+  phoneNumber            String          @unique
+  imgSrc                 String?
+  roles                  Role[]          @default([USER])
+  friendRequestsSent     FriendRequest[] @relation("FriendRequestsSent")
+  friendRequestsReceived FriendRequest[] @relation("FriendRequestsReceived")
+}
+
+model FriendRequest {
+  id         String @id @default(uuid())
+  creator    User   @relation("FriendRequestsSent", fields: [creatorId], references: [id])
+  creatorId  String
+  receiver   User   @relation("FriendRequestsReceived", fields: [receiverId], references: [id])
+  receiverId String
+  status     Status @default(PENDING)
+
+  @@unique([creatorId, receiverId])
 }

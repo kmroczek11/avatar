@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import useAutoLogInUser from "../hooks/useAutoLogInUser";
 import createAutoLogInUserClient from "../../../graphql/clients/autoLogInUserClient";
 import { useCookies } from "react-cookie";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useInterval } from 'usehooks-ts'
 
 export default function AutoLogIn() {

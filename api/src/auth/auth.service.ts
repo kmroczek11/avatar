@@ -14,13 +14,22 @@ import { RedisService } from 'src/redis/redis.service';
 import { AutoLogInUserInput } from './inputs/autoLogIn-user.input';
 import { LogOutUserInput } from './inputs/logOut-user.input';
 import { LogInUserInput } from './inputs/logIn-user.input';
+import { ChangeEmailInput } from './inputs/change-email.input';
+import { ChangePasswordInput } from './inputs/change-password.input';
+import { ChangeProfilePicInput } from './inputs/change-profile-pic.input';
+import { FileUpload } from 'graphql-upload-ts';
+import { removeFile, saveImage } from './helpers/image-storage';
+import { ForgotPasswordInput } from './inputs/forgot-password.input';
+import * as generator from 'generate-password';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly redisService: RedisService
+    private readonly redisService: RedisService,
+    private readonly mailService: MailService,
   ) { }
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -95,6 +104,93 @@ export class AuthService {
     await this.redisService.removeUser(userId)
 
     await this.redisService.removeAccessToken(userId)
+
+    return {
+      msg: 'Success',
+    };
+  }
+
+  async changeEmail(changeEmailInput: ChangeEmailInput) {
+    const updatedUser = await this.userService.updateById(
+      changeEmailInput.id,
+      {
+        email: changeEmailInput.email,
+      },
+    );
+
+    return this.sign(updatedUser);
+  }
+
+  async changePassword(changePasswordInput: ChangePasswordInput) {
+    const { password: oldPassword } = await this.userService.findOneById(
+      changePasswordInput.id,
+      {
+        select: ['password'],
+      },
+    );
+
+    const valid = await bcrypt.compare(
+      changePasswordInput.oldPassword,
+      oldPassword,
+    );
+
+    if (!valid) {
+      throw new HttpException('Invalid password', HttpStatus.BAD_REQUEST);
+    }
+
+    const newPassword = await bcrypt.hash(changePasswordInput.newPassword, 12);
+
+    const updatedUser = await this.userService.updateById(
+      changePasswordInput.id,
+      {
+        password: newPassword,
+      },
+    );
+
+    return {
+      user: updatedUser,
+    };
+  }
+
+  async changeProfilePic(changeProfilePicInput: ChangeProfilePicInput) {
+    const { userId, image } = changeProfilePicInput;
+
+    const imageData: FileUpload = await image;
+
+    if (!imageData) {
+      throw new HttpException('No file provided', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.userService.findOneById(userId);
+
+    if (user.imgSrc) {
+      await removeFile(user.imgSrc);
+    }
+
+    const filePath = await saveImage(imageData, 'users');
+
+    const updatedUser = await this.userService.updateById(userId, {
+      imgSrc: filePath,
+    });
+
+    return {
+      user: updatedUser,
+    };
+  }
+
+  async forgotPassword(forgotPasswordInput: ForgotPasswordInput) {
+    const { email } = forgotPasswordInput;
+
+    const generatedPassword = generator.generate({
+      length: 10,
+      numbers: true,
+    });
+
+    const password = await bcrypt.hash(generatedPassword, 12);
+
+    await this.userService.updateByEmail(email, { password });
+
+    await this.mailService.sendForgotPassword(email, generatedPassword);
 
     return {
       msg: 'Success',

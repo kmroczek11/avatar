@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Grid from '@mui/material/Grid2';
-import RegisterForm from './components/registerForm';
-import LogInForm from './components/logInForm';
+import RegisterForm from './components/RegisterForm';
+import LogInForm from './components/LogInForm';
 
 export default function AuthView() {
     const [active, setActive] = useState('logIn')

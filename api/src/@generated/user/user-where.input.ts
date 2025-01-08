@@ -3,6 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { StringFilter } from '../prisma/string-filter.input';
 import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
 import { EnumRoleNullableListFilter } from '../prisma/enum-role-nullable-list-filter.input';
+import { FriendRequestListRelationFilter } from '../friend-request/friend-request-list-relation-filter.input';
 
 @InputType()
 export class UserWhereInput {
@@ -39,4 +40,10 @@ export class UserWhereInput {
 
     @Field(() => EnumRoleNullableListFilter, {nullable:true})
     roles?: EnumRoleNullableListFilter;
+
+    @Field(() => FriendRequestListRelationFilter, {nullable:true})
+    friendRequestsSent?: FriendRequestListRelationFilter;
+
+    @Field(() => FriendRequestListRelationFilter, {nullable:true})
+    friendRequestsReceived?: FriendRequestListRelationFilter;
 }
