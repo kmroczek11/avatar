@@ -14,5 +14,5 @@ export class FriendRequestUpdateWithoutReceiverInput {
     status?: EnumStatusFieldUpdateOperationsInput;
 
     @Field(() => UserUpdateOneRequiredWithoutFriendRequestsSentNestedInput, {nullable:true})
-    creator?: UserUpdateOneRequiredWithoutFriendRequestsSentNestedInput;
+    requester?: UserUpdateOneRequiredWithoutFriendRequestsSentNestedInput;
 }

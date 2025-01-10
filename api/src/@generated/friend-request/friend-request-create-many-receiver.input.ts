@@ -9,7 +9,7 @@ export class FriendRequestCreateManyReceiverInput {
     id?: string;
 
     @Field(() => String, {nullable:false})
-    creatorId!: string;
+    requesterId!: string;
 
     @Field(() => Status, {nullable:true})
     status?: keyof typeof Status;

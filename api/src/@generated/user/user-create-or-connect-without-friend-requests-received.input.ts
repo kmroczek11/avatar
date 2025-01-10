@@ -10,7 +10,7 @@ export class UserCreateOrConnectWithoutFriendRequestsReceivedInput {
 
     @Field(() => UserWhereUniqueInput, {nullable:false})
     @Type(() => UserWhereUniqueInput)
-    where!: Prisma.AtLeast<UserWhereUniqueInput, 'id' | 'email_phoneNumber'>;
+    where!: Prisma.AtLeast<UserWhereUniqueInput, 'id' | 'email' | 'phoneNumber'>;
 
     @Field(() => UserCreateWithoutFriendRequestsReceivedInput, {nullable:false})
     @Type(() => UserCreateWithoutFriendRequestsReceivedInput)

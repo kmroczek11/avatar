@@ -9,7 +9,7 @@ export class FriendRequestCountAggregate {
     id!: number;
 
     @Field(() => Int, {nullable:false})
-    creatorId!: number;
+    requesterId!: number;
 
     @Field(() => Int, {nullable:false})
     receiverId!: number;

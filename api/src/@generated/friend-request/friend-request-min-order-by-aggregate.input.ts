@@ -9,7 +9,7 @@ export class FriendRequestMinOrderByAggregateInput {
     id?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})
-    creatorId?: keyof typeof SortOrder;
+    requesterId?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})
     receiverId?: keyof typeof SortOrder;

@@ -9,7 +9,7 @@ export class FriendRequestMinAggregate {
     id?: string;
 
     @Field(() => String, {nullable:true})
-    creatorId?: string;
+    requesterId?: string;
 
     @Field(() => String, {nullable:true})
     receiverId?: string;

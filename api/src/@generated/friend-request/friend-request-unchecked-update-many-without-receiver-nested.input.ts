@@ -32,19 +32,19 @@ export class FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput {
 
     @Field(() => [FriendRequestWhereUniqueInput], {nullable:true})
     @Type(() => FriendRequestWhereUniqueInput)
-    set?: Array<Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'creatorId_receiverId'>>;
+    set?: Array<Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'requesterId_receiverId'>>;
 
     @Field(() => [FriendRequestWhereUniqueInput], {nullable:true})
     @Type(() => FriendRequestWhereUniqueInput)
-    disconnect?: Array<Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'creatorId_receiverId'>>;
+    disconnect?: Array<Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'requesterId_receiverId'>>;
 
     @Field(() => [FriendRequestWhereUniqueInput], {nullable:true})
     @Type(() => FriendRequestWhereUniqueInput)
-    delete?: Array<Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'creatorId_receiverId'>>;
+    delete?: Array<Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'requesterId_receiverId'>>;
 
     @Field(() => [FriendRequestWhereUniqueInput], {nullable:true})
     @Type(() => FriendRequestWhereUniqueInput)
-    connect?: Array<Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'creatorId_receiverId'>>;
+    connect?: Array<Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'requesterId_receiverId'>>;
 
     @Field(() => [FriendRequestUpdateWithWhereUniqueWithoutReceiverInput], {nullable:true})
     @Type(() => FriendRequestUpdateWithWhereUniqueWithoutReceiverInput)

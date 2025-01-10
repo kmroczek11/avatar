@@ -4,25 +4,21 @@ import {
     Injectable,
 } from '@nestjs/common';
 import { FriendRequest } from 'src/@generated/friend-request/friend-request.model';
-import { SendFriendRequestInput } from './inputs/send-friend-request.input';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AcceptFriendRequestInput } from './inputs/accept-friend-request.input';
-import { GetPendingRequestsInput } from './inputs/get-pending-requests.input';
-import { RejectFriendRequestInput } from './inputs/reject-friend-request.input';
-import { CancelFriendRequestInput } from './inputs/cancel-friend-request.input';
+import { FriendRequestCreateInput } from 'src/@generated/friend-request/friend-request-create.input';
 
 @Injectable()
 export class FriendsService {
     constructor(private prisma: PrismaService) { }
 
-    async sendFriendRequest(sendFriendRequestInput: SendFriendRequestInput): Promise<FriendRequest> {
+    async sendFriendRequest(sendFriendRequestInput: FriendRequestCreateInput): Promise<FriendRequest> {
         const { receiverId, creatorId } = sendFriendRequestInput;
 
         if (receiverId === creatorId) {
             throw new HttpException('Can\'t send friend request to yourself', HttpStatus.BAD_REQUEST);
         }
 
-        return this.prisma.friendRequest.create({
+        return await this.prisma.friendRequest.create({
             data: sendFriendRequestInput,
         });
     }

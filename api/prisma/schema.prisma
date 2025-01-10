@@ -1,17 +1,9 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 generator nestgraphql {
   provider = "node node_modules/prisma-nestjs-graphql"
-  // for yarn monorepos
-  // provider = "prisma-nestjs-graphql"
   output   = "../src/@generated"
 }
 
@@ -32,25 +24,25 @@ enum Status {
 }
 
 model User {
-  id                     String          @id @default(uuid())
+  id                     String   @id @default(cuid())
   firstName              String
   lastName               String
-  email                  String          @unique
+  email                  String   @unique
   password               String
-  phoneNumber            String          @unique
+  phoneNumber            String   @unique
   imgSrc                 String?
-  roles                  Role[]          @default([USER])
-  friendRequestsSent     FriendRequest[] @relation("FriendRequestsSent")
-  friendRequestsReceived FriendRequest[] @relation("FriendRequestsReceived")
+  roles                  Role[]   @default([USER])
+  friendRequestsSent     FriendRequest[] @relation("SentFriendRequests")
+  friendRequestsReceived FriendRequest[] @relation("ReceivedFriendRequests")
 }
 
 model FriendRequest {
-  id         String @id @default(uuid())
-  creator    User   @relation("FriendRequestsSent", fields: [creatorId], references: [id])
-  creatorId  String
-  receiver   User   @relation("FriendRequestsReceived", fields: [receiverId], references: [id])
-  receiverId String
-  status     Status @default(PENDING)
+  id          String  @id @default(cuid())
+  requesterId String
+  receiverId  String
+  requester   User    @relation("SentFriendRequests", fields: [requesterId], references: [id])
+  receiver    User    @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
+  status      Status  @default(PENDING)
 
-  @@unique([creatorId, receiverId])
+  @@unique([requesterId, receiverId])
 }

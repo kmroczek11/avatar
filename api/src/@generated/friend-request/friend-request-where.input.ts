@@ -2,7 +2,7 @@ import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { StringFilter } from '../prisma/string-filter.input';
 import { EnumStatusFilter } from '../prisma/enum-status-filter.input';
-import { UserScalarRelationFilter } from '../prisma/user-scalar-relation-filter.input';
+import { UserRelationFilter } from '../user/user-relation-filter.input';
 
 @InputType()
 export class FriendRequestWhereInput {
@@ -20,7 +20,7 @@ export class FriendRequestWhereInput {
     id?: StringFilter;
 
     @Field(() => StringFilter, {nullable:true})
-    creatorId?: StringFilter;
+    requesterId?: StringFilter;
 
     @Field(() => StringFilter, {nullable:true})
     receiverId?: StringFilter;
@@ -28,9 +28,9 @@ export class FriendRequestWhereInput {
     @Field(() => EnumStatusFilter, {nullable:true})
     status?: EnumStatusFilter;
 
-    @Field(() => UserScalarRelationFilter, {nullable:true})
-    creator?: UserScalarRelationFilter;
+    @Field(() => UserRelationFilter, {nullable:true})
+    requester?: UserRelationFilter;
 
-    @Field(() => UserScalarRelationFilter, {nullable:true})
-    receiver?: UserScalarRelationFilter;
+    @Field(() => UserRelationFilter, {nullable:true})
+    receiver?: UserRelationFilter;
 }

@@ -3,7 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-operations.input';
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
 import { UserUpdaterolesInput } from './user-updateroles.input';
-import { FriendRequestUpdateManyWithoutCreatorNestedInput } from '../friend-request/friend-request-update-many-without-creator-nested.input';
+import { FriendRequestUpdateManyWithoutRequesterNestedInput } from '../friend-request/friend-request-update-many-without-requester-nested.input';
 
 @InputType()
 export class UserUpdateWithoutFriendRequestsReceivedInput {
@@ -32,6 +32,6 @@ export class UserUpdateWithoutFriendRequestsReceivedInput {
     @Field(() => UserUpdaterolesInput, {nullable:true})
     roles?: UserUpdaterolesInput;
 
-    @Field(() => FriendRequestUpdateManyWithoutCreatorNestedInput, {nullable:true})
-    friendRequestsSent?: FriendRequestUpdateManyWithoutCreatorNestedInput;
+    @Field(() => FriendRequestUpdateManyWithoutRequesterNestedInput, {nullable:true})
+    friendRequestsSent?: FriendRequestUpdateManyWithoutRequesterNestedInput;
 }

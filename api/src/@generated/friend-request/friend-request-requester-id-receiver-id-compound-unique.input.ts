@@ -2,11 +2,11 @@ import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 
 @InputType()
-export class UserEmailPhoneNumberCompoundUniqueInput {
+export class FriendRequestRequesterIdReceiverIdCompoundUniqueInput {
 
     @Field(() => String, {nullable:false})
-    email!: string;
+    requesterId!: string;
 
     @Field(() => String, {nullable:false})
-    phoneNumber!: string;
+    receiverId!: string;
 }

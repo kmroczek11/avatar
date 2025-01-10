@@ -9,7 +9,7 @@ export class FriendRequestUncheckedCreateInput {
     id?: string;
 
     @Field(() => String, {nullable:false})
-    creatorId!: string;
+    requesterId!: string;
 
     @Field(() => String, {nullable:false})
     receiverId!: string;

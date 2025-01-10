@@ -3,7 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { Status } from '../prisma/status.enum';
 
 @InputType()
-export class FriendRequestUncheckedCreateWithoutCreatorInput {
+export class FriendRequestUncheckedCreateWithoutRequesterInput {
 
     @Field(() => String, {nullable:true})
     id?: string;

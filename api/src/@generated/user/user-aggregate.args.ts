@@ -21,7 +21,7 @@ export class UserAggregateArgs {
     orderBy?: Array<UserOrderByWithRelationInput>;
 
     @Field(() => UserWhereUniqueInput, {nullable:true})
-    cursor?: Prisma.AtLeast<UserWhereUniqueInput, 'id' | 'email_phoneNumber'>;
+    cursor?: Prisma.AtLeast<UserWhereUniqueInput, 'id' | 'email' | 'phoneNumber'>;
 
     @Field(() => Int, {nullable:true})
     take?: number;

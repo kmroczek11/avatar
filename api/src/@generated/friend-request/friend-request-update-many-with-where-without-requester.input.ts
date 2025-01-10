@@ -5,7 +5,7 @@ import { Type } from 'class-transformer';
 import { FriendRequestUpdateManyMutationInput } from './friend-request-update-many-mutation.input';
 
 @InputType()
-export class FriendRequestUpdateManyWithWhereWithoutCreatorInput {
+export class FriendRequestUpdateManyWithWhereWithoutRequesterInput {
 
     @Field(() => FriendRequestScalarWhereInput, {nullable:false})
     @Type(() => FriendRequestScalarWhereInput)

@@ -11,7 +11,7 @@ export class UpsertOneFriendRequestArgs {
 
     @Field(() => FriendRequestWhereUniqueInput, {nullable:false})
     @Type(() => FriendRequestWhereUniqueInput)
-    where!: Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'creatorId_receiverId'>;
+    where!: Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'requesterId_receiverId'>;
 
     @Field(() => FriendRequestCreateInput, {nullable:false})
     @Type(() => FriendRequestCreateInput)

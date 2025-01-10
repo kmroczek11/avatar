@@ -2,7 +2,7 @@ import { registerEnumType } from '@nestjs/graphql';
 
 export enum FriendRequestScalarFieldEnum {
     id = "id",
-    creatorId = "creatorId",
+    requesterId = "requesterId",
     receiverId = "receiverId",
     status = "status"
 }

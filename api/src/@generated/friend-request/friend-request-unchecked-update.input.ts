@@ -10,7 +10,7 @@ export class FriendRequestUncheckedUpdateInput {
     id?: StringFieldUpdateOperationsInput;
 
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    creatorId?: StringFieldUpdateOperationsInput;
+    requesterId?: StringFieldUpdateOperationsInput;
 
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     receiverId?: StringFieldUpdateOperationsInput;

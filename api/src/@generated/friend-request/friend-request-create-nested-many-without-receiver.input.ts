@@ -24,5 +24,5 @@ export class FriendRequestCreateNestedManyWithoutReceiverInput {
 
     @Field(() => [FriendRequestWhereUniqueInput], {nullable:true})
     @Type(() => FriendRequestWhereUniqueInput)
-    connect?: Array<Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'creatorId_receiverId'>>;
+    connect?: Array<Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'requesterId_receiverId'>>;
 }

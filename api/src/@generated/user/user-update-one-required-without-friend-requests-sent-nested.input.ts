@@ -25,7 +25,7 @@ export class UserUpdateOneRequiredWithoutFriendRequestsSentNestedInput {
 
     @Field(() => UserWhereUniqueInput, {nullable:true})
     @Type(() => UserWhereUniqueInput)
-    connect?: Prisma.AtLeast<UserWhereUniqueInput, 'id' | 'email_phoneNumber'>;
+    connect?: Prisma.AtLeast<UserWhereUniqueInput, 'id' | 'email' | 'phoneNumber'>;
 
     @Field(() => UserUpdateToOneWithWhereWithoutFriendRequestsSentInput, {nullable:true})
     @Type(() => UserUpdateToOneWithWhereWithoutFriendRequestsSentInput)

@@ -4,7 +4,7 @@ import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-
 import { EnumStatusFieldUpdateOperationsInput } from '../prisma/enum-status-field-update-operations.input';
 
 @InputType()
-export class FriendRequestUncheckedUpdateManyWithoutCreatorInput {
+export class FriendRequestUncheckedUpdateWithoutRequesterInput {
 
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     id?: StringFieldUpdateOperationsInput;

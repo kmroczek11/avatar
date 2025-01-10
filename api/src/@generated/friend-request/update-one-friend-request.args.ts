@@ -14,5 +14,5 @@ export class UpdateOneFriendRequestArgs {
 
     @Field(() => FriendRequestWhereUniqueInput, {nullable:false})
     @Type(() => FriendRequestWhereUniqueInput)
-    where!: Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'creatorId_receiverId'>;
+    where!: Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'requesterId_receiverId'>;
 }

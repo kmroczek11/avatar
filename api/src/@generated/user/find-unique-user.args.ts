@@ -9,5 +9,5 @@ export class FindUniqueUserArgs {
 
     @Field(() => UserWhereUniqueInput, {nullable:false})
     @Type(() => UserWhereUniqueInput)
-    where!: Prisma.AtLeast<UserWhereUniqueInput, 'id' | 'email_phoneNumber'>;
+    where!: Prisma.AtLeast<UserWhereUniqueInput, 'id' | 'email' | 'phoneNumber'>;
 }

@@ -1,6 +1,5 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
-import { UserEmailPhoneNumberCompoundUniqueInput } from './user-email-phone-number-compound-unique.input';
 import { UserWhereInput } from './user-where.input';
 import { StringFilter } from '../prisma/string-filter.input';
 import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
@@ -13,8 +12,11 @@ export class UserWhereUniqueInput {
     @Field(() => String, {nullable:true})
     id?: string;
 
-    @Field(() => UserEmailPhoneNumberCompoundUniqueInput, {nullable:true})
-    email_phoneNumber?: UserEmailPhoneNumberCompoundUniqueInput;
+    @Field(() => String, {nullable:true})
+    email?: string;
+
+    @Field(() => String, {nullable:true})
+    phoneNumber?: string;
 
     @Field(() => [UserWhereInput], {nullable:true})
     AND?: Array<UserWhereInput>;
@@ -32,13 +34,7 @@ export class UserWhereUniqueInput {
     lastName?: StringFilter;
 
     @Field(() => StringFilter, {nullable:true})
-    email?: StringFilter;
-
-    @Field(() => StringFilter, {nullable:true})
     password?: StringFilter;
-
-    @Field(() => StringFilter, {nullable:true})
-    phoneNumber?: StringFilter;
 
     @Field(() => StringNullableFilter, {nullable:true})
     imgSrc?: StringNullableFilter;
