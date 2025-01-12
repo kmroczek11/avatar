@@ -11,7 +11,7 @@ export class FriendRequest {
     id!: string;
 
     @Field(() => String, {nullable:false})
-    requesterId!: string;
+    creatorId!: string;
 
     @Field(() => String, {nullable:false})
     receiverId!: string;
@@ -20,7 +20,7 @@ export class FriendRequest {
     status!: keyof typeof Status;
 
     @Field(() => User, {nullable:false})
-    requester?: User;
+    creator?: User;
 
     @Field(() => User, {nullable:false})
     receiver?: User;

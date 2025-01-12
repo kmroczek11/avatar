@@ -19,7 +19,7 @@ export class FriendRequestScalarWhereInput {
     id?: StringFilter;
 
     @Field(() => StringFilter, {nullable:true})
-    requesterId?: StringFilter;
+    creatorId?: StringFilter;
 
     @Field(() => StringFilter, {nullable:true})
     receiverId?: StringFilter;

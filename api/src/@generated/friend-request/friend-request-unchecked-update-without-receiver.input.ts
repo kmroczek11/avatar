@@ -10,7 +10,7 @@ export class FriendRequestUncheckedUpdateWithoutReceiverInput {
     id?: StringFieldUpdateOperationsInput;
 
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    requesterId?: StringFieldUpdateOperationsInput;
+    creatorId?: StringFieldUpdateOperationsInput;
 
     @Field(() => EnumStatusFieldUpdateOperationsInput, {nullable:true})
     status?: EnumStatusFieldUpdateOperationsInput;

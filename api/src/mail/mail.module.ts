@@ -24,7 +24,7 @@ import { join } from 'path';
             },
           },
           defaults: {
-            from: '"Protricks" <noreply@protricks.pl>',
+            from: '"Avatar" <noreply@avatar.pl>',
           },
           preview: false,
           template: {

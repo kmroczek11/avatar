@@ -10,7 +10,7 @@ export class FriendRequestCreateOrConnectWithoutReceiverInput {
 
     @Field(() => FriendRequestWhereUniqueInput, {nullable:false})
     @Type(() => FriendRequestWhereUniqueInput)
-    where!: Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'requesterId_receiverId'>;
+    where!: Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'creatorId_receiverId'>;
 
     @Field(() => FriendRequestCreateWithoutReceiverInput, {nullable:false})
     @Type(() => FriendRequestCreateWithoutReceiverInput)

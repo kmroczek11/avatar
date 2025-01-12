@@ -20,7 +20,7 @@ export class FriendRequestWhereInput {
     id?: StringFilter;
 
     @Field(() => StringFilter, {nullable:true})
-    requesterId?: StringFilter;
+    creatorId?: StringFilter;
 
     @Field(() => StringFilter, {nullable:true})
     receiverId?: StringFilter;
@@ -29,7 +29,7 @@ export class FriendRequestWhereInput {
     status?: EnumStatusFilter;
 
     @Field(() => UserRelationFilter, {nullable:true})
-    requester?: UserRelationFilter;
+    creator?: UserRelationFilter;
 
     @Field(() => UserRelationFilter, {nullable:true})
     receiver?: UserRelationFilter;

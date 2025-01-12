@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Badge from "@mui/material/Badge";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
@@ -11,11 +11,14 @@ import {
   useChangeProfilePicMutation,
 } from "../../../generated/graphql";
 import Box from "@mui/material/Box";
-import { useAuth } from "../../auth";
 import Tooltip from "@mui/material/Tooltip";
 import imageCompression from "browser-image-compression";
-import { CustomAlert } from "../../lib";
+import { CustomAlert } from "../../../components/lib";
 import createChangeProfilePicClient from "../../../graphql/clients/changeProfilePicClient";
+import { useAuth } from "../../../components/auth/components/AuthProvider";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import { useQuery } from "@tanstack/react-query";
 
 const stringToColor = (string: string) => {
   let hash = 0;
@@ -50,7 +53,7 @@ const SmallIconButton = styled(IconButton)(({ theme }) => ({
   width: 80,
   height: 80,
   border: `5px solid ${theme.palette.background.paper}`,
-  backgroundColor: theme.palette.primary.dark,
+  backgroundColor: theme.palette.secondary.main,
 
   "&:hover": {
     backgroundColor: theme.palette.primary.main,
@@ -69,9 +72,20 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
   const { user, setUser } = useAuth();
   const [changeProfilePicStatus, setChangeProfilePicStatus] =
     useState<string>("");
+  const [cookies] = useCookies(['userId']);
+  const [accesssToken, setAccessToken] = useState<string>("")
+
+  const { isLoading: isGetAccessTokenLoading, error: accessTokenGetError, data, isFetching: isGetAccessTokenFetching } = useQuery({
+    queryKey: ['user'],
+    queryFn: () =>
+      axios
+        .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
+        .then((res) => setAccessToken(res.data)),
+    enabled: cookies.userId ? true : false
+  })
 
   const { isLoading, mutate } = useChangeProfilePicMutation<Error>(
-    createChangeProfilePicClient(),
+    createChangeProfilePicClient(accesssToken),
     {
       onError: (error: Error) => {
         let err: any = {};
@@ -84,15 +98,18 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
         _variables: ChangeProfilePicMutationVariables,
         _context: unknown
       ) => {
-        // queryClient.invalidateQueries('GetAllAuthors');
-        console.log(data.changeProfilePic.user)
-        setUser(data.changeProfilePic.user);
       },
     }
   );
 
-  const onFileChange = async (e) => {
-    const image = e.target.files[0];
+  const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+
+    if (!input.files?.length) {
+      return;
+    }
+
+    const image = input.files[0];
 
     const options = {
       maxSizeMB: 1,

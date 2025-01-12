@@ -13,5 +13,5 @@ export class FriendRequestCreateWithoutReceiverInput {
     status?: keyof typeof Status;
 
     @Field(() => UserCreateNestedOneWithoutFriendRequestsSentInput, {nullable:false})
-    requester!: UserCreateNestedOneWithoutFriendRequestsSentInput;
+    creator!: UserCreateNestedOneWithoutFriendRequestsSentInput;
 }

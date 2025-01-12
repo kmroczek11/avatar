@@ -3,7 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-operations.input';
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
 import { UserUpdaterolesInput } from './user-updateroles.input';
-import { FriendRequestUncheckedUpdateManyWithoutRequesterNestedInput } from '../friend-request/friend-request-unchecked-update-many-without-requester-nested.input';
+import { FriendRequestUncheckedUpdateManyWithoutCreatorNestedInput } from '../friend-request/friend-request-unchecked-update-many-without-creator-nested.input';
 import { FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput } from '../friend-request/friend-request-unchecked-update-many-without-receiver-nested.input';
 
 @InputType()
@@ -33,8 +33,8 @@ export class UserUncheckedUpdateInput {
     @Field(() => UserUpdaterolesInput, {nullable:true})
     roles?: UserUpdaterolesInput;
 
-    @Field(() => FriendRequestUncheckedUpdateManyWithoutRequesterNestedInput, {nullable:true})
-    friendRequestsSent?: FriendRequestUncheckedUpdateManyWithoutRequesterNestedInput;
+    @Field(() => FriendRequestUncheckedUpdateManyWithoutCreatorNestedInput, {nullable:true})
+    friendRequestsSent?: FriendRequestUncheckedUpdateManyWithoutCreatorNestedInput;
 
     @Field(() => FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput, {nullable:true})
     friendRequestsReceived?: FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput;

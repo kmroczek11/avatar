@@ -19,7 +19,7 @@ export class FriendRequestScalarWhereWithAggregatesInput {
     id?: StringWithAggregatesFilter;
 
     @Field(() => StringWithAggregatesFilter, {nullable:true})
-    requesterId?: StringWithAggregatesFilter;
+    creatorId?: StringWithAggregatesFilter;
 
     @Field(() => StringWithAggregatesFilter, {nullable:true})
     receiverId?: StringWithAggregatesFilter;

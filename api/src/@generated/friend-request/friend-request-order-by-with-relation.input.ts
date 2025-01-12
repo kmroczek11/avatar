@@ -10,7 +10,7 @@ export class FriendRequestOrderByWithRelationInput {
     id?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})
-    requesterId?: keyof typeof SortOrder;
+    creatorId?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})
     receiverId?: keyof typeof SortOrder;
@@ -19,7 +19,7 @@ export class FriendRequestOrderByWithRelationInput {
     status?: keyof typeof SortOrder;
 
     @Field(() => UserOrderByWithRelationInput, {nullable:true})
-    requester?: UserOrderByWithRelationInput;
+    creator?: UserOrderByWithRelationInput;
 
     @Field(() => UserOrderByWithRelationInput, {nullable:true})
     receiver?: UserOrderByWithRelationInput;

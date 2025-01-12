@@ -1,16 +1,19 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { ColorButton, CustomAlert, LoadingScreen } from "../../lib";
+import { ColorButton, CustomAlert, LoadingScreen } from "../../../components/lib";
 import Box from "@mui/material/Box";
 import {
   useChangeEmailMutation,
   ChangeEmailMutation,
   ChangeEmailMutationVariables,
 } from "../../../generated/graphql";
-import { useAuth } from "../../auth";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import createAccessClient from "../../../graphql/clients/accessClient";
+import { useAuth } from "../../../components/auth/components/AuthProvider";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import { useQuery } from "@tanstack/react-query";
 
 const defaultValues = {
   newEmail: "",
@@ -18,11 +21,22 @@ const defaultValues = {
 
 const successMessage = "E-mail został zmieniony.";
 
-const EmailForm: React.FC = () => {
-  const { user, setUser } = useAuth();
+export default function EmailForm() {
+  const { user } = useAuth();
   const [changeEmailStatus, setChangeEmailStatus] = useState<string>("");
+  const [cookies] = useCookies(['userId']);
+  const [accesssToken, setAccessToken] = useState<string>("")
 
-  const { isLoading, mutate } = useChangeEmailMutation<Error>(createAccessClient(), {
+  const { isLoading: isGetAccessTokenLoading, error: accessTokenGetError, data, isFetching: isGetAccessTokenFetching } = useQuery({
+    queryKey: ['user'],
+    queryFn: () =>
+      axios
+        .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
+        .then((res) => setAccessToken(res.data)),
+    enabled: cookies.userId ? true : false
+  })
+
+  const { isLoading, mutate } = useChangeEmailMutation<Error>(createAccessClient(accesssToken), {
     onError: (error: Error) => {
       let err: any = {};
       err.data = error;
@@ -33,12 +47,6 @@ const EmailForm: React.FC = () => {
       _variables: ChangeEmailMutationVariables,
       _context: unknown
     ) => {
-      // queryClient.invalidateQueries('GetAllAuthors');
-      localStorage.setItem(
-        process.env.REACT_APP_REFRESH_TOKEN_SECRET!,
-        data.changeEmail.refreshToken
-      );
-      setUser(data.changeEmail.user);
       setChangeEmailStatus("Success");
     },
   });
@@ -128,5 +136,3 @@ const EmailForm: React.FC = () => {
     </Formik>
   );
 };
-
-export default EmailForm;

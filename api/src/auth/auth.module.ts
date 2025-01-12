@@ -10,6 +10,7 @@ import { AutoLoginStrategy } from './strategies/autoLogin.strategy';
 import { UserModule } from 'src/user/user.module';
 import { AuthController } from './auth.controller';
 import { RedisModule } from 'src/redis/redis.module';
+import { MailModule } from 'src/mail/mail.module';
 
 dotenv.config();
 
@@ -21,7 +22,8 @@ dotenv.config();
       secret: process.env.ACCESS_TOKEN_SECRET,
       signOptions: { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION },
     }),
-    RedisModule
+    RedisModule,
+    MailModule
   ],
   controllers: [AuthController],
   providers: [

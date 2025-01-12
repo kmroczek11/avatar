@@ -1,6 +1,6 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
-import { FriendRequestRequesterIdReceiverIdCompoundUniqueInput } from './friend-request-requester-id-receiver-id-compound-unique.input';
+import { FriendRequestCreatorIdReceiverIdCompoundUniqueInput } from './friend-request-creator-id-receiver-id-compound-unique.input';
 import { FriendRequestWhereInput } from './friend-request-where.input';
 import { StringFilter } from '../prisma/string-filter.input';
 import { EnumStatusFilter } from '../prisma/enum-status-filter.input';
@@ -12,8 +12,8 @@ export class FriendRequestWhereUniqueInput {
     @Field(() => String, {nullable:true})
     id?: string;
 
-    @Field(() => FriendRequestRequesterIdReceiverIdCompoundUniqueInput, {nullable:true})
-    requesterId_receiverId?: FriendRequestRequesterIdReceiverIdCompoundUniqueInput;
+    @Field(() => FriendRequestCreatorIdReceiverIdCompoundUniqueInput, {nullable:true})
+    creatorId_receiverId?: FriendRequestCreatorIdReceiverIdCompoundUniqueInput;
 
     @Field(() => [FriendRequestWhereInput], {nullable:true})
     AND?: Array<FriendRequestWhereInput>;
@@ -25,7 +25,7 @@ export class FriendRequestWhereUniqueInput {
     NOT?: Array<FriendRequestWhereInput>;
 
     @Field(() => StringFilter, {nullable:true})
-    requesterId?: StringFilter;
+    creatorId?: StringFilter;
 
     @Field(() => StringFilter, {nullable:true})
     receiverId?: StringFilter;
@@ -34,7 +34,7 @@ export class FriendRequestWhereUniqueInput {
     status?: EnumStatusFilter;
 
     @Field(() => UserRelationFilter, {nullable:true})
-    requester?: UserRelationFilter;
+    creator?: UserRelationFilter;
 
     @Field(() => UserRelationFilter, {nullable:true})
     receiver?: UserRelationFilter;

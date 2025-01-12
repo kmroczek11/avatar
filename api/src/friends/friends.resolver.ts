@@ -1,7 +1,11 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { FriendRequest } from 'src/@generated/friend-request/friend-request.model';
+import { SendFriendRequestInput } from './inputs/send-friend-request.input';
 import { FriendsService } from './friends.service';
-import { FriendRequestCreateInput } from 'src/@generated/friend-request/friend-request-create.input';
+import { AcceptFriendRequestInput } from './inputs/accept-friend-request.input';
+import { GetPendingRequestsInput } from './inputs/get-pending-requests.input';
+import { RejectFriendRequestInput } from './inputs/reject-friend-request.input';
+import { CancelFriendRequestInput } from './inputs/cancel-friend-request.input';
 
 @Resolver((of) => FriendRequest)
 export class FriendsResolver {
@@ -9,7 +13,7 @@ export class FriendsResolver {
 
   @Mutation(() => FriendRequest)
   sendFriendRequest(
-    @Args('sendFriendRequestInput') sendFriendRequestInput: FriendRequestCreateInput,
+    @Args('sendFriendRequestInput') sendFriendRequestInput: SendFriendRequestInput,
   ): Promise<FriendRequest> {
     return this.friendsService.sendFriendRequest(sendFriendRequestInput);
   }

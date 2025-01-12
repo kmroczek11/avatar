@@ -19,7 +19,7 @@ interface AuthProviderProps {
 export default function AuthProvider(props: AuthProviderProps) {
     const { children } = props
     const [user, setUser] = useState<User | null>(null);
-    const [cookies, setCookie, removeCookie] = useCookies(['userId']);
+    const [cookies] = useCookies(['userId']);
 
     const { isLoading: isGetUserLoading, error: userGetError, data, isFetching: isGetUserFetching } = useQuery({
         queryKey: ['user'],

@@ -1,17 +1,21 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { ColorButton, CustomAlert, LoadingScreen } from "../../lib";
+import { ColorButton, CustomAlert, LoadingScreen } from "../../../components/lib";
 import Box from "@mui/material/Box";
 import {
   useChangePasswordMutation,
   ChangePasswordMutation,
   ChangePasswordMutationVariables,
 } from "../../../generated/graphql";
-import { useAuth } from "../../auth";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
 import createAccessClient from "../../../graphql/clients/accessClient";
+import { useAuth } from "../../../components/auth/components/AuthProvider";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import { useQuery } from "@tanstack/react-query";
+
 YupPassword(Yup); // extend yup
 
 const defaultValues = {
@@ -23,12 +27,23 @@ const successMessage = "Hasło zostało zmienione.";
 
 const invalidPasswordMessage = "Nieprawidłowe hasło.";
 
-const PasswordForm: React.FC = () => {
+export default function PasswordForm(){
   const { user, setUser } = useAuth();
   const [changePasswordStatus, setChangePasswordStatus] = useState<string>("");
+  const [cookies] = useCookies(['userId']);
+  const [accesssToken, setAccessToken] = useState<string>("")
+
+  const { isLoading: isGetAccessTokenLoading, error: accessTokenGetError, data, isFetching: isGetAccessTokenFetching } = useQuery({
+    queryKey: ['user'],
+    queryFn: () =>
+      axios
+        .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
+        .then((res) => setAccessToken(res.data)),
+    enabled: cookies.userId ? true : false
+  })
 
   const { isLoading, mutate } = useChangePasswordMutation<Error>(
-    createAccessClient(),
+    createAccessClient(accesssToken),
     {
       onError: (error: Error) => {
         let err: any = {};
@@ -40,8 +55,6 @@ const PasswordForm: React.FC = () => {
         _variables: ChangePasswordMutationVariables,
         _context: unknown
       ) => {
-        // queryClient.invalidateQueries('GetAllAuthors');
-        setUser(data.changePassword.user);
         setChangePasswordStatus("Success");
       },
     }
@@ -161,5 +174,3 @@ const PasswordForm: React.FC = () => {
     </Formik>
   );
 };
-
-export default PasswordForm;

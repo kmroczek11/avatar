@@ -19,7 +19,7 @@ export class FindManyFriendRequestArgs {
     orderBy?: Array<FriendRequestOrderByWithRelationInput>;
 
     @Field(() => FriendRequestWhereUniqueInput, {nullable:true})
-    cursor?: Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'requesterId_receiverId'>;
+    cursor?: Prisma.AtLeast<FriendRequestWhereUniqueInput, 'id' | 'creatorId_receiverId'>;
 
     @Field(() => Int, {nullable:true})
     take?: number;

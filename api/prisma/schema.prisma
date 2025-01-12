@@ -38,11 +38,11 @@ model User {
 
 model FriendRequest {
   id          String  @id @default(cuid())
-  requesterId String
+  creatorId String
   receiverId  String
-  requester   User    @relation("SentFriendRequests", fields: [requesterId], references: [id])
+  creator   User    @relation("SentFriendRequests", fields: [creatorId], references: [id])
   receiver    User    @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
   status      Status  @default(PENDING)
 
-  @@unique([requesterId, receiverId])
+  @@unique([creatorId, receiverId])
 }

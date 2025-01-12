@@ -1,0 +1,5 @@
+mutation ChangeProfilePic($input: ChangeProfilePicInput!) {
+  changeProfilePic(changeProfilePicInput: $input){
+    userId
+  }
+}

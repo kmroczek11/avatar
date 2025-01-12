@@ -15,7 +15,7 @@ import PasswordForm from "./components/PasswordForm";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import EditIcon from "@mui/icons-material/Edit";
 import UserAvatar from "./components/UserAvatar";
-import { useAuth } from "../auth/components/AuthProvider";
+import { useAuth } from "../../components/auth/components/AuthProvider";
 
 export default function UserView(){
   const { user } = useAuth();

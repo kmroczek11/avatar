@@ -9,7 +9,7 @@ export class FriendRequestUncheckedCreateWithoutReceiverInput {
     id?: string;
 
     @Field(() => String, {nullable:false})
-    requesterId!: string;
+    creatorId!: string;
 
     @Field(() => Status, {nullable:true})
     status?: keyof typeof Status;

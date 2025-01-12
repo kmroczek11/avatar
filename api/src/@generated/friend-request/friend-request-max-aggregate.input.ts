@@ -8,7 +8,7 @@ export class FriendRequestMaxAggregateInput {
     id?: true;
 
     @Field(() => Boolean, {nullable:true})
-    requesterId?: true;
+    creatorId?: true;
 
     @Field(() => Boolean, {nullable:true})
     receiverId?: true;
