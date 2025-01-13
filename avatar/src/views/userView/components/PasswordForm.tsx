@@ -27,23 +27,13 @@ const successMessage = "Hasło zostało zmienione.";
 
 const invalidPasswordMessage = "Nieprawidłowe hasło.";
 
-export default function PasswordForm(){
-  const { user, setUser } = useAuth();
+export default function PasswordForm() {
+  const { user, accessToken, getUserRefetch, getAccessTokenRefetch } = useAuth();
   const [changePasswordStatus, setChangePasswordStatus] = useState<string>("");
-  const [cookies] = useCookies(['userId']);
-  const [accesssToken, setAccessToken] = useState<string>("")
-
-  const { isLoading: isGetAccessTokenLoading, error: accessTokenGetError, data, isFetching: isGetAccessTokenFetching } = useQuery({
-    queryKey: ['user'],
-    queryFn: () =>
-      axios
-        .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
-        .then((res) => setAccessToken(res.data)),
-    enabled: cookies.userId ? true : false
-  })
+  const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
   const { isLoading, mutate } = useChangePasswordMutation<Error>(
-    createAccessClient(accesssToken),
+    createAccessClient(accessToken!),
     {
       onError: (error: Error) => {
         let err: any = {};
@@ -55,7 +45,9 @@ export default function PasswordForm(){
         _variables: ChangePasswordMutationVariables,
         _context: unknown
       ) => {
+        setCookie('userId', data.changePassword.userId)
         setChangePasswordStatus("Success");
+        getUserRefetch()
       },
     }
   );
@@ -69,6 +61,8 @@ export default function PasswordForm(){
         setSubmitting(true);
 
         const { oldPassword, newPassword } = values;
+
+        getAccessTokenRefetch()
 
         mutate({
           input: {

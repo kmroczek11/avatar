@@ -12,6 +12,7 @@ import "react-phone-input-2/lib/material.css";
 import useRegisterUser from "../../../components/auth/hooks/useRegisterUser";
 import createRegisterUserClient from "../../../graphql/clients/registerUserClient";
 import { useCookies } from "react-cookie";
+import { useAuth } from "../../../components/auth/components/AuthProvider";
 
 YupPassword(Yup); // extend yup
 
@@ -33,12 +34,15 @@ export default function RegisterForm(props: RegisterFormProps) {
     const { setActive } = props;
     const [registerError, setRegisterError] = useState<string>("");
     const [cookie, setCookie, removeCookie] = useCookies(['userId']);
+    const { getUserRefetch, getAccessTokenRefetch } = useAuth();
 
     const { register } = useRegisterUser(
         createRegisterUserClient(),
         setRegisterError,
         (data) => {
             setCookie('userId', data.registerUser.userId);
+            getUserRefetch()
+            getAccessTokenRefetch()
         }
     );
 

@@ -6,7 +6,7 @@ import { useInterval } from 'usehooks-ts'
 
 export default function AutoLogIn() {
     const [autoLoginUserError, setAutoLoginError] = useState<string>("");
-    const [cookies, setCookie, removeCookie] = useCookies(['userId']);
+    const [cookies] = useCookies(['userId']);
 
     const { isAutoLogInUserLoading, autoLogIn } = useAutoLogInUser(
         createAutoLogInUserClient(),

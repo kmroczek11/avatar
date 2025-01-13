@@ -16,9 +16,7 @@ import imageCompression from "browser-image-compression";
 import { CustomAlert } from "../../../components/lib";
 import createChangeProfilePicClient from "../../../graphql/clients/changeProfilePicClient";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
-import axios from "axios";
 import { useCookies } from "react-cookie";
-import { useQuery } from "@tanstack/react-query";
 
 const stringToColor = (string: string) => {
   let hash = 0;
@@ -67,25 +65,15 @@ const invalidExtension = "Nieprawidłowe rozszerzenie pliku.";
 
 const invalidMimeType = "Nieprawidłowy typ MIME.";
 
-const UserAvatar: React.FC<UserAvatarProps> = (props) => {
+export default function UserAvatar(props: UserAvatarProps) {
   const { name, size, imgSrc, BadgeIcon } = props;
-  const { user, setUser } = useAuth();
+  const { user, accessToken, getUserRefetch, getAccessTokenRefetch } = useAuth();
   const [changeProfilePicStatus, setChangeProfilePicStatus] =
     useState<string>("");
-  const [cookies] = useCookies(['userId']);
-  const [accesssToken, setAccessToken] = useState<string>("")
-
-  const { isLoading: isGetAccessTokenLoading, error: accessTokenGetError, data, isFetching: isGetAccessTokenFetching } = useQuery({
-    queryKey: ['user'],
-    queryFn: () =>
-      axios
-        .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
-        .then((res) => setAccessToken(res.data)),
-    enabled: cookies.userId ? true : false
-  })
+  const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
   const { isLoading, mutate } = useChangeProfilePicMutation<Error>(
-    createChangeProfilePicClient(accesssToken),
+    createChangeProfilePicClient(accessToken!),
     {
       onError: (error: Error) => {
         let err: any = {};
@@ -98,6 +86,8 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
         _variables: ChangeProfilePicMutationVariables,
         _context: unknown
       ) => {
+        setCookie('userId', data.changeProfilePic.userId)
+        getUserRefetch()
       },
     }
   );
@@ -199,5 +189,3 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
     </Box>
   );
 };
-
-export default UserAvatar;

@@ -125,7 +125,7 @@ export class AuthService {
     const { password: oldPassword } = await this.userService.findOneById(
       changePasswordInput.id,
       {
-        select: ['password'],
+        select: { password: true }
       },
     );
 
@@ -148,7 +148,7 @@ export class AuthService {
     );
 
     return {
-      user: updatedUser,
+      userId: updatedUser.id,
     };
   }
 
@@ -174,7 +174,7 @@ export class AuthService {
     });
 
     return {
-      user: updatedUser,
+      userId: updatedUser.id,
     };
   }
 

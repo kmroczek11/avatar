@@ -9,6 +9,7 @@ import { invalidEmailOrPasswordMessage } from "../../../translations/pl/errorMes
 import createLogInUserClient from "../../../graphql/clients/logInUserClient";
 import useLogInUser from "../../../components/auth/hooks/useLogInUser";
 import { useCookies } from "react-cookie";
+import { useAuth } from "../../../components/auth/components/AuthProvider";
 
 interface LogInFormProps {
     setActive: (name: string) => void;
@@ -23,12 +24,15 @@ export default function LogInForm(props: LogInFormProps) {
     const { setActive } = props;
     const [logInError, setLogInError] = useState<string>("");
     const [cookie, setCookie, removeCookie] = useCookies(['userId']);
+    const { getUserRefetch, getAccessTokenRefetch } = useAuth();
 
     const { isLogInLoading, logIn } = useLogInUser(
         createLogInUserClient(),
         setLogInError,
         (data) => {
             setCookie('userId', data.logInUser.userId)
+            getUserRefetch()
+            getAccessTokenRefetch()
         }
     );
 

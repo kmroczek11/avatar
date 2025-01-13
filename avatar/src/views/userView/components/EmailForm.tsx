@@ -22,21 +22,11 @@ const defaultValues = {
 const successMessage = "E-mail został zmieniony.";
 
 export default function EmailForm() {
-  const { user } = useAuth();
+  const { user, accessToken, getUserRefetch, getAccessTokenRefetch } = useAuth();
   const [changeEmailStatus, setChangeEmailStatus] = useState<string>("");
-  const [cookies] = useCookies(['userId']);
-  const [accesssToken, setAccessToken] = useState<string>("")
+  const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
-  const { isLoading: isGetAccessTokenLoading, error: accessTokenGetError, data, isFetching: isGetAccessTokenFetching } = useQuery({
-    queryKey: ['user'],
-    queryFn: () =>
-      axios
-        .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
-        .then((res) => setAccessToken(res.data)),
-    enabled: cookies.userId ? true : false
-  })
-
-  const { isLoading, mutate } = useChangeEmailMutation<Error>(createAccessClient(accesssToken), {
+  const { isLoading, mutate } = useChangeEmailMutation<Error>(createAccessClient(accessToken!), {
     onError: (error: Error) => {
       let err: any = {};
       err.data = error;
@@ -47,7 +37,9 @@ export default function EmailForm() {
       _variables: ChangeEmailMutationVariables,
       _context: unknown
     ) => {
+      setCookie('userId', data.changeEmail.userId)
       setChangeEmailStatus("Success");
+      getUserRefetch()
     },
   });
 
@@ -60,6 +52,8 @@ export default function EmailForm() {
         setSubmitting(true);
 
         const { newEmail } = values;
+
+        getAccessTokenRefetch()
 
         mutate({
           input: {

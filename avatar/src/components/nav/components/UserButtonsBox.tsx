@@ -24,19 +24,10 @@ export default function UserButtonsBox() {
     const navigate = useNavigate();
     const [logoutStatus, setLogoutStatus] = useState<string>("");
     const [cookies, setCookie, removeCookie] = useCookies(['userId']);
-    const { user, setUser } = useAuth();
-
-    const { isLoading: isGetAccessTokenLoading, error, data: accessToken, isFetching: isGetAccessTokenFetching } = useQuery({
-        queryKey: ['accessToken'],
-        queryFn: () =>
-            axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
-                .then((res) => res.data),
-        enabled: cookies.userId ? true : false
-    })
+    const { user, accessToken, getUserRefetch, getAccessTokenRefetch } = useAuth();
 
     const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
-        createAccessClient(accessToken),
+        createAccessClient(accessToken!),
         {
             onError: (error: Error) => {
                 let err: any = {};
@@ -49,7 +40,8 @@ export default function UserButtonsBox() {
                 _context: unknown
             ) => {
                 removeCookie('userId')
-                setUser(null)
+                getUserRefetch()
+                getAccessTokenRefetch()
             },
         }
     );
