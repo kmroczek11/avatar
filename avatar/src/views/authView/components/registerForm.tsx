@@ -33,16 +33,13 @@ const userExistsMessage = "Użytkownik o podanym adresie e-mail już istnieje.";
 export default function RegisterForm(props: RegisterFormProps) {
     const { setActive } = props;
     const [registerError, setRegisterError] = useState<string>("");
-    const [cookie, setCookie, removeCookie] = useCookies(['userId']);
-    const { getUserRefetch, getAccessTokenRefetch } = useAuth();
+    const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
     const { register } = useRegisterUser(
         createRegisterUserClient(),
         setRegisterError,
         (data) => {
-            setCookie('userId', data.registerUser.userId);
-            getUserRefetch()
-            getAccessTokenRefetch()
+            setCookie('userId', data.registerUser.userId)
         }
     );
 

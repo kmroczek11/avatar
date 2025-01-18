@@ -24,7 +24,7 @@ export default function UserButtonsBox() {
     const navigate = useNavigate();
     const [logoutStatus, setLogoutStatus] = useState<string>("");
     const [cookies, setCookie, removeCookie] = useCookies(['userId']);
-    const { user, accessToken, getUserRefetch, getAccessTokenRefetch } = useAuth();
+    const { user, accessToken } = useAuth();
 
     const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
         createAccessClient(accessToken!),
@@ -40,8 +40,6 @@ export default function UserButtonsBox() {
                 _context: unknown
             ) => {
                 removeCookie('userId')
-                getUserRefetch()
-                getAccessTokenRefetch()
             },
         }
     );

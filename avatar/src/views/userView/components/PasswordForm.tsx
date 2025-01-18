@@ -28,7 +28,7 @@ const successMessage = "Hasło zostało zmienione.";
 const invalidPasswordMessage = "Nieprawidłowe hasło.";
 
 export default function PasswordForm() {
-  const { user, accessToken, getUserRefetch, getAccessTokenRefetch } = useAuth();
+  const { user, accessToken, getUserRefetch } = useAuth();
   const [changePasswordStatus, setChangePasswordStatus] = useState<string>("");
   const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
@@ -61,8 +61,6 @@ export default function PasswordForm() {
         setSubmitting(true);
 
         const { oldPassword, newPassword } = values;
-
-        getAccessTokenRefetch()
 
         mutate({
           input: {

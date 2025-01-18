@@ -1,57 +1,68 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext } from "react";
 import User from "../models/user";
 import { useCookies } from "react-cookie";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery,QueryObserverResult, RefetchOptions, RefetchQueryFilters  } from "@tanstack/react-query";
 import axios from "axios";
 
 const AuthContext = createContext<{
     user: User | null;
     accessToken: string | null;
-    getUserRefetch: any;
-    getAccessTokenRefetch: any;
+    getUserRefetch: <TPageData>(
+        options?: RefetchOptions & RefetchQueryFilters<TPageData>
+    ) => Promise<QueryObserverResult<User, unknown>>;
+    getAccessTokenRefetch: <TPageData>(
+        options?: RefetchOptions & RefetchQueryFilters<TPageData>
+    ) => Promise<QueryObserverResult<string, unknown>>;
 }>({
     user: null,
     accessToken: null,
-    getUserRefetch: () => { },
-    getAccessTokenRefetch: () => { }
+    getUserRefetch: async () => {
+        throw new Error("getUserRefetch not implemented");
+    },
+    getAccessTokenRefetch: async () => {
+        throw new Error("getAccessTokenRefetch not implemented");
+    },
 });
 
 interface AuthProviderProps {
     children: React.ReactNode;
 }
 
-export default function AuthProvider(props: AuthProviderProps) {
-    const { children } = props
-    const [cookies] = useCookies(['userId']);
+export default function AuthProvider({ children }: AuthProviderProps) {
+    const [cookies] = useCookies(["userId"]);
 
-    const { isLoading: isGetUserLoading, error: userGetError, data: user, isFetching: isGetUserFetching, refetch: getUserRefetch } = useQuery({
-        queryKey: ['userId'],
+    const { data: user, refetch: getUserRefetch } = useQuery({
+        queryKey: ["user", cookies.userId],
         queryFn: () =>
-            axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookies.userId}`)
-                .then((res) => res.data)
-    })
+            cookies.userId
+                ? axios
+                    .get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookies.userId}`)
+                    .then((res) => res.data)
+                : Promise.reject("No userId cookie found"),
+        enabled: !!cookies.userId,
+    });
 
-    const { isLoading: isGetAccessTokenLoading, error: accessTokenGetError, data: accessToken, isFetching: isGetAccessTokenFetching, refetch: getAccessTokenRefetch } = useQuery({
-        queryKey: ['accessToken'],
+    const { data: accessToken, refetch: getAccessTokenRefetch } = useQuery({
+        queryKey: ["accessToken", cookies.userId],
         queryFn: () =>
-            axios
-                .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
-                .then((res) => res.data)
-    })
+            cookies.userId
+                ? axios
+                    .get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${cookies.userId}`)
+                    .then((res) => res.data)
+                : Promise.reject("No userId cookie found"),
+        enabled: !!cookies.userId,
+    });
 
     return (
-        <AuthContext.Provider
-            value={{
-                user,
-                accessToken,
-                getUserRefetch,
-                getAccessTokenRefetch
-            }}
-        >
+        <AuthContext.Provider value={{
+            user: user || null,
+            accessToken: accessToken || null,
+            getUserRefetch,
+            getAccessTokenRefetch,
+        }}>
             {children}
         </AuthContext.Provider>
-    )
+    );
 }
 
 export const useAuth = () => useContext(AuthContext);

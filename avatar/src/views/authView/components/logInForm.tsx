@@ -23,16 +23,13 @@ const defaultValues = {
 export default function LogInForm(props: LogInFormProps) {
     const { setActive } = props;
     const [logInError, setLogInError] = useState<string>("");
-    const [cookie, setCookie, removeCookie] = useCookies(['userId']);
-    const { getUserRefetch, getAccessTokenRefetch } = useAuth();
+    const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
     const { isLogInLoading, logIn } = useLogInUser(
         createLogInUserClient(),
         setLogInError,
         (data) => {
             setCookie('userId', data.logInUser.userId)
-            getUserRefetch()
-            getAccessTokenRefetch()
         }
     );
 

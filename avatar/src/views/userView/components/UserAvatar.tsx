@@ -67,7 +67,7 @@ const invalidMimeType = "Nieprawidłowy typ MIME.";
 
 export default function UserAvatar(props: UserAvatarProps) {
   const { name, size, imgSrc, BadgeIcon } = props;
-  const { user, accessToken, getUserRefetch, getAccessTokenRefetch } = useAuth();
+  const { user, accessToken, getUserRefetch } = useAuth();
   const [changeProfilePicStatus, setChangeProfilePicStatus] =
     useState<string>("");
   const [cookies, setCookie, removeCookie] = useCookies(['userId']);

@@ -22,7 +22,7 @@ const defaultValues = {
 const successMessage = "E-mail został zmieniony.";
 
 export default function EmailForm() {
-  const { user, accessToken, getUserRefetch, getAccessTokenRefetch } = useAuth();
+  const { user, accessToken, getUserRefetch } = useAuth();
   const [changeEmailStatus, setChangeEmailStatus] = useState<string>("");
   const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
@@ -52,8 +52,6 @@ export default function EmailForm() {
         setSubmitting(true);
 
         const { newEmail } = values;
-
-        getAccessTokenRefetch()
 
         mutate({
           input: {

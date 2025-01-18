@@ -3,21 +3,22 @@ import useAutoLogInUser from "../hooks/useAutoLogInUser";
 import createAutoLogInUserClient from "../../../graphql/clients/autoLogInUserClient";
 import { useCookies } from "react-cookie";
 import { useInterval } from 'usehooks-ts'
+import { useAuth } from "./AuthProvider";
 
 export default function AutoLogIn() {
     const [autoLoginUserError, setAutoLoginError] = useState<string>("");
-    const [cookies] = useCookies(['userId']);
+    const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
     const { isAutoLogInUserLoading, autoLogIn } = useAutoLogInUser(
         createAutoLogInUserClient(),
         setAutoLoginError,
-        (data) => { }
+        (data) => { 
+            setCookie('userId', data.autoLogInUser.userId)
+        }
     );
 
     useInterval(
         () => {
-            console.log('autoLogIn')
-
             autoLogIn({
                 input: {
                     userId: cookies.userId
@@ -26,18 +27,6 @@ export default function AutoLogIn() {
         },
         cookies.userId ? Number(process.env.REACT_APP_ACCESS_TOKEN_EXPIRATION) : null
     )
-
-    useEffect(() => {
-        if (!cookies.userId) return
-
-        console.log('autoLogIn')
-
-        autoLogIn({
-            input: {
-                userId: cookies.userId
-            }
-        })
-    }, [cookies.userId])
 
     return null
 }
