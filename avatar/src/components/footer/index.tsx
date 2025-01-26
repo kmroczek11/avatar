@@ -14,7 +14,7 @@ const Container = styled(Paper)(({ theme }) => ({
 export default function Footer() {
     return (
         <Container>
-            Avatar © All Rights Reserved 2024
+            Avatar © All Rights Reserved 2025
         </Container>
     )
 }

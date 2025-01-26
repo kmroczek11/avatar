@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { GraphQLClient } from 'graphql-request';
 import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+import { useMutation, useQuery, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -307,11 +307,17 @@ export type NestedStringNullableFilter = {
 export type Query = {
   __typename?: 'Query';
   findOne: User;
+  findUsersByName: Array<User>;
 };
 
 
 export type QueryFindOneArgs = {
   email: Scalars['String']['input'];
+};
+
+
+export type QueryFindUsersByNameArgs = {
+  name: Scalars['String']['input'];
 };
 
 export enum QueryMode {
@@ -545,6 +551,13 @@ export type ChangeProfilePicMutationVariables = Exact<{
 
 export type ChangeProfilePicMutation = { __typename?: 'Mutation', changeProfilePic: { __typename?: 'ChangeProfilePicResponse', userId: string } };
 
+export type FindUsersByNameQueryVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type FindUsersByNameQuery = { __typename?: 'Query', findUsersByName: Array<{ __typename?: 'User', firstName: string, lastName: string }> };
+
 
 
 export const AutoLogInUserDocument = `
@@ -754,3 +767,33 @@ export const useChangeProfilePicMutation = <
 
 
 useChangeProfilePicMutation.fetcher = (client: GraphQLClient, variables: ChangeProfilePicMutationVariables, headers?: RequestInit['headers']) => fetcher<ChangeProfilePicMutation, ChangeProfilePicMutationVariables>(client, ChangeProfilePicDocument, variables, headers);
+
+export const FindUsersByNameDocument = `
+    query FindUsersByName($name: String!) {
+  findUsersByName(name: $name) {
+    firstName
+    lastName
+  }
+}
+    `;
+
+export const useFindUsersByNameQuery = <
+      TData = FindUsersByNameQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: FindUsersByNameQueryVariables,
+      options?: UseQueryOptions<FindUsersByNameQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<FindUsersByNameQuery, TError, TData>(
+      ['FindUsersByName', variables],
+      fetcher<FindUsersByNameQuery, FindUsersByNameQueryVariables>(client, FindUsersByNameDocument, variables, headers),
+      options
+    )};
+
+useFindUsersByNameQuery.getKey = (variables: FindUsersByNameQueryVariables) => ['FindUsersByName', variables];
+
+
+useFindUsersByNameQuery.fetcher = (client: GraphQLClient, variables: FindUsersByNameQueryVariables, headers?: RequestInit['headers']) => fetcher<FindUsersByNameQuery, FindUsersByNameQueryVariables>(client, FindUsersByNameDocument, variables, headers);

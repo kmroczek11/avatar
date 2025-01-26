@@ -30,4 +30,25 @@ export class UserService {
     await this.prisma.user.update({ where: { email }, data });
     return this.prisma.user.findUnique({ where: { email } });
   }
+
+  async findByName(name: string): Promise<User[]> {
+    return this.prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            firstName: {
+              contains: name,
+              mode: 'insensitive',
+            },
+          },
+          {
+            lastName: {
+              contains: name,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    });
+  }
 }

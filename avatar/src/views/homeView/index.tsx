@@ -5,14 +5,15 @@ import { useAuth } from '../../components/auth/components/AuthProvider';
 import Footer from '../../components/footer';
 import MapView from '../mapView';
 import Chat from '../../components/chat';
+import SearchBar from './components/SearchBar';
 
 export default function HomeView() {
     const { user } = useAuth();
 
     return (
         user ?
-            <Grid container height="95vh">
-                <Chat />
+            <Grid container height="95vh" sx={{position:'relative'}}>
+                <SearchBar/>
                 <MapView />
             </Grid> :
             <React.Fragment>
