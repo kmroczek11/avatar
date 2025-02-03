@@ -1,0 +1,5 @@
+mutation CancelFriendRequest($input: CancelFriendRequestInput!) {
+  cancelFriendRequest(cancelFriendRequestInput: $input){
+    id
+  }
+}

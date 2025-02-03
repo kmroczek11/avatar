@@ -29,8 +29,18 @@ export type Scalars = {
   Upload: { input: any; output: any; }
 };
 
+export type AcceptFriendRequestInput = {
+  creatorId: Scalars['String']['input'];
+  receiverId: Scalars['String']['input'];
+};
+
 export type AutoLogInUserInput = {
   userId: Scalars['String']['input'];
+};
+
+export type CancelFriendRequestInput = {
+  creatorId: Scalars['String']['input'];
+  receiverId: Scalars['String']['input'];
 };
 
 export type ChangeEmailInput = {
@@ -79,6 +89,11 @@ export type EnumStatusFilter = {
   notIn?: InputMaybe<Array<Status>>;
 };
 
+export type FindByNameInput = {
+  creatorId: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
 export type ForgotPasswordInput = {
   email: Scalars['EmailAddress']['input'];
 };
@@ -86,6 +101,75 @@ export type ForgotPasswordInput = {
 export type ForgotPasswordResponse = {
   __typename?: 'ForgotPasswordResponse';
   msg: Scalars['String']['output'];
+};
+
+export type Friend = {
+  __typename?: 'Friend';
+  id: Scalars['ID']['output'];
+  user1: User;
+  user2: User;
+  userId1: Scalars['String']['output'];
+  userId2: Scalars['String']['output'];
+};
+
+export type FriendCreateManyUser1Input = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  userId2: Scalars['String']['input'];
+};
+
+export type FriendCreateManyUser1InputEnvelope = {
+  data: Array<FriendCreateManyUser1Input>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type FriendCreateManyUser2Input = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  userId1: Scalars['String']['input'];
+};
+
+export type FriendCreateManyUser2InputEnvelope = {
+  data: Array<FriendCreateManyUser2Input>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type FriendCreateNestedManyWithoutUser1Input = {
+  connect?: InputMaybe<Array<FriendWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<FriendCreateOrConnectWithoutUser1Input>>;
+  create?: InputMaybe<Array<FriendCreateWithoutUser1Input>>;
+  createMany?: InputMaybe<FriendCreateManyUser1InputEnvelope>;
+};
+
+export type FriendCreateNestedManyWithoutUser2Input = {
+  connect?: InputMaybe<Array<FriendWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<FriendCreateOrConnectWithoutUser2Input>>;
+  create?: InputMaybe<Array<FriendCreateWithoutUser2Input>>;
+  createMany?: InputMaybe<FriendCreateManyUser2InputEnvelope>;
+};
+
+export type FriendCreateOrConnectWithoutUser1Input = {
+  create: FriendCreateWithoutUser1Input;
+  where: FriendWhereUniqueInput;
+};
+
+export type FriendCreateOrConnectWithoutUser2Input = {
+  create: FriendCreateWithoutUser2Input;
+  where: FriendWhereUniqueInput;
+};
+
+export type FriendCreateWithoutUser1Input = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  user2: UserCreateNestedOneWithoutFriendsOfInput;
+};
+
+export type FriendCreateWithoutUser2Input = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  user1: UserCreateNestedOneWithoutFriendsInput;
+};
+
+export type FriendListRelationFilter = {
+  every?: InputMaybe<FriendWhereInput>;
+  none?: InputMaybe<FriendWhereInput>;
+  some?: InputMaybe<FriendWhereInput>;
 };
 
 export type FriendRequest = {
@@ -192,6 +276,38 @@ export type FriendRequestWhereUniqueInput = {
   status?: InputMaybe<EnumStatusFilter>;
 };
 
+export type FriendUserId1UserId2CompoundUniqueInput = {
+  userId1: Scalars['String']['input'];
+  userId2: Scalars['String']['input'];
+};
+
+export type FriendWhereInput = {
+  AND?: InputMaybe<Array<FriendWhereInput>>;
+  NOT?: InputMaybe<Array<FriendWhereInput>>;
+  OR?: InputMaybe<Array<FriendWhereInput>>;
+  id?: InputMaybe<StringFilter>;
+  user1?: InputMaybe<UserRelationFilter>;
+  user2?: InputMaybe<UserRelationFilter>;
+  userId1?: InputMaybe<StringFilter>;
+  userId2?: InputMaybe<StringFilter>;
+};
+
+export type FriendWhereUniqueInput = {
+  AND?: InputMaybe<Array<FriendWhereInput>>;
+  NOT?: InputMaybe<Array<FriendWhereInput>>;
+  OR?: InputMaybe<Array<FriendWhereInput>>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  user1?: InputMaybe<UserRelationFilter>;
+  user2?: InputMaybe<UserRelationFilter>;
+  userId1?: InputMaybe<StringFilter>;
+  userId1_userId2?: InputMaybe<FriendUserId1UserId2CompoundUniqueInput>;
+  userId2?: InputMaybe<StringFilter>;
+};
+
+export type GetPendingRequestsInput = {
+  receiverId: Scalars['String']['input'];
+};
+
 export type LogInResponse = {
   __typename?: 'LogInResponse';
   userId: Scalars['String']['output'];
@@ -213,7 +329,9 @@ export type LogOutUserInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptFriendRequest: FriendRequest;
   autoLogInUser: LogInResponse;
+  cancelFriendRequest: FriendRequest;
   changeEmail: ChangeEmailResponse;
   changePassword: ChangePasswordResponse;
   changeProfilePic: ChangeProfilePicResponse;
@@ -222,11 +340,23 @@ export type Mutation = {
   logInUser: LogInResponse;
   logOutUser: LogOutResponse;
   registerUser: LogInResponse;
+  rejectFriendRequest: FriendRequest;
+  sendFriendRequest: FriendRequest;
+};
+
+
+export type MutationAcceptFriendRequestArgs = {
+  acceptFriendRequestInput: AcceptFriendRequestInput;
 };
 
 
 export type MutationAutoLogInUserArgs = {
   autoLogInUserInput: AutoLogInUserInput;
+};
+
+
+export type MutationCancelFriendRequestArgs = {
+  cancelFriendRequestInput: CancelFriendRequestInput;
 };
 
 
@@ -269,6 +399,16 @@ export type MutationRegisterUserArgs = {
   registerUserInput: RegisterUserInput;
 };
 
+
+export type MutationRejectFriendRequestArgs = {
+  rejectFriendRequestInput: RejectFriendRequestInput;
+};
+
+
+export type MutationSendFriendRequestArgs = {
+  sendFriendRequestInput: SendFriendRequestInput;
+};
+
 export type NestedEnumStatusFilter = {
   equals?: InputMaybe<Status>;
   in?: InputMaybe<Array<Status>>;
@@ -307,7 +447,8 @@ export type NestedStringNullableFilter = {
 export type Query = {
   __typename?: 'Query';
   findOne: User;
-  findUsersByName: Array<User>;
+  findUsersByName: Array<UserWithFriendRequestStatus>;
+  getPendingRequests: Array<FriendRequest>;
 };
 
 
@@ -317,7 +458,12 @@ export type QueryFindOneArgs = {
 
 
 export type QueryFindUsersByNameArgs = {
-  name: Scalars['String']['input'];
+  findByNameInput: FindByNameInput;
+};
+
+
+export type QueryGetPendingRequestsArgs = {
+  getPendingRequestsInput: GetPendingRequestsInput;
 };
 
 export enum QueryMode {
@@ -333,9 +479,19 @@ export type RegisterUserInput = {
   phoneNumber: Scalars['PhoneNumber']['input'];
 };
 
+export type RejectFriendRequestInput = {
+  creatorId: Scalars['String']['input'];
+  receiverId: Scalars['String']['input'];
+};
+
 export enum Role {
   User = 'USER'
 }
+
+export type SendFriendRequestInput = {
+  creatorId: Scalars['String']['input'];
+  receiverId: Scalars['String']['input'];
+};
 
 export enum Status {
   Accepted = 'ACCEPTED',
@@ -381,6 +537,8 @@ export type User = {
   firstName: Scalars['String']['output'];
   friendRequestsReceived?: Maybe<Array<FriendRequest>>;
   friendRequestsSent?: Maybe<Array<FriendRequest>>;
+  friends?: Maybe<Array<Friend>>;
+  friendsOf?: Maybe<Array<Friend>>;
   id: Scalars['ID']['output'];
   imgSrc?: Maybe<Scalars['String']['output']>;
   lastName: Scalars['String']['output'];
@@ -393,6 +551,8 @@ export type UserCount = {
   __typename?: 'UserCount';
   friendRequestsReceived: Scalars['Int']['output'];
   friendRequestsSent: Scalars['Int']['output'];
+  friends: Scalars['Int']['output'];
+  friendsOf: Scalars['Int']['output'];
 };
 
 export type UserCreateInput = {
@@ -400,6 +560,8 @@ export type UserCreateInput = {
   firstName: Scalars['String']['input'];
   friendRequestsReceived?: InputMaybe<FriendRequestCreateNestedManyWithoutReceiverInput>;
   friendRequestsSent?: InputMaybe<FriendRequestCreateNestedManyWithoutCreatorInput>;
+  friends?: InputMaybe<FriendCreateNestedManyWithoutUser1Input>;
+  friendsOf?: InputMaybe<FriendCreateNestedManyWithoutUser2Input>;
   id?: InputMaybe<Scalars['String']['input']>;
   imgSrc?: InputMaybe<Scalars['String']['input']>;
   lastName: Scalars['String']['input'];
@@ -420,6 +582,18 @@ export type UserCreateNestedOneWithoutFriendRequestsSentInput = {
   create?: InputMaybe<UserCreateWithoutFriendRequestsSentInput>;
 };
 
+export type UserCreateNestedOneWithoutFriendsInput = {
+  connect?: InputMaybe<UserWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<UserCreateOrConnectWithoutFriendsInput>;
+  create?: InputMaybe<UserCreateWithoutFriendsInput>;
+};
+
+export type UserCreateNestedOneWithoutFriendsOfInput = {
+  connect?: InputMaybe<UserWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<UserCreateOrConnectWithoutFriendsOfInput>;
+  create?: InputMaybe<UserCreateWithoutFriendsOfInput>;
+};
+
 export type UserCreateOrConnectWithoutFriendRequestsReceivedInput = {
   create: UserCreateWithoutFriendRequestsReceivedInput;
   where: UserWhereUniqueInput;
@@ -430,10 +604,22 @@ export type UserCreateOrConnectWithoutFriendRequestsSentInput = {
   where: UserWhereUniqueInput;
 };
 
+export type UserCreateOrConnectWithoutFriendsInput = {
+  create: UserCreateWithoutFriendsInput;
+  where: UserWhereUniqueInput;
+};
+
+export type UserCreateOrConnectWithoutFriendsOfInput = {
+  create: UserCreateWithoutFriendsOfInput;
+  where: UserWhereUniqueInput;
+};
+
 export type UserCreateWithoutFriendRequestsReceivedInput = {
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   friendRequestsSent?: InputMaybe<FriendRequestCreateNestedManyWithoutCreatorInput>;
+  friends?: InputMaybe<FriendCreateNestedManyWithoutUser1Input>;
+  friendsOf?: InputMaybe<FriendCreateNestedManyWithoutUser2Input>;
   id?: InputMaybe<Scalars['String']['input']>;
   imgSrc?: InputMaybe<Scalars['String']['input']>;
   lastName: Scalars['String']['input'];
@@ -446,6 +632,36 @@ export type UserCreateWithoutFriendRequestsSentInput = {
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   friendRequestsReceived?: InputMaybe<FriendRequestCreateNestedManyWithoutReceiverInput>;
+  friends?: InputMaybe<FriendCreateNestedManyWithoutUser1Input>;
+  friendsOf?: InputMaybe<FriendCreateNestedManyWithoutUser2Input>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  imgSrc?: InputMaybe<Scalars['String']['input']>;
+  lastName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  phoneNumber: Scalars['String']['input'];
+  roles?: InputMaybe<UserCreaterolesInput>;
+};
+
+export type UserCreateWithoutFriendsInput = {
+  email: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  friendRequestsReceived?: InputMaybe<FriendRequestCreateNestedManyWithoutReceiverInput>;
+  friendRequestsSent?: InputMaybe<FriendRequestCreateNestedManyWithoutCreatorInput>;
+  friendsOf?: InputMaybe<FriendCreateNestedManyWithoutUser2Input>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  imgSrc?: InputMaybe<Scalars['String']['input']>;
+  lastName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  phoneNumber: Scalars['String']['input'];
+  roles?: InputMaybe<UserCreaterolesInput>;
+};
+
+export type UserCreateWithoutFriendsOfInput = {
+  email: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  friendRequestsReceived?: InputMaybe<FriendRequestCreateNestedManyWithoutReceiverInput>;
+  friendRequestsSent?: InputMaybe<FriendRequestCreateNestedManyWithoutCreatorInput>;
+  friends?: InputMaybe<FriendCreateNestedManyWithoutUser1Input>;
   id?: InputMaybe<Scalars['String']['input']>;
   imgSrc?: InputMaybe<Scalars['String']['input']>;
   lastName: Scalars['String']['input'];
@@ -471,6 +687,8 @@ export type UserWhereInput = {
   firstName?: InputMaybe<StringFilter>;
   friendRequestsReceived?: InputMaybe<FriendRequestListRelationFilter>;
   friendRequestsSent?: InputMaybe<FriendRequestListRelationFilter>;
+  friends?: InputMaybe<FriendListRelationFilter>;
+  friendsOf?: InputMaybe<FriendListRelationFilter>;
   id?: InputMaybe<StringFilter>;
   imgSrc?: InputMaybe<StringNullableFilter>;
   lastName?: InputMaybe<StringFilter>;
@@ -487,12 +705,32 @@ export type UserWhereUniqueInput = {
   firstName?: InputMaybe<StringFilter>;
   friendRequestsReceived?: InputMaybe<FriendRequestListRelationFilter>;
   friendRequestsSent?: InputMaybe<FriendRequestListRelationFilter>;
+  friends?: InputMaybe<FriendListRelationFilter>;
+  friendsOf?: InputMaybe<FriendListRelationFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
   imgSrc?: InputMaybe<StringNullableFilter>;
   lastName?: InputMaybe<StringFilter>;
   password?: InputMaybe<StringFilter>;
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
   roles?: InputMaybe<EnumRoleNullableListFilter>;
+};
+
+export type UserWithFriendRequestStatus = {
+  __typename?: 'UserWithFriendRequestStatus';
+  _count: UserCount;
+  email: Scalars['String']['output'];
+  firstName: Scalars['String']['output'];
+  friendRequestStatus?: Maybe<Status>;
+  friendRequestsReceived?: Maybe<Array<FriendRequest>>;
+  friendRequestsSent?: Maybe<Array<FriendRequest>>;
+  friends?: Maybe<Array<Friend>>;
+  friendsOf?: Maybe<Array<Friend>>;
+  id: Scalars['ID']['output'];
+  imgSrc?: Maybe<Scalars['String']['output']>;
+  lastName: Scalars['String']['output'];
+  password: Scalars['String']['output'];
+  phoneNumber: Scalars['String']['output'];
+  roles?: Maybe<Array<Role>>;
 };
 
 export type AutoLogInUserMutationVariables = Exact<{
@@ -530,6 +768,20 @@ export type RegisterUserMutationVariables = Exact<{
 
 export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'LogInResponse', userId: string } };
 
+export type CancelFriendRequestMutationVariables = Exact<{
+  input: CancelFriendRequestInput;
+}>;
+
+
+export type CancelFriendRequestMutation = { __typename?: 'Mutation', cancelFriendRequest: { __typename?: 'FriendRequest', id: string } };
+
+export type SendFriendRequestMutationVariables = Exact<{
+  input: SendFriendRequestInput;
+}>;
+
+
+export type SendFriendRequestMutation = { __typename?: 'Mutation', sendFriendRequest: { __typename?: 'FriendRequest', id: string } };
+
 export type ChangeEmailMutationVariables = Exact<{
   input: ChangeEmailInput;
 }>;
@@ -552,11 +804,11 @@ export type ChangeProfilePicMutationVariables = Exact<{
 export type ChangeProfilePicMutation = { __typename?: 'Mutation', changeProfilePic: { __typename?: 'ChangeProfilePicResponse', userId: string } };
 
 export type FindUsersByNameQueryVariables = Exact<{
-  name: Scalars['String']['input'];
+  input: FindByNameInput;
 }>;
 
 
-export type FindUsersByNameQuery = { __typename?: 'Query', findUsersByName: Array<{ __typename?: 'User', firstName: string, lastName: string }> };
+export type FindUsersByNameQuery = { __typename?: 'Query', findUsersByName: Array<{ __typename?: 'UserWithFriendRequestStatus', id: string, imgSrc?: string | null, firstName: string, lastName: string, friendRequestStatus?: Status | null }> };
 
 
 
@@ -690,6 +942,58 @@ export const useRegisterUserMutation = <
 
 useRegisterUserMutation.fetcher = (client: GraphQLClient, variables: RegisterUserMutationVariables, headers?: RequestInit['headers']) => fetcher<RegisterUserMutation, RegisterUserMutationVariables>(client, RegisterUserDocument, variables, headers);
 
+export const CancelFriendRequestDocument = `
+    mutation CancelFriendRequest($input: CancelFriendRequestInput!) {
+  cancelFriendRequest(cancelFriendRequestInput: $input) {
+    id
+  }
+}
+    `;
+
+export const useCancelFriendRequestMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CancelFriendRequestMutation, TError, CancelFriendRequestMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<CancelFriendRequestMutation, TError, CancelFriendRequestMutationVariables, TContext>(
+      ['CancelFriendRequest'],
+      (variables?: CancelFriendRequestMutationVariables) => fetcher<CancelFriendRequestMutation, CancelFriendRequestMutationVariables>(client, CancelFriendRequestDocument, variables, headers)(),
+      options
+    )};
+
+
+useCancelFriendRequestMutation.fetcher = (client: GraphQLClient, variables: CancelFriendRequestMutationVariables, headers?: RequestInit['headers']) => fetcher<CancelFriendRequestMutation, CancelFriendRequestMutationVariables>(client, CancelFriendRequestDocument, variables, headers);
+
+export const SendFriendRequestDocument = `
+    mutation SendFriendRequest($input: SendFriendRequestInput!) {
+  sendFriendRequest(sendFriendRequestInput: $input) {
+    id
+  }
+}
+    `;
+
+export const useSendFriendRequestMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<SendFriendRequestMutation, TError, SendFriendRequestMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<SendFriendRequestMutation, TError, SendFriendRequestMutationVariables, TContext>(
+      ['SendFriendRequest'],
+      (variables?: SendFriendRequestMutationVariables) => fetcher<SendFriendRequestMutation, SendFriendRequestMutationVariables>(client, SendFriendRequestDocument, variables, headers)(),
+      options
+    )};
+
+
+useSendFriendRequestMutation.fetcher = (client: GraphQLClient, variables: SendFriendRequestMutationVariables, headers?: RequestInit['headers']) => fetcher<SendFriendRequestMutation, SendFriendRequestMutationVariables>(client, SendFriendRequestDocument, variables, headers);
+
 export const ChangeEmailDocument = `
     mutation ChangeEmail($input: ChangeEmailInput!) {
   changeEmail(changeEmailInput: $input) {
@@ -769,10 +1073,13 @@ export const useChangeProfilePicMutation = <
 useChangeProfilePicMutation.fetcher = (client: GraphQLClient, variables: ChangeProfilePicMutationVariables, headers?: RequestInit['headers']) => fetcher<ChangeProfilePicMutation, ChangeProfilePicMutationVariables>(client, ChangeProfilePicDocument, variables, headers);
 
 export const FindUsersByNameDocument = `
-    query FindUsersByName($name: String!) {
-  findUsersByName(name: $name) {
+    query FindUsersByName($input: FindByNameInput!) {
+  findUsersByName(findByNameInput: $input) {
+    id
+    imgSrc
     firstName
     lastName
+    friendRequestStatus
   }
 }
     `;

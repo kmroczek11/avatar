@@ -3,6 +3,8 @@ import { InputType } from '@nestjs/graphql';
 import { UserCreaterolesInput } from './user-createroles.input';
 import { FriendRequestUncheckedCreateNestedManyWithoutCreatorInput } from '../friend-request/friend-request-unchecked-create-nested-many-without-creator.input';
 import { FriendRequestUncheckedCreateNestedManyWithoutReceiverInput } from '../friend-request/friend-request-unchecked-create-nested-many-without-receiver.input';
+import { FriendUncheckedCreateNestedManyWithoutUser1Input } from '../friend/friend-unchecked-create-nested-many-without-user-1.input';
+import { FriendUncheckedCreateNestedManyWithoutUser2Input } from '../friend/friend-unchecked-create-nested-many-without-user-2.input';
 
 @InputType()
 export class UserUncheckedCreateInput {
@@ -36,4 +38,10 @@ export class UserUncheckedCreateInput {
 
     @Field(() => FriendRequestUncheckedCreateNestedManyWithoutReceiverInput, {nullable:true})
     friendRequestsReceived?: FriendRequestUncheckedCreateNestedManyWithoutReceiverInput;
+
+    @Field(() => FriendUncheckedCreateNestedManyWithoutUser1Input, {nullable:true})
+    friends?: FriendUncheckedCreateNestedManyWithoutUser1Input;
+
+    @Field(() => FriendUncheckedCreateNestedManyWithoutUser2Input, {nullable:true})
+    friendsOf?: FriendUncheckedCreateNestedManyWithoutUser2Input;
 }

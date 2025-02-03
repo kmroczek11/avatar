@@ -6,20 +6,60 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import { useTheme } from '@mui/material/styles';
-import { FindUsersByNameQuery, useFindUsersByNameQuery } from '../../../generated/graphql';
+import { FindUsersByNameQuery, SendFriendRequestMutation, SendFriendRequestMutationVariables, Status, useCancelFriendRequestMutation, useFindUsersByNameQuery, useSendFriendRequestMutation } from '../../../generated/graphql';
 import createAccessClient from '../../../graphql/clients/accessClient';
 import { useAuth } from '../../../components/auth/components/AuthProvider';
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import { CustomAvatar } from '../../../components/lib';
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export default function SearchBar() {
   const theme = useTheme();
-  const { accessToken } = useAuth();
+  const { user, accessToken } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredUsers, setFilteredUsers] = useState<Array<{ firstName: string,lastName:string }>>([]);
+  const [filteredUsers, setFilteredUsers] = useState<Array<{ id: string, imgSrc?: string | null, firstName: string, lastName: string, friendRequestStatus?: Status | null | undefined }>>([]);
+  const [sendFriendRequestStatus, setSendFriendRequestStatus] = useState<string>("");
 
-  const { data: usersList, isLoading } = useFindUsersByNameQuery<FindUsersByNameQuery, Error>(
+  const { mutate: cancelFriendRequest } = useCancelFriendRequestMutation(createAccessClient(accessToken!), {
+    onSuccess: (_, variables) => {
+      setFilteredUsers((prev) =>
+        prev.map((user) =>
+          user.id === variables.input.receiverId
+            ? { ...user, friendRequestStatus: null }
+            : user
+        )
+      );
+    },
+  }
+  );
+
+  const { isLoading: isSendFriendRequestLoading, mutate: sendFriendRequest } = useSendFriendRequestMutation<Error>(createAccessClient(accessToken!), {
+    onError: (error: Error) => {
+      let err: any = {};
+      err.data = error;
+      setSendFriendRequestStatus(err?.data?.response.errors[0].message);
+    },
+    onSuccess: (
+      data: SendFriendRequestMutation,
+      _variables: SendFriendRequestMutationVariables,
+      _context: unknown
+    ) => {
+    },
+  });
+
+  const { data: usersList, isLoading: isFindUsersByNameLoading, refetch } = useFindUsersByNameQuery<FindUsersByNameQuery, Error>(
     createAccessClient(accessToken!),
-    { name: searchQuery },
     {
+      input: {
+        name: searchQuery,
+        creatorId: user?.id!
+      }
+    },
+    {
+      enabled: !!searchQuery,
       onSuccess: (data) => {
         setFilteredUsers(data?.findUsersByName || []);
       },
@@ -27,7 +67,14 @@ export default function SearchBar() {
   );
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setSearchQuery(e.target.value);
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    if (value.trim().length > 0) {
+      refetch();
+    } else {
+      setFilteredUsers([]);
+    }
   };
 
   return (
@@ -74,30 +121,77 @@ export default function SearchBar() {
           }}
         />
       </Box>
+      {searchQuery && (
+        <List
+          sx={{
+            width: '100%',
+            marginTop: '8px',
+            backgroundColor: 'white',
+            borderRadius: '4px',
+            maxHeight: '200px',
+            overflowY: 'auto',
+            boxShadow: theme.shadows[1],
+          }}
+        >
+          {!isFindUsersByNameLoading && filteredUsers.length > 0 ? (
+            filteredUsers.map((filteredUser, index) => {
+              const isRequestPending = filteredUser.friendRequestStatus === 'PENDING';
+              const isCurrentUser = filteredUser.id === user?.id;
 
-      <List
-        sx={{
-          width: '100%',
-          marginTop: '8px',
-          backgroundColor: 'white',
-          borderRadius: '4px',
-          maxHeight: '200px',
-          overflowY: 'auto',
-          boxShadow: theme.shadows[1],
-        }}
-      >
-        {!isLoading && filteredUsers.length > 0 ? (
-          filteredUsers.map((user, index) => (
-            <ListItem key={index} sx={{ padding: '8px 16px' }}>
-              <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+              return (
+                <ListItem key={index} sx={{ padding: '8px 16px' }} secondaryAction={
+                  !isCurrentUser && (
+                    isRequestPending ? (
+                      <Tooltip title="Anuluj zaproszenie">
+                        <IconButton
+                          aria-label="cancel-friend-request"
+                          onClick={() => cancelFriendRequest({
+                            input: {
+                              creatorId: user?.id!,
+                              receiverId: filteredUser.id
+                            }
+                          })}
+                        >
+                          <CancelIcon />
+                        </IconButton>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title="Wyślij zaproszenie do znajomych">
+                        <IconButton
+                          aria-label="send-friend-request"
+                          onClick={() => sendFriendRequest({
+                            input: {
+                              creatorId: user?.id!,
+                              receiverId: filteredUser.id
+                            }
+                          })}
+                        >
+                          <PersonAddIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )
+                  )
+                }>
+                  <ListItemAvatar>
+                    <CustomAvatar
+                      name={`${filteredUser.firstName} ${filteredUser.lastName}`}
+                      size="small"
+                      imgSrc={filteredUser.imgSrc || ""}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={`${filteredUser.firstName} ${filteredUser.lastName}`}
+                  />
+                </ListItem>
+              );
+            })
+          ) : (
+            <ListItem>
+              <ListItemText primary={isFindUsersByNameLoading ? 'Ładowanie...' : 'Brak wyników'} />
             </ListItem>
-          ))
-        ) : (
-          <ListItem>
-            <ListItemText primary={isLoading ? 'Ładowanie...' : 'Brak wyników'} />
-          </ListItem>
-        )}
-      </List>
+          )}
+        </List>
+      )}
     </Box>
   );
 }

@@ -42,9 +42,19 @@ enum Status {
   CANCELED
 }
 
+type Friend {
+  id: ID!
+  userId1: String!
+  userId2: String!
+  user1: User!
+  user2: User!
+}
+
 type UserCount {
   friendRequestsSent: Int!
   friendRequestsReceived: Int!
+  friends: Int!
+  friendsOf: Int!
 }
 
 type User {
@@ -58,6 +68,8 @@ type User {
   roles: [Role!]
   friendRequestsSent: [FriendRequest!]
   friendRequestsReceived: [FriendRequest!]
+  friends: [Friend!]
+  friendsOf: [Friend!]
   _count: UserCount!
 }
 
@@ -65,9 +77,36 @@ enum Role {
   USER
 }
 
+type UserWithFriendRequestStatus {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: [Role!]
+  friendRequestsSent: [FriendRequest!]
+  friendRequestsReceived: [FriendRequest!]
+  friends: [Friend!]
+  friendsOf: [Friend!]
+  _count: UserCount!
+  friendRequestStatus: Status
+}
+
 type Query {
   findOne(email: String!): User!
-  findUsersByName(name: String!): [User!]!
+  findUsersByName(findByNameInput: FindByNameInput!): [UserWithFriendRequestStatus!]!
+  getPendingRequests(getPendingRequestsInput: GetPendingRequestsInput!): [FriendRequest!]!
+}
+
+input FindByNameInput {
+  name: String!
+  creatorId: String!
+}
+
+input GetPendingRequestsInput {
+  receiverId: String!
 }
 
 type Mutation {
@@ -80,6 +119,10 @@ type Mutation {
   changeProfilePic(changeProfilePicInput: ChangeProfilePicInput!): ChangeProfilePicResponse!
   forgotPassword(forgotPasswordInput: ForgotPasswordInput!): ForgotPasswordResponse!
   createUser(createUserInput: UserCreateInput!): User!
+  sendFriendRequest(sendFriendRequestInput: SendFriendRequestInput!): FriendRequest!
+  acceptFriendRequest(acceptFriendRequestInput: AcceptFriendRequestInput!): FriendRequest!
+  rejectFriendRequest(rejectFriendRequestInput: RejectFriendRequestInput!): FriendRequest!
+  cancelFriendRequest(cancelFriendRequestInput: CancelFriendRequestInput!): FriendRequest!
 }
 
 input RegisterUserInput {
@@ -147,6 +190,8 @@ input UserCreateInput {
   roles: UserCreaterolesInput
   friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
   friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  friends: FriendCreateNestedManyWithoutUser1Input
+  friendsOf: FriendCreateNestedManyWithoutUser2Input
 }
 
 input UserCreaterolesInput {
@@ -182,11 +227,110 @@ input UserCreateWithoutFriendRequestsReceivedInput {
   imgSrc: String
   roles: UserCreaterolesInput
   friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
+  friends: FriendCreateNestedManyWithoutUser1Input
+  friendsOf: FriendCreateNestedManyWithoutUser2Input
 }
 
-input UserCreateOrConnectWithoutFriendRequestsReceivedInput {
+input FriendCreateNestedManyWithoutUser1Input {
+  create: [FriendCreateWithoutUser1Input!]
+  connectOrCreate: [FriendCreateOrConnectWithoutUser1Input!]
+  createMany: FriendCreateManyUser1InputEnvelope
+  connect: [FriendWhereUniqueInput!]
+}
+
+input FriendCreateWithoutUser1Input {
+  id: String
+  user2: UserCreateNestedOneWithoutFriendsOfInput!
+}
+
+input UserCreateNestedOneWithoutFriendsOfInput {
+  create: UserCreateWithoutFriendsOfInput
+  connectOrCreate: UserCreateOrConnectWithoutFriendsOfInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutFriendsOfInput {
+  id: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: UserCreaterolesInput
+  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
+  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  friends: FriendCreateNestedManyWithoutUser1Input
+}
+
+input FriendRequestCreateNestedManyWithoutReceiverInput {
+  create: [FriendRequestCreateWithoutReceiverInput!]
+  connectOrCreate: [FriendRequestCreateOrConnectWithoutReceiverInput!]
+  createMany: FriendRequestCreateManyReceiverInputEnvelope
+  connect: [FriendRequestWhereUniqueInput!]
+}
+
+input FriendRequestCreateWithoutReceiverInput {
+  id: String
+  status: Status
+  creator: UserCreateNestedOneWithoutFriendRequestsSentInput!
+}
+
+input UserCreateNestedOneWithoutFriendRequestsSentInput {
+  create: UserCreateWithoutFriendRequestsSentInput
+  connectOrCreate: UserCreateOrConnectWithoutFriendRequestsSentInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutFriendRequestsSentInput {
+  id: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: UserCreaterolesInput
+  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  friends: FriendCreateNestedManyWithoutUser1Input
+  friendsOf: FriendCreateNestedManyWithoutUser2Input
+}
+
+input FriendCreateNestedManyWithoutUser2Input {
+  create: [FriendCreateWithoutUser2Input!]
+  connectOrCreate: [FriendCreateOrConnectWithoutUser2Input!]
+  createMany: FriendCreateManyUser2InputEnvelope
+  connect: [FriendWhereUniqueInput!]
+}
+
+input FriendCreateWithoutUser2Input {
+  id: String
+  user1: UserCreateNestedOneWithoutFriendsInput!
+}
+
+input UserCreateNestedOneWithoutFriendsInput {
+  create: UserCreateWithoutFriendsInput
+  connectOrCreate: UserCreateOrConnectWithoutFriendsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutFriendsInput {
+  id: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: UserCreaterolesInput
+  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
+  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  friendsOf: FriendCreateNestedManyWithoutUser2Input
+}
+
+input UserCreateOrConnectWithoutFriendsInput {
   where: UserWhereUniqueInput!
-  create: UserCreateWithoutFriendRequestsReceivedInput!
+  create: UserCreateWithoutFriendsInput!
 }
 
 input UserWhereUniqueInput {
@@ -203,6 +347,8 @@ input UserWhereUniqueInput {
   roles: EnumRoleNullableListFilter
   friendRequestsSent: FriendRequestListRelationFilter
   friendRequestsReceived: FriendRequestListRelationFilter
+  friends: FriendListRelationFilter
+  friendsOf: FriendListRelationFilter
 }
 
 input UserWhereInput {
@@ -219,6 +365,8 @@ input UserWhereInput {
   roles: EnumRoleNullableListFilter
   friendRequestsSent: FriendRequestListRelationFilter
   friendRequestsReceived: FriendRequestListRelationFilter
+  friends: FriendListRelationFilter
+  friendsOf: FriendListRelationFilter
 }
 
 input StringFilter {
@@ -329,9 +477,63 @@ input UserRelationFilter {
   isNot: UserWhereInput
 }
 
-input FriendRequestCreateOrConnectWithoutCreatorInput {
+input FriendListRelationFilter {
+  every: FriendWhereInput
+  some: FriendWhereInput
+  none: FriendWhereInput
+}
+
+input FriendWhereInput {
+  AND: [FriendWhereInput!]
+  OR: [FriendWhereInput!]
+  NOT: [FriendWhereInput!]
+  id: StringFilter
+  userId1: StringFilter
+  userId2: StringFilter
+  user1: UserRelationFilter
+  user2: UserRelationFilter
+}
+
+input FriendCreateOrConnectWithoutUser2Input {
+  where: FriendWhereUniqueInput!
+  create: FriendCreateWithoutUser2Input!
+}
+
+input FriendWhereUniqueInput {
+  id: String
+  userId1_userId2: FriendUserId1UserId2CompoundUniqueInput
+  AND: [FriendWhereInput!]
+  OR: [FriendWhereInput!]
+  NOT: [FriendWhereInput!]
+  userId1: StringFilter
+  userId2: StringFilter
+  user1: UserRelationFilter
+  user2: UserRelationFilter
+}
+
+input FriendUserId1UserId2CompoundUniqueInput {
+  userId1: String!
+  userId2: String!
+}
+
+input FriendCreateManyUser2InputEnvelope {
+  data: [FriendCreateManyUser2Input!]!
+  skipDuplicates: Boolean
+}
+
+input FriendCreateManyUser2Input {
+  id: String
+  userId1: String!
+}
+
+input UserCreateOrConnectWithoutFriendRequestsSentInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutFriendRequestsSentInput!
+}
+
+input FriendRequestCreateOrConnectWithoutReceiverInput {
   where: FriendRequestWhereUniqueInput!
-  create: FriendRequestCreateWithoutCreatorInput!
+  create: FriendRequestCreateWithoutReceiverInput!
 }
 
 input FriendRequestWhereUniqueInput {
@@ -352,6 +554,47 @@ input FriendRequestCreatorIdReceiverIdCompoundUniqueInput {
   receiverId: String!
 }
 
+input FriendRequestCreateManyReceiverInputEnvelope {
+  data: [FriendRequestCreateManyReceiverInput!]!
+  skipDuplicates: Boolean
+}
+
+input FriendRequestCreateManyReceiverInput {
+  id: String
+  creatorId: String!
+  status: Status
+}
+
+input UserCreateOrConnectWithoutFriendsOfInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutFriendsOfInput!
+}
+
+input FriendCreateOrConnectWithoutUser1Input {
+  where: FriendWhereUniqueInput!
+  create: FriendCreateWithoutUser1Input!
+}
+
+input FriendCreateManyUser1InputEnvelope {
+  data: [FriendCreateManyUser1Input!]!
+  skipDuplicates: Boolean
+}
+
+input FriendCreateManyUser1Input {
+  id: String
+  userId2: String!
+}
+
+input UserCreateOrConnectWithoutFriendRequestsReceivedInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutFriendRequestsReceivedInput!
+}
+
+input FriendRequestCreateOrConnectWithoutCreatorInput {
+  where: FriendRequestWhereUniqueInput!
+  create: FriendRequestCreateWithoutCreatorInput!
+}
+
 input FriendRequestCreateManyCreatorInputEnvelope {
   data: [FriendRequestCreateManyCreatorInput!]!
   skipDuplicates: Boolean
@@ -363,54 +606,22 @@ input FriendRequestCreateManyCreatorInput {
   status: Status
 }
 
-input FriendRequestCreateNestedManyWithoutReceiverInput {
-  create: [FriendRequestCreateWithoutReceiverInput!]
-  connectOrCreate: [FriendRequestCreateOrConnectWithoutReceiverInput!]
-  createMany: FriendRequestCreateManyReceiverInputEnvelope
-  connect: [FriendRequestWhereUniqueInput!]
-}
-
-input FriendRequestCreateWithoutReceiverInput {
-  id: String
-  status: Status
-  creator: UserCreateNestedOneWithoutFriendRequestsSentInput!
-}
-
-input UserCreateNestedOneWithoutFriendRequestsSentInput {
-  create: UserCreateWithoutFriendRequestsSentInput
-  connectOrCreate: UserCreateOrConnectWithoutFriendRequestsSentInput
-  connect: UserWhereUniqueInput
-}
-
-input UserCreateWithoutFriendRequestsSentInput {
-  id: String
-  firstName: String!
-  lastName: String!
-  email: String!
-  password: String!
-  phoneNumber: String!
-  imgSrc: String
-  roles: UserCreaterolesInput
-  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
-}
-
-input UserCreateOrConnectWithoutFriendRequestsSentInput {
-  where: UserWhereUniqueInput!
-  create: UserCreateWithoutFriendRequestsSentInput!
-}
-
-input FriendRequestCreateOrConnectWithoutReceiverInput {
-  where: FriendRequestWhereUniqueInput!
-  create: FriendRequestCreateWithoutReceiverInput!
-}
-
-input FriendRequestCreateManyReceiverInputEnvelope {
-  data: [FriendRequestCreateManyReceiverInput!]!
-  skipDuplicates: Boolean
-}
-
-input FriendRequestCreateManyReceiverInput {
-  id: String
+input SendFriendRequestInput {
   creatorId: String!
-  status: Status
+  receiverId: String!
+}
+
+input AcceptFriendRequestInput {
+  creatorId: String!
+  receiverId: String!
+}
+
+input RejectFriendRequestInput {
+  creatorId: String!
+  receiverId: String!
+}
+
+input CancelFriendRequestInput {
+  creatorId: String!
+  receiverId: String!
 }

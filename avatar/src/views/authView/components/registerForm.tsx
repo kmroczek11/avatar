@@ -13,6 +13,7 @@ import useRegisterUser from "../../../components/auth/hooks/useRegisterUser";
 import createRegisterUserClient from "../../../graphql/clients/registerUserClient";
 import { useCookies } from "react-cookie";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
+import { userWithEmailExistsMessage, userWithPhoneNumberExistsMessage } from "../../../translations/pl/errorMessages";
 
 YupPassword(Yup); // extend yup
 
@@ -27,8 +28,6 @@ const defaultValues = {
     password: "",
     phoneNumber: ""
 };
-
-const userExistsMessage = "Użytkownik o podanym adresie e-mail już istnieje.";
 
 export default function RegisterForm(props: RegisterFormProps) {
     const { setActive } = props;
@@ -204,9 +203,13 @@ export default function RegisterForm(props: RegisterFormProps) {
                                     zawierać dużą literę oraz znak specjalny (!@# itp.)
                                 </Typography>
                             </Grid>
-                            {registerError === "User already exists" ? (
-                                <CustomAlert severity="error" msg={userExistsMessage} />
-                            ) : (
+                            {registerError === "User with email already exists" ? (
+                                <CustomAlert severity="error" msg={userWithEmailExistsMessage} />
+                            ) :
+                            registerError === "User with phone number already exists" ? (
+                                <CustomAlert severity="error" msg={userWithPhoneNumberExistsMessage} />
+                            ) :  
+                            (
                                 registerError && (
                                     <CustomAlert severity="error" msg="Nieoczekiwany błąd" />
                                 )
@@ -215,7 +218,6 @@ export default function RegisterForm(props: RegisterFormProps) {
                                 variant="contained"
                                 type="submit"
                                 sx={{ my: 2 }}
-                                disabled={isSubmitting}
                             >
                                 Zarejestruj
                             </ColorButton>

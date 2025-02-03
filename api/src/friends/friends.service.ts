@@ -10,7 +10,7 @@ import { AcceptFriendRequestInput } from './inputs/accept-friend-request.input';
 import { GetPendingRequestsInput } from './inputs/get-pending-requests.input';
 import { RejectFriendRequestInput } from './inputs/reject-friend-request.input';
 import { CancelFriendRequestInput } from './inputs/cancel-friend-request.input';
-import { UserService } from 'src/user/user.service';
+import { Friend } from 'src/@generated/friend/friend.model';
 
 @Injectable()
 export class FriendsService {
@@ -28,17 +28,24 @@ export class FriendsService {
         });
     }
 
-    async acceptFriendRequest(acceptFriendRequestInput: AcceptFriendRequestInput): Promise<FriendRequest> {
-        const { friendRequestId } = acceptFriendRequestInput;
+    async acceptFriendRequest(acceptFriendRequestInput: AcceptFriendRequestInput): Promise<Friend> {
+        const { creatorId, receiverId } = acceptFriendRequestInput;
 
-        return await this.prisma.friendRequest.update({
+        await this.prisma.friendRequest.update({
             where: {
-                id: friendRequestId,
+                creatorId_receiverId: { creatorId, receiverId }
             },
             data: {
                 status: 'ACCEPTED',
             },
         });
+
+        return await this.prisma.friend.create({
+            data: {
+              userId1: creatorId,
+              userId2: receiverId
+            }
+          });
     }
 
     async getPendingRequests(getPendingRequestsInput: GetPendingRequestsInput): Promise<FriendRequest[]> {
@@ -53,11 +60,11 @@ export class FriendsService {
     }
 
     async rejectFriendRequest(rejectFriendRequestInput: RejectFriendRequestInput): Promise<FriendRequest> {
-        const { friendRequestId } = rejectFriendRequestInput;
+        const { creatorId, receiverId } = rejectFriendRequestInput;
 
         return await this.prisma.friendRequest.update({
             where: {
-                id: friendRequestId,
+                creatorId_receiverId: { creatorId, receiverId }
             },
             data: {
                 status: 'REJECTED',
@@ -66,11 +73,11 @@ export class FriendsService {
     }
 
     async cancelFriendRequest(cancelFriendRequestInput: CancelFriendRequestInput): Promise<FriendRequest> {
-        const { friendRequestId } = cancelFriendRequestInput;
+        const { creatorId, receiverId } = cancelFriendRequestInput;
 
         return await this.prisma.friendRequest.update({
             where: {
-                id: friendRequestId,
+                creatorId_receiverId: { creatorId, receiverId }
             },
             data: {
                 status: 'CANCELED',

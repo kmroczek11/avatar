@@ -1,0 +1,5 @@
+mutation SendFriendRequest($input: SendFriendRequestInput!) {
+  sendFriendRequest(sendFriendRequestInput: $input){
+    id
+  }
+}

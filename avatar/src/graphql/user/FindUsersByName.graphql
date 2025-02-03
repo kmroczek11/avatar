@@ -1,6 +1,9 @@
-query FindUsersByName($name: String!) {
-  findUsersByName(name: $name) {
+query FindUsersByName($input: FindByNameInput!) {
+  findUsersByName(findByNameInput: $input) {
+    id
+    imgSrc
     firstName
     lastName
+    friendRequestStatus
   }
 }

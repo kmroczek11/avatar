@@ -6,6 +6,7 @@ import { AcceptFriendRequestInput } from './inputs/accept-friend-request.input';
 import { GetPendingRequestsInput } from './inputs/get-pending-requests.input';
 import { RejectFriendRequestInput } from './inputs/reject-friend-request.input';
 import { CancelFriendRequestInput } from './inputs/cancel-friend-request.input';
+import { Friend } from 'src/@generated/friend/friend.model';
 
 @Resolver((of) => FriendRequest)
 export class FriendsResolver {
@@ -21,7 +22,7 @@ export class FriendsResolver {
   @Mutation(() => FriendRequest)
   acceptFriendRequest(
     @Args('acceptFriendRequestInput') acceptFriendRequestInput: AcceptFriendRequestInput,
-  ): Promise<FriendRequest> {
+  ): Promise<Friend> {
     return this.friendsService.acceptFriendRequest(acceptFriendRequestInput);
   }
 

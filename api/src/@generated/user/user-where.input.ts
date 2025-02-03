@@ -4,6 +4,7 @@ import { StringFilter } from '../prisma/string-filter.input';
 import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
 import { EnumRoleNullableListFilter } from '../prisma/enum-role-nullable-list-filter.input';
 import { FriendRequestListRelationFilter } from '../friend-request/friend-request-list-relation-filter.input';
+import { FriendListRelationFilter } from '../friend/friend-list-relation-filter.input';
 
 @InputType()
 export class UserWhereInput {
@@ -46,4 +47,10 @@ export class UserWhereInput {
 
     @Field(() => FriendRequestListRelationFilter, {nullable:true})
     friendRequestsReceived?: FriendRequestListRelationFilter;
+
+    @Field(() => FriendListRelationFilter, {nullable:true})
+    friends?: FriendListRelationFilter;
+
+    @Field(() => FriendListRelationFilter, {nullable:true})
+    friendsOf?: FriendListRelationFilter;
 }

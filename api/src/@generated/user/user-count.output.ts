@@ -10,4 +10,10 @@ export class UserCount {
 
     @Field(() => Int, {nullable:false})
     friendRequestsReceived?: number;
+
+    @Field(() => Int, {nullable:false})
+    friends?: number;
+
+    @Field(() => Int, {nullable:false})
+    friendsOf?: number;
 }

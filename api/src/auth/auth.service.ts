@@ -56,10 +56,16 @@ export class AuthService {
   }
 
   async register(registerUserInput: RegisterUserInput) {
-    const user = await this.userService.findOneByEmail(registerUserInput.email);
+    const userWithEmail = await this.userService.findOneByEmail(registerUserInput.email);
 
-    if (user) {
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    if (userWithEmail) {
+      throw new HttpException('User with email already exists', HttpStatus.BAD_REQUEST);
+    }
+
+    const userWithPhoneNumber = await this.userService.findOneByPhoneNumber(registerUserInput.phoneNumber);
+
+    if (userWithPhoneNumber) {
+      throw new HttpException('User with phone number already exists', HttpStatus.BAD_REQUEST);
     }
 
     const password = await bcrypt.hash(registerUserInput.password, 12);

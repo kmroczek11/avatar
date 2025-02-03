@@ -4,6 +4,8 @@ import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
 import { UserUpdaterolesInput } from './user-updateroles.input';
 import { FriendRequestUpdateManyWithoutReceiverNestedInput } from '../friend-request/friend-request-update-many-without-receiver-nested.input';
+import { FriendUpdateManyWithoutUser1NestedInput } from '../friend/friend-update-many-without-user-1-nested.input';
+import { FriendUpdateManyWithoutUser2NestedInput } from '../friend/friend-update-many-without-user-2-nested.input';
 
 @InputType()
 export class UserUpdateWithoutFriendRequestsSentInput {
@@ -34,4 +36,10 @@ export class UserUpdateWithoutFriendRequestsSentInput {
 
     @Field(() => FriendRequestUpdateManyWithoutReceiverNestedInput, {nullable:true})
     friendRequestsReceived?: FriendRequestUpdateManyWithoutReceiverNestedInput;
+
+    @Field(() => FriendUpdateManyWithoutUser1NestedInput, {nullable:true})
+    friends?: FriendUpdateManyWithoutUser1NestedInput;
+
+    @Field(() => FriendUpdateManyWithoutUser2NestedInput, {nullable:true})
+    friendsOf?: FriendUpdateManyWithoutUser2NestedInput;
 }
