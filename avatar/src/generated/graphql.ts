@@ -304,6 +304,10 @@ export type FriendWhereUniqueInput = {
   userId2?: InputMaybe<StringFilter>;
 };
 
+export type GetAllFriendsInput = {
+  userId: Scalars['String']['input'];
+};
+
 export type GetPendingRequestsInput = {
   receiverId: Scalars['String']['input'];
 };
@@ -325,6 +329,14 @@ export type LogOutResponse = {
 
 export type LogOutUserInput = {
   userId: Scalars['String']['input'];
+};
+
+export type MinimalUser = {
+  __typename?: 'MinimalUser';
+  firstName: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  imgSrc?: Maybe<Scalars['String']['output']>;
+  lastName: Scalars['String']['output'];
 };
 
 export type Mutation = {
@@ -448,6 +460,7 @@ export type Query = {
   __typename?: 'Query';
   findOne: User;
   findUsersByName: Array<UserWithFriendRequestStatus>;
+  getAllFriends: Array<MinimalUser>;
   getPendingRequests: Array<FriendRequest>;
 };
 
@@ -459,6 +472,11 @@ export type QueryFindOneArgs = {
 
 export type QueryFindUsersByNameArgs = {
   findByNameInput: FindByNameInput;
+};
+
+
+export type QueryGetAllFriendsArgs = {
+  getAllFriendsInput: GetAllFriendsInput;
 };
 
 
@@ -768,12 +786,40 @@ export type RegisterUserMutationVariables = Exact<{
 
 export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'LogInResponse', userId: string } };
 
+export type AcceptFriendRequestMutationVariables = Exact<{
+  input: AcceptFriendRequestInput;
+}>;
+
+
+export type AcceptFriendRequestMutation = { __typename?: 'Mutation', acceptFriendRequest: { __typename?: 'FriendRequest', id: string } };
+
 export type CancelFriendRequestMutationVariables = Exact<{
   input: CancelFriendRequestInput;
 }>;
 
 
 export type CancelFriendRequestMutation = { __typename?: 'Mutation', cancelFriendRequest: { __typename?: 'FriendRequest', id: string } };
+
+export type GetAllFriendsQueryVariables = Exact<{
+  input: GetAllFriendsInput;
+}>;
+
+
+export type GetAllFriendsQuery = { __typename?: 'Query', getAllFriends: Array<{ __typename?: 'MinimalUser', id: string, firstName: string, lastName: string, imgSrc?: string | null }> };
+
+export type GetPendingRequestsQueryVariables = Exact<{
+  input: GetPendingRequestsInput;
+}>;
+
+
+export type GetPendingRequestsQuery = { __typename?: 'Query', getPendingRequests: Array<{ __typename?: 'FriendRequest', creator: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc?: string | null } }> };
+
+export type RejectFriendRequestMutationVariables = Exact<{
+  input: RejectFriendRequestInput;
+}>;
+
+
+export type RejectFriendRequestMutation = { __typename?: 'Mutation', rejectFriendRequest: { __typename?: 'FriendRequest', id: string } };
 
 export type SendFriendRequestMutationVariables = Exact<{
   input: SendFriendRequestInput;
@@ -942,6 +988,32 @@ export const useRegisterUserMutation = <
 
 useRegisterUserMutation.fetcher = (client: GraphQLClient, variables: RegisterUserMutationVariables, headers?: RequestInit['headers']) => fetcher<RegisterUserMutation, RegisterUserMutationVariables>(client, RegisterUserDocument, variables, headers);
 
+export const AcceptFriendRequestDocument = `
+    mutation AcceptFriendRequest($input: AcceptFriendRequestInput!) {
+  acceptFriendRequest(acceptFriendRequestInput: $input) {
+    id
+  }
+}
+    `;
+
+export const useAcceptFriendRequestMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<AcceptFriendRequestMutation, TError, AcceptFriendRequestMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<AcceptFriendRequestMutation, TError, AcceptFriendRequestMutationVariables, TContext>(
+      ['AcceptFriendRequest'],
+      (variables?: AcceptFriendRequestMutationVariables) => fetcher<AcceptFriendRequestMutation, AcceptFriendRequestMutationVariables>(client, AcceptFriendRequestDocument, variables, headers)(),
+      options
+    )};
+
+
+useAcceptFriendRequestMutation.fetcher = (client: GraphQLClient, variables: AcceptFriendRequestMutationVariables, headers?: RequestInit['headers']) => fetcher<AcceptFriendRequestMutation, AcceptFriendRequestMutationVariables>(client, AcceptFriendRequestDocument, variables, headers);
+
 export const CancelFriendRequestDocument = `
     mutation CancelFriendRequest($input: CancelFriendRequestInput!) {
   cancelFriendRequest(cancelFriendRequestInput: $input) {
@@ -967,6 +1039,98 @@ export const useCancelFriendRequestMutation = <
 
 
 useCancelFriendRequestMutation.fetcher = (client: GraphQLClient, variables: CancelFriendRequestMutationVariables, headers?: RequestInit['headers']) => fetcher<CancelFriendRequestMutation, CancelFriendRequestMutationVariables>(client, CancelFriendRequestDocument, variables, headers);
+
+export const GetAllFriendsDocument = `
+    query GetAllFriends($input: GetAllFriendsInput!) {
+  getAllFriends(getAllFriendsInput: $input) {
+    id
+    firstName
+    lastName
+    imgSrc
+  }
+}
+    `;
+
+export const useGetAllFriendsQuery = <
+      TData = GetAllFriendsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetAllFriendsQueryVariables,
+      options?: UseQueryOptions<GetAllFriendsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetAllFriendsQuery, TError, TData>(
+      ['GetAllFriends', variables],
+      fetcher<GetAllFriendsQuery, GetAllFriendsQueryVariables>(client, GetAllFriendsDocument, variables, headers),
+      options
+    )};
+
+useGetAllFriendsQuery.getKey = (variables: GetAllFriendsQueryVariables) => ['GetAllFriends', variables];
+
+
+useGetAllFriendsQuery.fetcher = (client: GraphQLClient, variables: GetAllFriendsQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAllFriendsQuery, GetAllFriendsQueryVariables>(client, GetAllFriendsDocument, variables, headers);
+
+export const GetPendingRequestsDocument = `
+    query GetPendingRequests($input: GetPendingRequestsInput!) {
+  getPendingRequests(getPendingRequestsInput: $input) {
+    creator {
+      id
+      firstName
+      lastName
+      imgSrc
+    }
+  }
+}
+    `;
+
+export const useGetPendingRequestsQuery = <
+      TData = GetPendingRequestsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetPendingRequestsQueryVariables,
+      options?: UseQueryOptions<GetPendingRequestsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetPendingRequestsQuery, TError, TData>(
+      ['GetPendingRequests', variables],
+      fetcher<GetPendingRequestsQuery, GetPendingRequestsQueryVariables>(client, GetPendingRequestsDocument, variables, headers),
+      options
+    )};
+
+useGetPendingRequestsQuery.getKey = (variables: GetPendingRequestsQueryVariables) => ['GetPendingRequests', variables];
+
+
+useGetPendingRequestsQuery.fetcher = (client: GraphQLClient, variables: GetPendingRequestsQueryVariables, headers?: RequestInit['headers']) => fetcher<GetPendingRequestsQuery, GetPendingRequestsQueryVariables>(client, GetPendingRequestsDocument, variables, headers);
+
+export const RejectFriendRequestDocument = `
+    mutation RejectFriendRequest($input: RejectFriendRequestInput!) {
+  rejectFriendRequest(rejectFriendRequestInput: $input) {
+    id
+  }
+}
+    `;
+
+export const useRejectFriendRequestMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<RejectFriendRequestMutation, TError, RejectFriendRequestMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<RejectFriendRequestMutation, TError, RejectFriendRequestMutationVariables, TContext>(
+      ['RejectFriendRequest'],
+      (variables?: RejectFriendRequestMutationVariables) => fetcher<RejectFriendRequestMutation, RejectFriendRequestMutationVariables>(client, RejectFriendRequestDocument, variables, headers)(),
+      options
+    )};
+
+
+useRejectFriendRequestMutation.fetcher = (client: GraphQLClient, variables: RejectFriendRequestMutationVariables, headers?: RequestInit['headers']) => fetcher<RejectFriendRequestMutation, RejectFriendRequestMutationVariables>(client, RejectFriendRequestDocument, variables, headers);
 
 export const SendFriendRequestDocument = `
     mutation SendFriendRequest($input: SendFriendRequestInput!) {

@@ -1,0 +1,10 @@
+query GetPendingRequests($input: GetPendingRequestsInput!) {
+  getPendingRequests(getPendingRequestsInput: $input) {
+    creator{
+        id
+        firstName
+        lastName
+        imgSrc
+    }
+  }
+}

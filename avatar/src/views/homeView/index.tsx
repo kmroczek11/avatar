@@ -6,14 +6,16 @@ import Footer from '../../components/footer';
 import MapView from '../mapView';
 import Chat from '../../components/chat';
 import SearchBar from './components/SearchBar';
+import FriendsBox from './components/FriendsBox';
 
 export default function HomeView() {
     const { user } = useAuth();
 
     return (
         user ?
-            <Grid container height="95vh" sx={{position:'relative'}}>
-                <SearchBar/>
+            <Grid container height="95vh" sx={{ position: 'relative' }}>
+                <SearchBar />
+                <FriendsBox />
                 <MapView />
             </Grid> :
             <React.Fragment>

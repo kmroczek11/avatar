@@ -1,0 +1,8 @@
+query GetAllFriends($input: GetAllFriendsInput!) {
+  getAllFriends(getAllFriendsInput: $input) {
+      id
+      firstName
+      lastName
+      imgSrc
+  }
+}

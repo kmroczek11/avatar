@@ -94,10 +94,18 @@ type UserWithFriendRequestStatus {
   friendRequestStatus: Status
 }
 
+type MinimalUser {
+  id: String!
+  firstName: String!
+  lastName: String!
+  imgSrc: String
+}
+
 type Query {
   findOne(email: String!): User!
   findUsersByName(findByNameInput: FindByNameInput!): [UserWithFriendRequestStatus!]!
   getPendingRequests(getPendingRequestsInput: GetPendingRequestsInput!): [FriendRequest!]!
+  getAllFriends(getAllFriendsInput: GetAllFriendsInput!): [MinimalUser!]!
 }
 
 input FindByNameInput {
@@ -107,6 +115,10 @@ input FindByNameInput {
 
 input GetPendingRequestsInput {
   receiverId: String!
+}
+
+input GetAllFriendsInput {
+  userId: String!
 }
 
 type Mutation {

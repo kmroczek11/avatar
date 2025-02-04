@@ -88,9 +88,11 @@ export default function SearchBar() {
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 1,
-        backgroundColor: theme.palette.primary.main,
-        borderRadius: '10px',
-        width: '300px',
+        bgcolor: "background.paper",
+        boxShadow: 2,
+        borderRadius: 2,
+        width: "100%",
+        maxWidth: 300,
       }}
     >
       <Box
@@ -98,7 +100,6 @@ export default function SearchBar() {
           display: 'flex',
           alignItems: 'flex-end',
           width: '100%',
-          backgroundColor: 'white',
           borderRadius: '4px',
           padding: '4px 8px',
         }}

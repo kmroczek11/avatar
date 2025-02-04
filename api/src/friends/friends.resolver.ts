@@ -7,10 +7,13 @@ import { GetPendingRequestsInput } from './inputs/get-pending-requests.input';
 import { RejectFriendRequestInput } from './inputs/reject-friend-request.input';
 import { CancelFriendRequestInput } from './inputs/cancel-friend-request.input';
 import { Friend } from 'src/@generated/friend/friend.model';
+import { FriendRequestWithCreator } from './types/friendRequestWithCreator.type';
+import { GetAllFriendsInput } from './inputs/get-all-friends.input';
+import MinimalUser from './classes/minimal-user.class';
 
 @Resolver((of) => FriendRequest)
 export class FriendsResolver {
-  constructor(private friendsService: FriendsService) {}
+  constructor(private friendsService: FriendsService) { }
 
   @Mutation(() => FriendRequest)
   sendFriendRequest(
@@ -27,7 +30,7 @@ export class FriendsResolver {
   }
 
   @Query(() => [FriendRequest])
-  getPendingRequests(@Args('getPendingRequestsInput') getPendingRequestsInput: GetPendingRequestsInput): Promise<FriendRequest[]> {
+  getPendingRequests(@Args('getPendingRequestsInput') getPendingRequestsInput: GetPendingRequestsInput): Promise<FriendRequestWithCreator[]> {
     return this.friendsService.getPendingRequests(getPendingRequestsInput);
   }
 
@@ -43,5 +46,10 @@ export class FriendsResolver {
     @Args('cancelFriendRequestInput') cancelFriendRequestInput: CancelFriendRequestInput,
   ): Promise<FriendRequest> {
     return this.friendsService.cancelFriendRequest(cancelFriendRequestInput);
+  }
+
+  @Query(() => [MinimalUser])
+  getAllFriends(@Args('getAllFriendsInput') getAllFriendsInput: GetAllFriendsInput,): Promise<MinimalUser[]> {
+    return this.friendsService.getAllFriends(getAllFriendsInput)
   }
 }

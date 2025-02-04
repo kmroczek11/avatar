@@ -15,6 +15,7 @@ import { useCookies } from "react-cookie";
 import { LogOutUserMutation, LogOutUserMutationVariables, Role, useLogOutUserMutation } from "../../../generated/graphql";
 import createAccessClient from "../../../graphql/clients/accessClient";
 import { useAuth } from "../../auth/components/AuthProvider";
+import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 
 const errorMessage =
     "Wystąpił nieoczekiwany błąd. Skontaktuj się z administratorem strony.";
@@ -115,6 +116,14 @@ export default function UserButtonsBox() {
                                     <SettingsIcon fontSize="small" />
                                 </ListItemIcon>
                                 Ustawienia
+                            </MenuItem>
+                        )}
+                        {user.roles.includes(Role.User) && (
+                            <MenuItem onClick={() => navigate("/oczekujace_zaproszenia")}>
+                                <ListItemIcon>
+                                    <MarkEmailUnreadIcon fontSize="small" />
+                                </ListItemIcon>
+                                Zaproszenia
                             </MenuItem>
                         )}
                         <MenuItem sx={{ justifyContent: "center" }}>
