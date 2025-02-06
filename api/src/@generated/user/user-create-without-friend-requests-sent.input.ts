@@ -4,6 +4,7 @@ import { UserCreaterolesInput } from './user-createroles.input';
 import { FriendRequestCreateNestedManyWithoutReceiverInput } from '../friend-request/friend-request-create-nested-many-without-receiver.input';
 import { FriendCreateNestedManyWithoutUser1Input } from '../friend/friend-create-nested-many-without-user-1.input';
 import { FriendCreateNestedManyWithoutUser2Input } from '../friend/friend-create-nested-many-without-user-2.input';
+import { PostCreateNestedManyWithoutAuthorInput } from '../post/post-create-nested-many-without-author.input';
 
 @InputType()
 export class UserCreateWithoutFriendRequestsSentInput {
@@ -40,4 +41,7 @@ export class UserCreateWithoutFriendRequestsSentInput {
 
     @Field(() => FriendCreateNestedManyWithoutUser2Input, {nullable:true})
     friendsOf?: FriendCreateNestedManyWithoutUser2Input;
+
+    @Field(() => PostCreateNestedManyWithoutAuthorInput, {nullable:true})
+    posts?: PostCreateNestedManyWithoutAuthorInput;
 }

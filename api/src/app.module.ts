@@ -18,6 +18,7 @@ import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
 import { ChatModule } from './chat/chat.module';
 import { FriendsModule } from './friends/friends.module';
 import { GraphQLUpload } from 'graphql-upload-ts';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { GraphQLUpload } from 'graphql-upload-ts';
     UserModule,
     ChatModule,
     FriendsModule,
+    PostsModule
   ],
   controllers: [],
     providers: [

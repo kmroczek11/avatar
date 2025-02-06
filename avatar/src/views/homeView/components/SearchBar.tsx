@@ -83,16 +83,12 @@ export default function SearchBar() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-end',
-        position: 'absolute',
-        top: '10px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 1,
         bgcolor: "background.paper",
         boxShadow: 2,
         borderRadius: 2,
         width: "100%",
         maxWidth: 300,
+        my: 2
       }}
     >
       <Box

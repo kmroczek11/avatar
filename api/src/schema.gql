@@ -50,11 +50,28 @@ type Friend {
   user2: User!
 }
 
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  imageUrl: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  authorId: String!
+  author: User!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type UserCount {
   friendRequestsSent: Int!
   friendRequestsReceived: Int!
   friends: Int!
   friendsOf: Int!
+  posts: Int!
 }
 
 type User {
@@ -70,6 +87,7 @@ type User {
   friendRequestsReceived: [FriendRequest!]
   friends: [Friend!]
   friendsOf: [Friend!]
+  posts: [Post!]
   _count: UserCount!
 }
 
@@ -90,6 +108,7 @@ type UserWithFriendRequestStatus {
   friendRequestsReceived: [FriendRequest!]
   friends: [Friend!]
   friendsOf: [Friend!]
+  posts: [Post!]
   _count: UserCount!
   friendRequestStatus: Status
 }
@@ -135,6 +154,7 @@ type Mutation {
   acceptFriendRequest(acceptFriendRequestInput: AcceptFriendRequestInput!): FriendRequest!
   rejectFriendRequest(rejectFriendRequestInput: RejectFriendRequestInput!): FriendRequest!
   cancelFriendRequest(cancelFriendRequestInput: CancelFriendRequestInput!): FriendRequest!
+  createPost(createPostInput: CreatePostInput!): Post!
 }
 
 input RegisterUserInput {
@@ -204,6 +224,7 @@ input UserCreateInput {
   friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
   friends: FriendCreateNestedManyWithoutUser1Input
   friendsOf: FriendCreateNestedManyWithoutUser2Input
+  posts: PostCreateNestedManyWithoutAuthorInput
 }
 
 input UserCreaterolesInput {
@@ -241,6 +262,7 @@ input UserCreateWithoutFriendRequestsReceivedInput {
   friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
   friends: FriendCreateNestedManyWithoutUser1Input
   friendsOf: FriendCreateNestedManyWithoutUser2Input
+  posts: PostCreateNestedManyWithoutAuthorInput
 }
 
 input FriendCreateNestedManyWithoutUser1Input {
@@ -273,6 +295,7 @@ input UserCreateWithoutFriendsOfInput {
   friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
   friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
   friends: FriendCreateNestedManyWithoutUser1Input
+  posts: PostCreateNestedManyWithoutAuthorInput
 }
 
 input FriendRequestCreateNestedManyWithoutReceiverInput {
@@ -306,6 +329,7 @@ input UserCreateWithoutFriendRequestsSentInput {
   friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
   friends: FriendCreateNestedManyWithoutUser1Input
   friendsOf: FriendCreateNestedManyWithoutUser2Input
+  posts: PostCreateNestedManyWithoutAuthorInput
 }
 
 input FriendCreateNestedManyWithoutUser2Input {
@@ -338,47 +362,56 @@ input UserCreateWithoutFriendsInput {
   friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
   friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
   friendsOf: FriendCreateNestedManyWithoutUser2Input
+  posts: PostCreateNestedManyWithoutAuthorInput
 }
 
-input UserCreateOrConnectWithoutFriendsInput {
-  where: UserWhereUniqueInput!
-  create: UserCreateWithoutFriendsInput!
+input PostCreateNestedManyWithoutAuthorInput {
+  create: [PostCreateWithoutAuthorInput!]
+  connectOrCreate: [PostCreateOrConnectWithoutAuthorInput!]
+  createMany: PostCreateManyAuthorInputEnvelope
+  connect: [PostWhereUniqueInput!]
 }
 
-input UserWhereUniqueInput {
+input PostCreateWithoutAuthorInput {
   id: String
-  email: String
-  phoneNumber: String
-  AND: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  NOT: [UserWhereInput!]
-  firstName: StringFilter
-  lastName: StringFilter
-  password: StringFilter
-  imgSrc: StringNullableFilter
-  roles: EnumRoleNullableListFilter
-  friendRequestsSent: FriendRequestListRelationFilter
-  friendRequestsReceived: FriendRequestListRelationFilter
-  friends: FriendListRelationFilter
-  friendsOf: FriendListRelationFilter
+  title: String!
+  content: String!
+  imageUrl: String
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
-input UserWhereInput {
-  AND: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  NOT: [UserWhereInput!]
+input PostCreateOrConnectWithoutAuthorInput {
+  where: PostWhereUniqueInput!
+  create: PostCreateWithoutAuthorInput!
+}
+
+input PostWhereUniqueInput {
+  id: String
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  title: StringFilter
+  content: StringFilter
+  imageUrl: StringNullableFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  authorId: StringFilter
+  author: UserRelationFilter
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
   id: StringFilter
-  firstName: StringFilter
-  lastName: StringFilter
-  email: StringFilter
-  password: StringFilter
-  phoneNumber: StringFilter
-  imgSrc: StringNullableFilter
-  roles: EnumRoleNullableListFilter
-  friendRequestsSent: FriendRequestListRelationFilter
-  friendRequestsReceived: FriendRequestListRelationFilter
-  friends: FriendListRelationFilter
-  friendsOf: FriendListRelationFilter
+  title: StringFilter
+  content: StringFilter
+  imageUrl: StringNullableFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  authorId: StringFilter
+  author: UserRelationFilter
 }
 
 input StringFilter {
@@ -444,6 +477,52 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeFilter
+}
+
+input NestedDateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeFilter
+}
+
+input UserRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  id: StringFilter
+  firstName: StringFilter
+  lastName: StringFilter
+  email: StringFilter
+  password: StringFilter
+  phoneNumber: StringFilter
+  imgSrc: StringNullableFilter
+  roles: EnumRoleNullableListFilter
+  friendRequestsSent: FriendRequestListRelationFilter
+  friendRequestsReceived: FriendRequestListRelationFilter
+  friends: FriendListRelationFilter
+  friendsOf: FriendListRelationFilter
+  posts: PostListRelationFilter
+}
+
 input EnumRoleNullableListFilter {
   equals: [Role!]
   has: Role
@@ -484,11 +563,6 @@ input NestedEnumStatusFilter {
   not: NestedEnumStatusFilter
 }
 
-input UserRelationFilter {
-  is: UserWhereInput
-  isNot: UserWhereInput
-}
-
 input FriendListRelationFilter {
   every: FriendWhereInput
   some: FriendWhereInput
@@ -504,6 +578,50 @@ input FriendWhereInput {
   userId2: StringFilter
   user1: UserRelationFilter
   user2: UserRelationFilter
+}
+
+input PostListRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
+input PostCreateManyAuthorInputEnvelope {
+  data: [PostCreateManyAuthorInput!]!
+  skipDuplicates: Boolean
+}
+
+input PostCreateManyAuthorInput {
+  id: String
+  title: String!
+  content: String!
+  imageUrl: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input UserCreateOrConnectWithoutFriendsInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutFriendsInput!
+}
+
+input UserWhereUniqueInput {
+  id: String
+  email: String
+  phoneNumber: String
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  firstName: StringFilter
+  lastName: StringFilter
+  password: StringFilter
+  imgSrc: StringNullableFilter
+  roles: EnumRoleNullableListFilter
+  friendRequestsSent: FriendRequestListRelationFilter
+  friendRequestsReceived: FriendRequestListRelationFilter
+  friends: FriendListRelationFilter
+  friendsOf: FriendListRelationFilter
+  posts: PostListRelationFilter
 }
 
 input FriendCreateOrConnectWithoutUser2Input {
@@ -636,4 +754,11 @@ input RejectFriendRequestInput {
 input CancelFriendRequestInput {
   creatorId: String!
   receiverId: String!
+}
+
+input CreatePostInput {
+  title: String!
+  content: String!
+  imageUrl: String
+  authorId: String!
 }

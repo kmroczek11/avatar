@@ -4,6 +4,7 @@ import { SortOrder } from '../prisma/sort-order.enum';
 import { SortOrderInput } from '../prisma/sort-order.input';
 import { FriendRequestOrderByRelationAggregateInput } from '../friend-request/friend-request-order-by-relation-aggregate.input';
 import { FriendOrderByRelationAggregateInput } from '../friend/friend-order-by-relation-aggregate.input';
+import { PostOrderByRelationAggregateInput } from '../post/post-order-by-relation-aggregate.input';
 
 @InputType()
 export class UserOrderByWithRelationInput {
@@ -43,4 +44,7 @@ export class UserOrderByWithRelationInput {
 
     @Field(() => FriendOrderByRelationAggregateInput, {nullable:true})
     friendsOf?: FriendOrderByRelationAggregateInput;
+
+    @Field(() => PostOrderByRelationAggregateInput, {nullable:true})
+    posts?: PostOrderByRelationAggregateInput;
 }

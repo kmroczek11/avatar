@@ -4,9 +4,8 @@ import AuthView from '../authView';
 import { useAuth } from '../../components/auth/components/AuthProvider';
 import Footer from '../../components/footer';
 import MapView from '../mapView';
-import Chat from '../../components/chat';
-import SearchBar from './components/SearchBar';
 import FriendsBox from './components/FriendsBox';
+import Dropdown from './components/Dropdown';
 
 export default function HomeView() {
     const { user } = useAuth();
@@ -14,7 +13,7 @@ export default function HomeView() {
     return (
         user ?
             <Grid container height="95vh" sx={{ position: 'relative' }}>
-                <SearchBar />
+                <Dropdown />
                 <FriendsBox />
                 <MapView />
             </Grid> :

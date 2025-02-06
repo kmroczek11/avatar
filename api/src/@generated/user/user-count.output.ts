@@ -16,4 +16,7 @@ export class UserCount {
 
     @Field(() => Int, {nullable:false})
     friendsOf?: number;
+
+    @Field(() => Int, {nullable:false})
+    posts?: number;
 }

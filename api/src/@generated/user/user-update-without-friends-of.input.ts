@@ -6,6 +6,7 @@ import { UserUpdaterolesInput } from './user-updateroles.input';
 import { FriendRequestUpdateManyWithoutCreatorNestedInput } from '../friend-request/friend-request-update-many-without-creator-nested.input';
 import { FriendRequestUpdateManyWithoutReceiverNestedInput } from '../friend-request/friend-request-update-many-without-receiver-nested.input';
 import { FriendUpdateManyWithoutUser1NestedInput } from '../friend/friend-update-many-without-user-1-nested.input';
+import { PostUpdateManyWithoutAuthorNestedInput } from '../post/post-update-many-without-author-nested.input';
 
 @InputType()
 export class UserUpdateWithoutFriendsOfInput {
@@ -42,4 +43,7 @@ export class UserUpdateWithoutFriendsOfInput {
 
     @Field(() => FriendUpdateManyWithoutUser1NestedInput, {nullable:true})
     friends?: FriendUpdateManyWithoutUser1NestedInput;
+
+    @Field(() => PostUpdateManyWithoutAuthorNestedInput, {nullable:true})
+    posts?: PostUpdateManyWithoutAuthorNestedInput;
 }

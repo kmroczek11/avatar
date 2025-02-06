@@ -34,7 +34,7 @@ export default function FriendsBox() {
                 padding: 2,
                 position: 'absolute',
                 top: '50%',
-                right: 0,
+                right: 10,
                 transform: 'translateY(-50%)',
                 zIndex: 1,
             }}

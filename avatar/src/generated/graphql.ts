@@ -24,6 +24,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTime: { input: any; output: any; }
   EmailAddress: { input: any; output: any; }
   PhoneNumber: { input: any; output: any; }
   Upload: { input: any; output: any; }
@@ -72,6 +73,24 @@ export type ChangeProfilePicInput = {
 export type ChangeProfilePicResponse = {
   __typename?: 'ChangeProfilePicResponse';
   userId: Scalars['String']['output'];
+};
+
+export type CreatePostInput = {
+  authorId: Scalars['String']['input'];
+  content: Scalars['String']['input'];
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
+};
+
+export type DateTimeFilter = {
+  equals?: InputMaybe<Scalars['DateTime']['input']>;
+  gt?: InputMaybe<Scalars['DateTime']['input']>;
+  gte?: InputMaybe<Scalars['DateTime']['input']>;
+  in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  lt?: InputMaybe<Scalars['DateTime']['input']>;
+  lte?: InputMaybe<Scalars['DateTime']['input']>;
+  not?: InputMaybe<NestedDateTimeFilter>;
+  notIn?: InputMaybe<Array<Scalars['DateTime']['input']>>;
 };
 
 export type EnumRoleNullableListFilter = {
@@ -347,6 +366,7 @@ export type Mutation = {
   changeEmail: ChangeEmailResponse;
   changePassword: ChangePasswordResponse;
   changeProfilePic: ChangeProfilePicResponse;
+  createPost: Post;
   createUser: User;
   forgotPassword: ForgotPasswordResponse;
   logInUser: LogInResponse;
@@ -387,6 +407,11 @@ export type MutationChangeProfilePicArgs = {
 };
 
 
+export type MutationCreatePostArgs = {
+  createPostInput: CreatePostInput;
+};
+
+
 export type MutationCreateUserArgs = {
   createUserInput: UserCreateInput;
 };
@@ -419,6 +444,17 @@ export type MutationRejectFriendRequestArgs = {
 
 export type MutationSendFriendRequestArgs = {
   sendFriendRequestInput: SendFriendRequestInput;
+};
+
+export type NestedDateTimeFilter = {
+  equals?: InputMaybe<Scalars['DateTime']['input']>;
+  gt?: InputMaybe<Scalars['DateTime']['input']>;
+  gte?: InputMaybe<Scalars['DateTime']['input']>;
+  in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  lt?: InputMaybe<Scalars['DateTime']['input']>;
+  lte?: InputMaybe<Scalars['DateTime']['input']>;
+  not?: InputMaybe<NestedDateTimeFilter>;
+  notIn?: InputMaybe<Array<Scalars['DateTime']['input']>>;
 };
 
 export type NestedEnumStatusFilter = {
@@ -454,6 +490,87 @@ export type NestedStringNullableFilter = {
   not?: InputMaybe<NestedStringNullableFilter>;
   notIn?: InputMaybe<Array<Scalars['String']['input']>>;
   startsWith?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Post = {
+  __typename?: 'Post';
+  author: User;
+  authorId: Scalars['String']['output'];
+  content: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type PostCreateManyAuthorInput = {
+  content: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type PostCreateManyAuthorInputEnvelope = {
+  data: Array<PostCreateManyAuthorInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type PostCreateNestedManyWithoutAuthorInput = {
+  connect?: InputMaybe<Array<PostWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<PostCreateOrConnectWithoutAuthorInput>>;
+  create?: InputMaybe<Array<PostCreateWithoutAuthorInput>>;
+  createMany?: InputMaybe<PostCreateManyAuthorInputEnvelope>;
+};
+
+export type PostCreateOrConnectWithoutAuthorInput = {
+  create: PostCreateWithoutAuthorInput;
+  where: PostWhereUniqueInput;
+};
+
+export type PostCreateWithoutAuthorInput = {
+  content: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type PostListRelationFilter = {
+  every?: InputMaybe<PostWhereInput>;
+  none?: InputMaybe<PostWhereInput>;
+  some?: InputMaybe<PostWhereInput>;
+};
+
+export type PostWhereInput = {
+  AND?: InputMaybe<Array<PostWhereInput>>;
+  NOT?: InputMaybe<Array<PostWhereInput>>;
+  OR?: InputMaybe<Array<PostWhereInput>>;
+  author?: InputMaybe<UserRelationFilter>;
+  authorId?: InputMaybe<StringFilter>;
+  content?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<StringFilter>;
+  imageUrl?: InputMaybe<StringNullableFilter>;
+  title?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+};
+
+export type PostWhereUniqueInput = {
+  AND?: InputMaybe<Array<PostWhereInput>>;
+  NOT?: InputMaybe<Array<PostWhereInput>>;
+  OR?: InputMaybe<Array<PostWhereInput>>;
+  author?: InputMaybe<UserRelationFilter>;
+  authorId?: InputMaybe<StringFilter>;
+  content?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<StringNullableFilter>;
+  title?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type Query = {
@@ -562,6 +679,7 @@ export type User = {
   lastName: Scalars['String']['output'];
   password: Scalars['String']['output'];
   phoneNumber: Scalars['String']['output'];
+  posts?: Maybe<Array<Post>>;
   roles?: Maybe<Array<Role>>;
 };
 
@@ -571,6 +689,7 @@ export type UserCount = {
   friendRequestsSent: Scalars['Int']['output'];
   friends: Scalars['Int']['output'];
   friendsOf: Scalars['Int']['output'];
+  posts: Scalars['Int']['output'];
 };
 
 export type UserCreateInput = {
@@ -585,6 +704,7 @@ export type UserCreateInput = {
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
+  posts?: InputMaybe<PostCreateNestedManyWithoutAuthorInput>;
   roles?: InputMaybe<UserCreaterolesInput>;
 };
 
@@ -643,6 +763,7 @@ export type UserCreateWithoutFriendRequestsReceivedInput = {
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
+  posts?: InputMaybe<PostCreateNestedManyWithoutAuthorInput>;
   roles?: InputMaybe<UserCreaterolesInput>;
 };
 
@@ -657,6 +778,7 @@ export type UserCreateWithoutFriendRequestsSentInput = {
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
+  posts?: InputMaybe<PostCreateNestedManyWithoutAuthorInput>;
   roles?: InputMaybe<UserCreaterolesInput>;
 };
 
@@ -671,6 +793,7 @@ export type UserCreateWithoutFriendsInput = {
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
+  posts?: InputMaybe<PostCreateNestedManyWithoutAuthorInput>;
   roles?: InputMaybe<UserCreaterolesInput>;
 };
 
@@ -685,6 +808,7 @@ export type UserCreateWithoutFriendsOfInput = {
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
+  posts?: InputMaybe<PostCreateNestedManyWithoutAuthorInput>;
   roles?: InputMaybe<UserCreaterolesInput>;
 };
 
@@ -712,6 +836,7 @@ export type UserWhereInput = {
   lastName?: InputMaybe<StringFilter>;
   password?: InputMaybe<StringFilter>;
   phoneNumber?: InputMaybe<StringFilter>;
+  posts?: InputMaybe<PostListRelationFilter>;
   roles?: InputMaybe<EnumRoleNullableListFilter>;
 };
 
@@ -730,6 +855,7 @@ export type UserWhereUniqueInput = {
   lastName?: InputMaybe<StringFilter>;
   password?: InputMaybe<StringFilter>;
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
+  posts?: InputMaybe<PostListRelationFilter>;
   roles?: InputMaybe<EnumRoleNullableListFilter>;
 };
 
@@ -748,6 +874,7 @@ export type UserWithFriendRequestStatus = {
   lastName: Scalars['String']['output'];
   password: Scalars['String']['output'];
   phoneNumber: Scalars['String']['output'];
+  posts?: Maybe<Array<Post>>;
   roles?: Maybe<Array<Role>>;
 };
 
@@ -827,6 +954,13 @@ export type SendFriendRequestMutationVariables = Exact<{
 
 
 export type SendFriendRequestMutation = { __typename?: 'Mutation', sendFriendRequest: { __typename?: 'FriendRequest', id: string } };
+
+export type CreatePostMutationVariables = Exact<{
+  input: CreatePostInput;
+}>;
+
+
+export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string } };
 
 export type ChangeEmailMutationVariables = Exact<{
   input: ChangeEmailInput;
@@ -1157,6 +1291,32 @@ export const useSendFriendRequestMutation = <
 
 
 useSendFriendRequestMutation.fetcher = (client: GraphQLClient, variables: SendFriendRequestMutationVariables, headers?: RequestInit['headers']) => fetcher<SendFriendRequestMutation, SendFriendRequestMutationVariables>(client, SendFriendRequestDocument, variables, headers);
+
+export const CreatePostDocument = `
+    mutation CreatePost($input: CreatePostInput!) {
+  createPost(createPostInput: $input) {
+    id
+  }
+}
+    `;
+
+export const useCreatePostMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreatePostMutation, TError, CreatePostMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<CreatePostMutation, TError, CreatePostMutationVariables, TContext>(
+      ['CreatePost'],
+      (variables?: CreatePostMutationVariables) => fetcher<CreatePostMutation, CreatePostMutationVariables>(client, CreatePostDocument, variables, headers)(),
+      options
+    )};
+
+
+useCreatePostMutation.fetcher = (client: GraphQLClient, variables: CreatePostMutationVariables, headers?: RequestInit['headers']) => fetcher<CreatePostMutation, CreatePostMutationVariables>(client, CreatePostDocument, variables, headers);
 
 export const ChangeEmailDocument = `
     mutation ChangeEmail($input: ChangeEmailInput!) {

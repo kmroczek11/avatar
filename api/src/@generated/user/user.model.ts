@@ -4,6 +4,7 @@ import { ID } from '@nestjs/graphql';
 import { Role } from '../prisma/role.enum';
 import { FriendRequest } from '../friend-request/friend-request.model';
 import { Friend } from '../friend/friend.model';
+import { Post } from '../post/post.model';
 import { UserCount } from './user-count.output';
 
 @ObjectType()
@@ -44,6 +45,9 @@ export class User {
 
     @Field(() => [Friend], {nullable:true})
     friendsOf?: Array<Friend>;
+
+    @Field(() => [Post], {nullable:true})
+    posts?: Array<Post>;
 
     @Field(() => UserCount, {nullable:false})
     _count?: UserCount;

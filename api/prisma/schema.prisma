@@ -36,6 +36,7 @@ model User {
   friendRequestsReceived FriendRequest[] @relation("ReceivedFriendRequests")
   friends                Friend[]        @relation("FriendshipUser1")
   friendsOf              Friend[]        @relation("FriendshipUser2")
+  posts                  Post[]
 }
 
 model Friend {
@@ -58,4 +59,17 @@ model FriendRequest {
   status     Status @default(PENDING)
 
   @@unique([creatorId, receiverId])
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String   @db.VarChar(255)
+  content   String
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
 }
