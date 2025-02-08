@@ -49,9 +49,9 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AutoLogIn />
       <ThemeProvider theme={theme}>
         <AuthProvider>
+          <AutoLogIn />
           {element}
         </AuthProvider>
       </ThemeProvider>

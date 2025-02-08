@@ -8,12 +8,14 @@ import { useAuth } from "./AuthProvider";
 export default function AutoLogIn() {
     const [autoLoginUserError, setAutoLoginError] = useState<string>("");
     const [cookies, setCookie, removeCookie] = useCookies(['userId']);
+    const { getAccessTokenRefetch } = useAuth();
 
     const { isAutoLogInUserLoading, autoLogIn } = useAutoLogInUser(
         createAutoLogInUserClient(),
         setAutoLoginError,
-        (data) => { 
+        (data) => {
             setCookie('userId', data.autoLogInUser.userId)
+            getAccessTokenRefetch()
         }
     );
 

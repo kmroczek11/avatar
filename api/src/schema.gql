@@ -125,6 +125,7 @@ type Query {
   findUsersByName(findByNameInput: FindByNameInput!): [UserWithFriendRequestStatus!]!
   getPendingRequests(getPendingRequestsInput: GetPendingRequestsInput!): [FriendRequest!]!
   getAllFriends(getAllFriendsInput: GetAllFriendsInput!): [MinimalUser!]!
+  getFriendsPosts(getFriendsPostsInput: GetFriendsPostsInput!): [Post!]!
 }
 
 input FindByNameInput {
@@ -137,6 +138,10 @@ input GetPendingRequestsInput {
 }
 
 input GetAllFriendsInput {
+  userId: String!
+}
+
+input GetFriendsPostsInput {
   userId: String!
 }
 

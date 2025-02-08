@@ -5,6 +5,7 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import SearchBar from "./SearchBar";
 import { motion, AnimatePresence } from "framer-motion";
 import CreatePostBox from "./CreatePostBox";
+import PostList from "./PostsList";
 
 export default function Dropdown() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -70,6 +71,7 @@ export default function Dropdown() {
                                 }}>
                                     <SearchBar />
                                     <CreatePostBox />
+                                    <PostList />
                                     <Tooltip title="Zamknij stronę główną" sx={{ marginTop: "auto" }}>
                                         <IconButton
                                             aria-label="close-home-page"

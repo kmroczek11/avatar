@@ -327,6 +327,10 @@ export type GetAllFriendsInput = {
   userId: Scalars['String']['input'];
 };
 
+export type GetFriendsPostsInput = {
+  userId: Scalars['String']['input'];
+};
+
 export type GetPendingRequestsInput = {
   receiverId: Scalars['String']['input'];
 };
@@ -578,6 +582,7 @@ export type Query = {
   findOne: User;
   findUsersByName: Array<UserWithFriendRequestStatus>;
   getAllFriends: Array<MinimalUser>;
+  getFriendsPosts: Array<Post>;
   getPendingRequests: Array<FriendRequest>;
 };
 
@@ -594,6 +599,11 @@ export type QueryFindUsersByNameArgs = {
 
 export type QueryGetAllFriendsArgs = {
   getAllFriendsInput: GetAllFriendsInput;
+};
+
+
+export type QueryGetFriendsPostsArgs = {
+  getFriendsPostsInput: GetFriendsPostsInput;
 };
 
 
@@ -962,6 +972,13 @@ export type CreatePostMutationVariables = Exact<{
 
 export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string } };
 
+export type GetFriendsPostsQueryVariables = Exact<{
+  input: GetFriendsPostsInput;
+}>;
+
+
+export type GetFriendsPostsQuery = { __typename?: 'Query', getFriendsPosts: Array<{ __typename?: 'Post', id: string, title: string, content: string, imageUrl?: string | null, createdAt: any, author: { __typename?: 'User', id: string, firstName: string, lastName: string } }> };
+
 export type ChangeEmailMutationVariables = Exact<{
   input: ChangeEmailInput;
 }>;
@@ -1317,6 +1334,44 @@ export const useCreatePostMutation = <
 
 
 useCreatePostMutation.fetcher = (client: GraphQLClient, variables: CreatePostMutationVariables, headers?: RequestInit['headers']) => fetcher<CreatePostMutation, CreatePostMutationVariables>(client, CreatePostDocument, variables, headers);
+
+export const GetFriendsPostsDocument = `
+    query GetFriendsPosts($input: GetFriendsPostsInput!) {
+  getFriendsPosts(getFriendsPostsInput: $input) {
+    id
+    title
+    content
+    imageUrl
+    createdAt
+    author {
+      id
+      firstName
+      lastName
+    }
+  }
+}
+    `;
+
+export const useGetFriendsPostsQuery = <
+      TData = GetFriendsPostsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetFriendsPostsQueryVariables,
+      options?: UseQueryOptions<GetFriendsPostsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetFriendsPostsQuery, TError, TData>(
+      ['GetFriendsPosts', variables],
+      fetcher<GetFriendsPostsQuery, GetFriendsPostsQueryVariables>(client, GetFriendsPostsDocument, variables, headers),
+      options
+    )};
+
+useGetFriendsPostsQuery.getKey = (variables: GetFriendsPostsQueryVariables) => ['GetFriendsPosts', variables];
+
+
+useGetFriendsPostsQuery.fetcher = (client: GraphQLClient, variables: GetFriendsPostsQueryVariables, headers?: RequestInit['headers']) => fetcher<GetFriendsPostsQuery, GetFriendsPostsQueryVariables>(client, GetFriendsPostsDocument, variables, headers);
 
 export const ChangeEmailDocument = `
     mutation ChangeEmail($input: ChangeEmailInput!) {

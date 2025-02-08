@@ -52,10 +52,10 @@ import { PostsModule } from './posts/posts.module';
         provide: APP_FILTER,
         useClass: AllExceptionsFilter,
       },
-      // {
-      //   provide: APP_GUARD,
-      //   useClass: GqlAuthGuard,
-      // },
+      {
+        provide: APP_GUARD,
+        useClass: GqlAuthGuard,
+      },
       {
         provide: APP_GUARD,
         useClass: RolesGuard,

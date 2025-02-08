@@ -1,0 +1,14 @@
+query GetFriendsPosts($input: GetFriendsPostsInput!){
+  getFriendsPosts(getFriendsPostsInput: $input) {
+    id
+    title
+    content
+    imageUrl
+    createdAt
+    author {
+      id
+      firstName
+      lastName
+    }
+  }
+}
