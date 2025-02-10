@@ -16,10 +16,11 @@ export const ColorButton = styled(Button)(({ theme }) => ({
 export const Logo = styled("img")`
   width: 200px;
   height: 50px;
-  object-fit: cover;
+  object-fit: contain;
 `;
 
 export { default as CustomAlert } from "./CustomAlert";
 export { default as CustomDialog } from "./CustomDialog";
 export { default as CustomAvatar } from "./CustomAvatar";
 export { default as LoadingScreen } from "./LoadingScreen";
+export { default as ImageBlock } from "./ImageBlock";

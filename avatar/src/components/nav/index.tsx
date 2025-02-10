@@ -1,11 +1,11 @@
 import React from "react";
 import Toolbar from "@mui/material/Toolbar";
 import Link from "@mui/material/Link";
-// import logo from "../../assets/logos/logo2.jpg";
 import { Logo } from "../lib";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import UserButtonsBox from "./components/UserButtonsBox";
+import logo from "../../assets/logos/logo.png";
 
 export default function Navbar() {
     return (
@@ -26,8 +26,7 @@ export default function Navbar() {
                         disableGutters
                     >
                         <Link href="/" color="primary.contrastText">
-                            Avatar
-                            {/* <Logo src={logo} alt="logo" /> */}
+                            <Logo src={logo} alt="logo" />
                         </Link>
                         <Box
                             sx={{
