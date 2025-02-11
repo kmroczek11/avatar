@@ -47,6 +47,13 @@ export default function SearchBar() {
       _variables: SendFriendRequestMutationVariables,
       _context: unknown
     ) => {
+      setFilteredUsers((prev) =>
+        prev.map((user) =>
+          user.id === _variables.input.receiverId
+            ? { ...user, friendRequestStatus: Status.Pending }
+            : user
+        )
+      );
     },
   });
 
@@ -61,7 +68,9 @@ export default function SearchBar() {
     {
       enabled: !!searchQuery,
       onSuccess: (data) => {
-        setFilteredUsers(data?.findUsersByName || []);
+        if (data?.findUsersByName) {
+          setFilteredUsers(data.findUsersByName);
+        }
       },
     }
   );
@@ -132,12 +141,13 @@ export default function SearchBar() {
         >
           {!isFindUsersByNameLoading && filteredUsers.length > 0 ? (
             filteredUsers.map((filteredUser, index) => {
-              const isRequestPending = filteredUser.friendRequestStatus === 'PENDING';
+              const isRequestPending = filteredUser.friendRequestStatus === Status.Pending;
+              const isAlreadyFriend = filteredUser.friendRequestStatus === Status.Accepted;
               const isCurrentUser = filteredUser.id === user?.id;
 
               return (
                 <ListItem key={index} sx={{ padding: '8px 16px' }} secondaryAction={
-                  !isCurrentUser && (
+                  !isCurrentUser && !isAlreadyFriend && (
                     isRequestPending ? (
                       <Tooltip title="Anuluj zaproszenie">
                         <IconButton
@@ -173,7 +183,12 @@ export default function SearchBar() {
                     <CustomAvatar
                       name={`${filteredUser.firstName} ${filteredUser.lastName}`}
                       size="small"
-                      imgSrc={filteredUser.imgSrc || ""}
+                      imgSrc={
+                        filteredUser.imgSrc &&
+                        (process.env.NODE_ENV === "production"
+                          ? `${process.env.REACT_APP_HOST}/public/images/${filteredUser.imgSrc}`
+                          : `${process.env.REACT_APP_HOST}/images/${filteredUser.imgSrc}`)
+                      }
                     />
                   </ListItemAvatar>
                   <ListItemText

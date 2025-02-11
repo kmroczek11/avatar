@@ -977,7 +977,7 @@ export type GetFriendsPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetFriendsPostsQuery = { __typename?: 'Query', getFriendsPosts: Array<{ __typename?: 'Post', id: string, title: string, content: string, imageUrl?: string | null, createdAt: any, author: { __typename?: 'User', id: string, firstName: string, lastName: string } }> };
+export type GetFriendsPostsQuery = { __typename?: 'Query', getFriendsPosts: Array<{ __typename?: 'Post', id: string, title: string, content: string, imageUrl?: string | null, createdAt: any, author: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc?: string | null } }> };
 
 export type ChangeEmailMutationVariables = Exact<{
   input: ChangeEmailInput;
@@ -1347,6 +1347,7 @@ export const GetFriendsPostsDocument = `
       id
       firstName
       lastName
+      imgSrc
     }
   }
 }

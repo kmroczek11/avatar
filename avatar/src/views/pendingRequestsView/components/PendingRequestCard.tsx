@@ -47,7 +47,16 @@ export default function PendingRequestCard(props: PendingRequestCardProps) {
             alignItems: "center",
           }}
         >
-          <CustomAvatar name={`${firstName} ${lastName}`} size="medium" imgSrc={imgSrc!} />
+          <CustomAvatar
+            name={`${firstName} ${lastName}`}
+            size="medium"
+            imgSrc={
+              imgSrc &&
+              (process.env.NODE_ENV === "production"
+                ? `${process.env.REACT_APP_HOST}/public/images/${imgSrc}`
+                : `${process.env.REACT_APP_HOST}/images/${imgSrc}`)
+            }
+          />
           <Typography component="div" variant="h2">
             {firstName} {lastName}
           </Typography>

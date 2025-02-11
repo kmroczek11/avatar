@@ -11,7 +11,16 @@ export default function PostCard({ post }: PostProps) {
     return (
         <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
             <CardHeader
-                avatar={<CustomAvatar name={`${post?.author?.firstName} ${post?.author?.lastName}`} size="small" />}
+                avatar={
+                    <CustomAvatar
+                        name={`${post?.author?.firstName} ${post?.author?.lastName}`}
+                        size="small"
+                        imgSrc={post?.author?.imgSrc &&
+                            (process.env.NODE_ENV === "production"
+                                ? `${process.env.REACT_APP_HOST}/public/images/${post?.author?.imgSrc}`
+                                : `${process.env.REACT_APP_HOST}/images/${post?.author?.imgSrc}`)}
+                    />
+                }
                 title={`${post?.author?.firstName} ${post?.author?.lastName}`}
                 subheader={new Date(post?.createdAt).toLocaleDateString()}
             />

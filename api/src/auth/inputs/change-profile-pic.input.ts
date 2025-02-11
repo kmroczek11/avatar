@@ -7,5 +7,5 @@ export class ChangeProfilePicInput {
   userId: string;
 
   @Field(() => GraphQLUpload)
-  image: FileUpload;
+  image: Promise<FileUpload>;
 }

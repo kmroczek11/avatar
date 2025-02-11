@@ -28,7 +28,7 @@ const stringToColor = (string: string) => {
 interface CustomAvatarProps {
   name: string;
   size?: "small" | "medium" | "large";
-  imgSrc?: string;
+  imgSrc?: string | null;
   BadgeIcon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
     muiName: string;
   };
@@ -59,7 +59,7 @@ const CustomAvatar: React.FC<CustomAvatarProps> = (props) => {
       }
     >
       <Avatar
-        src={imgSrc}
+        src={imgSrc!}
         sx={{
           bgcolor: stringToColor(name),
           ...(size === "small" && { width: 50, height: 50, fontSize: 20 }),
@@ -71,7 +71,7 @@ const CustomAvatar: React.FC<CustomAvatarProps> = (props) => {
     </Badge>
   ) : (
     <Avatar
-      src={imgSrc}
+      src={imgSrc!}
       sx={{
         bgcolor: stringToColor(name),
         ...(size === "small" && { width: 50, height: 50, fontSize: 20 }),

@@ -5,36 +5,24 @@ import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { styled } from "@mui/material/styles";
 import { SvgIconTypeMap } from "@mui/material/SvgIcon";
 import IconButton from "@mui/material/IconButton";
-import {
-  ChangeProfilePicMutation,
-  ChangeProfilePicMutationVariables,
-  useChangeProfilePicMutation,
-} from "../../../generated/graphql";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import imageCompression from "browser-image-compression";
 import { CustomAlert } from "../../../components/lib";
-import createChangeProfilePicClient from "../../../graphql/clients/changeProfilePicClient";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
 import { useCookies } from "react-cookie";
 
 const stringToColor = (string: string) => {
   let hash = 0;
-  let i;
-
-  /* eslint-disable no-bitwise */
-  for (i = 0; i < string.length; i += 1) {
+  for (let i = 0; i < string.length; i++) {
     hash = string.charCodeAt(i) + ((hash << 5) - hash);
   }
 
   let color = "#";
-
-  for (i = 0; i < 3; i += 1) {
+  for (let i = 0; i < 3; i++) {
     const value = (hash >> (i * 8)) & 0xff;
     color += `00${value.toString(16)}`.slice(-2);
   }
-  /* eslint-enable no-bitwise */
-
   return color;
 };
 
@@ -52,45 +40,23 @@ const SmallIconButton = styled(IconButton)(({ theme }) => ({
   height: 80,
   border: `5px solid ${theme.palette.background.paper}`,
   backgroundColor: theme.palette.secondary.main,
-
   "&:hover": {
     backgroundColor: theme.palette.primary.main,
   },
 })) as typeof IconButton;
 
-const noFileProvided =
-  "Nie przesłano zdjęcia. Zdjęcie musi być w formacie png lub jpg/jpeg.";
-
-const invalidExtension = "Nieprawidłowe rozszerzenie pliku.";
-
-const invalidMimeType = "Nieprawidłowy typ MIME.";
+const errorMessages = {
+  noFile: "Nie przesłano zdjęcia. Zdjęcie musi być w formacie png lub jpg/jpeg.",
+  invalidExtension: "Nieprawidłowe rozszerzenie pliku.",
+  invalidMimeType: "Nieprawidłowy typ MIME.",
+  unexpectedError: "Nieoczekiwany błąd.",
+};
 
 export default function UserAvatar(props: UserAvatarProps) {
   const { name, size, imgSrc, BadgeIcon } = props;
   const { user, accessToken, getUserRefetch } = useAuth();
-  const [changeProfilePicStatus, setChangeProfilePicStatus] =
-    useState<string>("");
-  const [cookies, setCookie, removeCookie] = useCookies(['userId']);
-
-  const { isLoading, mutate } = useChangeProfilePicMutation<Error>(
-    createChangeProfilePicClient(accessToken!),
-    {
-      onError: (error: Error) => {
-        let err: any = {};
-        err.data = error;
-        console.log(err?.data?.response.errors[0].message)
-        setChangeProfilePicStatus(err?.data?.response.errors[0].message);
-      },
-      onSuccess: (
-        data: ChangeProfilePicMutation,
-        _variables: ChangeProfilePicMutationVariables,
-        _context: unknown
-      ) => {
-        setCookie('userId', data.changeProfilePic.userId)
-        getUserRefetch()
-      },
-    }
-  );
+  const [changeProfilePicStatus, setChangeProfilePicStatus] = useState<string>("");
+  const [cookies, setCookie] = useCookies(["userId"]);
 
   const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
@@ -109,49 +75,62 @@ export default function UserAvatar(props: UserAvatarProps) {
 
     try {
       const blob = await imageCompression(image, options);
-
       const compressedFile = new File([blob], blob.name, {
-        lastModified: new Date().getTime(),
         type: blob.type,
       });
 
-      mutate({
-        input: {
-          userId: user?.id!,
-          image: compressedFile,
+      const formData = new FormData();
+      formData.append("operations", JSON.stringify({
+        query: `
+          mutation ChangeProfilePic($input: ChangeProfilePicInput!) {
+            changeProfilePic(changeProfilePicInput: $input) {
+              userId
+            }
+          }
+        `,
+        variables: {
+          input: {
+            userId: user?.id!,
+            image: null, // GraphQL Upload scalar requires `null` here
+          },
         },
+      }));
+
+      formData.append("map", JSON.stringify({ "0": ["variables.input.image"] }));
+      formData.append("0", compressedFile);
+
+      const response = await fetch(`${process.env.REACT_APP_HOST}/graphql`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "apollo-require-preflight": "true",
+        },
+        body: formData,
       });
+
+      const result = await response.json();
+
+      if (result.errors) {
+        throw new Error(result.errors[0].message);
+      }
+
+      setCookie("userId", result.data.changeProfilePic.userId);
+      getUserRefetch();
     } catch (error) {
-      let message;
-      if (error instanceof Error) message = error.message;
-      else message = String(error);
-      setChangeProfilePicStatus(message);
+      setChangeProfilePicStatus(error instanceof Error ? error.message : String(error));
     }
   };
 
-  return isLoading ? null : (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
       <Badge
         overlap="circular"
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         badgeContent={
           <Tooltip title="Zmień zdjęcie profilowe">
-            <SmallIconButton color="default" component="label">
+            <SmallIconButton component="label">
               {BadgeIcon && <BadgeIcon />}
-              <input
-                id="icon-button-file"
-                color="primary"
-                type="file"
-                onChange={onFileChange}
-                hidden
-              />
+              <input id="icon-button-file" type="file" onChange={onFileChange} hidden />
             </SmallIconButton>
           </Tooltip>
         }
@@ -161,31 +140,13 @@ export default function UserAvatar(props: UserAvatarProps) {
           sx={{
             bgcolor: stringToColor(name),
             ...(size === "small" && { width: 50, height: 50, fontSize: 20 }),
-            ...(size === "medium" && {
-              width: 100,
-              height: 100,
-              fontSize: 40,
-            }),
-            ...(size === "large" && {
-              width: 300,
-              height: 300,
-              fontSize: 60,
-            }),
+            ...(size === "medium" && { width: 100, height: 100, fontSize: 40 }),
+            ...(size === "large" && { width: 300, height: 300, fontSize: 60 }),
           }}
           children={`${name.split(" ")[0][0]}${name.split(" ")[1][0]}`}
         />
       </Badge>
-      {changeProfilePicStatus === "No file provided" ? (
-        <CustomAlert severity="error" msg={noFileProvided} />
-      ) : changeProfilePicStatus === "Invalid extension" ? (
-        <CustomAlert severity="error" msg={invalidExtension} />
-      ) : changeProfilePicStatus === "Invalid mime type" ? (
-        <CustomAlert severity="error" msg={invalidMimeType} />
-      ) : (
-        changeProfilePicStatus && (
-          <CustomAlert severity="error" msg="Nieoczekiwany błąd." />
-        )
-      )}
+      {changeProfilePicStatus && <CustomAlert severity="error" msg={changeProfilePicStatus} />}
     </Box>
   );
-};
+}

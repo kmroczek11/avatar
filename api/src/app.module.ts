@@ -19,6 +19,7 @@ import { ChatModule } from './chat/chat.module';
 import { FriendsModule } from './friends/friends.module';
 import { GraphQLUpload } from 'graphql-upload-ts';
 import { PostsModule } from './posts/posts.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -39,6 +40,9 @@ import { PostsModule } from './posts/posts.module';
 			isGlobal: true,
 			load: [configuration],
 		}),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
     RedisModule,
     AuthModule,
     UserModule,

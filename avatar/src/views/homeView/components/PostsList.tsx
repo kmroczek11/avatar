@@ -26,7 +26,7 @@ export default function PostList() {
     const posts = data?.getFriendsPosts || [];
 
     return (
-        <Grid container spacing={3} sx={{ mt: 4, justifyContent: "center" }}>
+        <Grid container spacing={3} sx={{ mt: 4, justifyContent: "center", width: '80%' }}>
             {posts.length > 0 ? (
                 posts.map((post) => (
                     <Grid key={post.id} sx={{ flexBasis: "100%", sm: { flexBasis: "50%" }, md: { flexBasis: "33.33%" } }}>

@@ -16,6 +16,7 @@ export default function FriendsBox() {
             }
         },
         {
+            enabled: !!accessToken,
             onSuccess: (data) => { },
         }
     )
@@ -47,7 +48,12 @@ export default function FriendsBox() {
                     data.getAllFriends.map((friend) => (
                         <ListItem key={friend.id}>
                             <ListItemAvatar>
-                                <CustomAvatar name={`${friend.firstName} ${friend.lastName}`} imgSrc={friend.imgSrc || ""} size="small"/>
+                                <CustomAvatar name={`${friend.firstName} ${friend.lastName}`} imgSrc={
+                                    friend.imgSrc &&
+                                    (process.env.NODE_ENV === "production"
+                                        ? `${process.env.REACT_APP_HOST}/public/images/${friend.imgSrc}`
+                                        : `${process.env.REACT_APP_HOST}/images/${friend.imgSrc}`)
+                                } size="small" />
                             </ListItemAvatar>
                             <ListItemText primary={`${friend.firstName} ${friend.lastName}`} />
                         </ListItem>

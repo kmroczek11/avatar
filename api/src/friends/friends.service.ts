@@ -28,6 +28,19 @@ export class FriendsService {
             throw new HttpException('Can\'t send friend request to yourself', HttpStatus.BAD_REQUEST);
         }
 
+        const existingRequest = await this.prisma.friendRequest.findFirst({
+            where: {
+                OR: [
+                    { creatorId, receiverId },
+                    { creatorId: receiverId, receiverId: creatorId },
+                ],
+            },
+        });
+
+        if (existingRequest) {
+            throw new HttpException("Friend request already sent or exists", HttpStatus.CONFLICT);
+        }
+
         return await this.prisma.friendRequest.create({
             data: sendFriendRequestInput,
         });

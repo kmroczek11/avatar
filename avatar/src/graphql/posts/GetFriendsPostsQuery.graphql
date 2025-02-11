@@ -9,6 +9,7 @@ query GetFriendsPosts($input: GetFriendsPostsInput!){
       id
       firstName
       lastName
+      imgSrc
     }
   }
 }
