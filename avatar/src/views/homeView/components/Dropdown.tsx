@@ -6,10 +6,12 @@ import SearchBar from "./SearchBar";
 import { motion, AnimatePresence } from "framer-motion";
 import CreatePostBox from "./CreatePostBox";
 import PostList from "./PostsList";
+import { useTheme, Theme } from '@mui/material/styles';
 
 export default function Dropdown() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const theme = useTheme<Theme>();
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -36,7 +38,14 @@ export default function Dropdown() {
             borderTopRightRadius: 2,
             width: "100%",
             maxWidth: 800,
-            height: '3vh'
+            height: '3vh',
+
+            [theme.breakpoints.down('sm')]: {
+                left: 0,
+                transform: 'translateX(0)',
+                width: '100vw',
+                zIndex:2
+            },
         }}>
             <Tooltip title="Otwórz stronę główną">
                 <IconButton
@@ -67,7 +76,13 @@ export default function Dropdown() {
                                     overflowY: "auto",
                                     display: 'flex',
                                     flexDirection: 'column',
-                                    alignItems: 'center'
+                                    alignItems: 'center',
+
+                                    [theme.breakpoints.down('sm')]: {
+                                        width: '100vw',
+                                        maxWidth: '100vw',
+                                        borderRadius: 0,
+                                    },
                                 }}>
                                     <SearchBar />
                                     <CreatePostBox />

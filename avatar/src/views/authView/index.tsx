@@ -10,8 +10,8 @@ export default function AuthView() {
     const [active, setActive] = useState('logIn')
 
     return (
-        <React.Fragment>
-            <Grid size={6}>
+        <Grid container height="100%">
+            <Grid size={{ xs: 0, md: 6 }}>
                 <Box
                     sx={{
                         display: "flex",
@@ -33,21 +33,21 @@ export default function AuthView() {
                         }}
                     />
                 </Box>
-                {/* <ImageBlock imgSrc={cover} /> */}
             </Grid>
             <Grid
-                size={6}
+                size={{ xs: 12, md: 6 }}
                 sx={{ backgroundColor: 'secondary.main' }}
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
+                py={5}
             >
                 {active == "logIn" ?
                     <LogInForm setActive={setActive} /> :
                     <RegisterForm setActive={setActive} />
                 }
             </Grid>
-        </React.Fragment>
+        </Grid>
 
     )
 }

@@ -67,12 +67,21 @@ export class UserService {
           where: { creatorId },
           select: { status: true },
         },
+        friendRequestsSent: {
+          where: { receiverId: creatorId },
+          select: { status: true },
+        },
       },
     });
 
-    return users.map((user) => ({
-      ...user,
-      friendRequestStatus: user.friendRequestsReceived.length ? user.friendRequestsReceived[0].status : null,
-    }));
+    return users.map((user) => {
+      const receivedRequest = user.friendRequestsReceived.length ? user.friendRequestsReceived[0].status : null;
+      const sentRequest = user.friendRequestsSent.length ? user.friendRequestsSent[0].status : null;
+
+      return {
+        ...user,
+        friendRequestStatus: receivedRequest || sentRequest,
+      };
+    });
   }
 }

@@ -4,9 +4,11 @@ import { useAuth } from "../../../components/auth/components/AuthProvider";
 import CustomAvatar from "../../../components/lib/CustomAvatar";
 import { GetAllFriendsQuery, useGetAllFriendsQuery } from "../../../generated/graphql";
 import createAccessClient from "../../../graphql/clients/accessClient";
+import { useTheme, Theme } from '@mui/material/styles';
 
 export default function FriendsBox() {
     const { user, accessToken } = useAuth();
+    const theme = useTheme<Theme>();
 
     const { data, isLoading, error } = useGetAllFriendsQuery<GetAllFriendsQuery, Error>(
         createAccessClient(accessToken!),
@@ -38,6 +40,13 @@ export default function FriendsBox() {
                 right: 10,
                 transform: 'translateY(-50%)',
                 zIndex: 1,
+
+                [theme.breakpoints.down('sm')]: {
+                    top: '100%',
+                    right: 0,
+                    transform: 'translateY(-100%)',
+                    maxWidth: '100%',
+                },
             }}
         >
             <Typography variant="h6" sx={{ mb: 2, textAlign: "center" }}>

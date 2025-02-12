@@ -12,13 +12,13 @@ export default function HomeView() {
 
     return (
         user ?
-            <Grid container height="95vh" sx={{ position: 'relative' }}>
+            <Grid height="95vh" sx={{ position: 'relative' }}>
                 <Dropdown />
                 <FriendsBox />
                 <MapView />
             </Grid> :
             <React.Fragment>
-                <Grid container height="62vh">
+                <Grid height="62vh">
                     <AuthView />
                 </Grid>
                 <Footer />
