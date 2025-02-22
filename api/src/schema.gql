@@ -26,6 +26,10 @@ type ForgotPasswordResponse {
   msg: String!
 }
 
+type RefreshTokenResponse {
+  accessToken: String!
+}
+
 type FriendRequest {
   id: ID!
   creatorId: String!
@@ -150,6 +154,7 @@ type Mutation {
   logInUser(logInUserInput: LogInUserInput!): LogInResponse!
   autoLogInUser(autoLogInUserInput: AutoLogInUserInput!): LogInResponse!
   logOutUser(logOutUserInput: LogOutUserInput!): LogOutResponse!
+  refreshToken(refreshTokenInput: RefreshTokenInput!): RefreshTokenResponse!
   changeEmail(changeEmailInput: ChangeEmailInput!): ChangeEmailResponse!
   changePassword(changePasswordInput: ChangePasswordInput!): ChangePasswordResponse!
   changeProfilePic(changeProfilePicInput: ChangeProfilePicInput!): ChangeProfilePicResponse!
@@ -191,6 +196,10 @@ input AutoLogInUserInput {
 
 input LogOutUserInput {
   userId: String!
+}
+
+input RefreshTokenInput {
+  refreshToken: String!
 }
 
 input ChangeEmailInput {

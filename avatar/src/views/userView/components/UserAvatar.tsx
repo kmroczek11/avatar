@@ -114,8 +114,8 @@ export default function UserAvatar(props: UserAvatarProps) {
         throw new Error(result.errors[0].message);
       }
 
-      setCookie("userId", result.data.changeProfilePic.userId);
-      getUserRefetch();
+      setCookie("userId", result.data.changeProfilePic.userId, { path: "/" });
+      await getUserRefetch();
     } catch (error) {
       setChangeProfilePicStatus(error instanceof Error ? error.message : String(error));
     }

@@ -18,10 +18,7 @@ dotenv.config();
   imports: [
     UserModule,
     PassportModule,
-    JwtModule.register({
-      secret: process.env.ACCESS_TOKEN_SECRET,
-      signOptions: { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION },
-    }),
+    JwtModule,
     RedisModule,
     MailModule
   ],

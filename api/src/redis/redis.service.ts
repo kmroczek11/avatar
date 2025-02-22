@@ -38,8 +38,21 @@ export class RedisService {
         );
     }
 
+    async saveRefreshToken(userId: string, token: string): Promise<void> {
+        await this.redisRepository.setWithExpiry(
+            RedisPrefixEnum.REFRESH_TOKEN,
+            userId,
+            token,
+            this.configService.get('refreshTokenExpiration'),
+        );
+    }
+
     async getAccessToken(token: string): Promise<string | null> {
         return await this.redisRepository.get(RedisPrefixEnum.ACCESS_TOKEN, token);
+    }
+
+    async getRefreshToken(token: string): Promise<string | null> {
+        return await this.redisRepository.get(RedisPrefixEnum.REFRESH_TOKEN, token);
     }
 
     async removeUser(userId: string): Promise<void> {
@@ -48,5 +61,9 @@ export class RedisService {
 
     async removeAccessToken(userId: string): Promise<void> {
         return await this.redisRepository.delete(RedisPrefixEnum.ACCESS_TOKEN, userId);
+    }
+
+    async removeRefreshToken(userId: string): Promise<void> {
+        return await this.redisRepository.delete(RedisPrefixEnum.REFRESH_TOKEN, userId);
     }
 }

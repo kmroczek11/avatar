@@ -375,6 +375,7 @@ export type Mutation = {
   forgotPassword: ForgotPasswordResponse;
   logInUser: LogInResponse;
   logOutUser: LogOutResponse;
+  refreshToken: RefreshTokenResponse;
   registerUser: LogInResponse;
   rejectFriendRequest: FriendRequest;
   sendFriendRequest: FriendRequest;
@@ -433,6 +434,11 @@ export type MutationLogInUserArgs = {
 
 export type MutationLogOutUserArgs = {
   logOutUserInput: LogOutUserInput;
+};
+
+
+export type MutationRefreshTokenArgs = {
+  refreshTokenInput: RefreshTokenInput;
 };
 
 
@@ -615,6 +621,15 @@ export enum QueryMode {
   Default = 'default',
   Insensitive = 'insensitive'
 }
+
+export type RefreshTokenInput = {
+  refreshToken: Scalars['String']['input'];
+};
+
+export type RefreshTokenResponse = {
+  __typename?: 'RefreshTokenResponse';
+  accessToken: Scalars['String']['output'];
+};
 
 export type RegisterUserInput = {
   email: Scalars['EmailAddress']['input'];
@@ -916,6 +931,13 @@ export type LogOutUserMutationVariables = Exact<{
 
 export type LogOutUserMutation = { __typename?: 'Mutation', logOutUser: { __typename?: 'LogOutResponse', msg: string } };
 
+export type RefreshTokenMutationVariables = Exact<{
+  input: RefreshTokenInput;
+}>;
+
+
+export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'RefreshTokenResponse', accessToken: string } };
+
 export type RegisterUserMutationVariables = Exact<{
   input: RegisterUserInput;
 }>;
@@ -992,13 +1014,6 @@ export type ChangePasswordMutationVariables = Exact<{
 
 
 export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'ChangePasswordResponse', userId: string } };
-
-export type ChangeProfilePicMutationVariables = Exact<{
-  input: ChangeProfilePicInput;
-}>;
-
-
-export type ChangeProfilePicMutation = { __typename?: 'Mutation', changeProfilePic: { __typename?: 'ChangeProfilePicResponse', userId: string } };
 
 export type FindUsersByNameQueryVariables = Exact<{
   input: FindByNameInput;
@@ -1112,6 +1127,32 @@ export const useLogOutUserMutation = <
 
 
 useLogOutUserMutation.fetcher = (client: GraphQLClient, variables: LogOutUserMutationVariables, headers?: RequestInit['headers']) => fetcher<LogOutUserMutation, LogOutUserMutationVariables>(client, LogOutUserDocument, variables, headers);
+
+export const RefreshTokenDocument = `
+    mutation RefreshToken($input: RefreshTokenInput!) {
+  refreshToken(refreshTokenInput: $input) {
+    accessToken
+  }
+}
+    `;
+
+export const useRefreshTokenMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<RefreshTokenMutation, TError, RefreshTokenMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<RefreshTokenMutation, TError, RefreshTokenMutationVariables, TContext>(
+      ['RefreshToken'],
+      (variables?: RefreshTokenMutationVariables) => fetcher<RefreshTokenMutation, RefreshTokenMutationVariables>(client, RefreshTokenDocument, variables, headers)(),
+      options
+    )};
+
+
+useRefreshTokenMutation.fetcher = (client: GraphQLClient, variables: RefreshTokenMutationVariables, headers?: RequestInit['headers']) => fetcher<RefreshTokenMutation, RefreshTokenMutationVariables>(client, RefreshTokenDocument, variables, headers);
 
 export const RegisterUserDocument = `
     mutation RegisterUser($input: RegisterUserInput!) {
@@ -1425,32 +1466,6 @@ export const useChangePasswordMutation = <
 
 
 useChangePasswordMutation.fetcher = (client: GraphQLClient, variables: ChangePasswordMutationVariables, headers?: RequestInit['headers']) => fetcher<ChangePasswordMutation, ChangePasswordMutationVariables>(client, ChangePasswordDocument, variables, headers);
-
-export const ChangeProfilePicDocument = `
-    mutation ChangeProfilePic($input: ChangeProfilePicInput!) {
-  changeProfilePic(changeProfilePicInput: $input) {
-    userId
-  }
-}
-    `;
-
-export const useChangeProfilePicMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<ChangeProfilePicMutation, TError, ChangeProfilePicMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) => {
-    
-    return useMutation<ChangeProfilePicMutation, TError, ChangeProfilePicMutationVariables, TContext>(
-      ['ChangeProfilePic'],
-      (variables?: ChangeProfilePicMutationVariables) => fetcher<ChangeProfilePicMutation, ChangeProfilePicMutationVariables>(client, ChangeProfilePicDocument, variables, headers)(),
-      options
-    )};
-
-
-useChangeProfilePicMutation.fetcher = (client: GraphQLClient, variables: ChangeProfilePicMutationVariables, headers?: RequestInit['headers']) => fetcher<ChangeProfilePicMutation, ChangeProfilePicMutationVariables>(client, ChangeProfilePicDocument, variables, headers);
 
 export const FindUsersByNameDocument = `
     query FindUsersByName($input: FindByNameInput!) {

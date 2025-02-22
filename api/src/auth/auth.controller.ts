@@ -21,4 +21,10 @@ export class AuthController {
     getAccessToken(@Param() params: any): Promise<string | null> {
         return this.redisService.getAccessToken(params.userId);
     }
+
+    @Get('/getRefreshToken/:userId')
+    @Public()
+    getRefreshToken(@Param() params: any): Promise<string | null> {
+        return this.redisService.getRefreshToken(params.userId);
+    }
 }

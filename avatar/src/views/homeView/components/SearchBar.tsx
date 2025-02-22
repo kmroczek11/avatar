@@ -143,11 +143,13 @@ export default function SearchBar() {
             filteredUsers.map((filteredUser, index) => {
               const isRequestPending = filteredUser.friendRequestStatus === Status.Pending;
               const isAlreadyFriend = filteredUser.friendRequestStatus === Status.Accepted;
+              // const isUserCreator = filteredUser.creatorId === user?.id
               const isCurrentUser = filteredUser.id === user?.id;
 
               return (
                 <ListItem key={index} sx={{ padding: '8px 16px' }} secondaryAction={
-                  !isCurrentUser && !isAlreadyFriend && (
+                  // !isCurrentUser && !isAlreadyFriend && isUserCreator && (
+                    !isCurrentUser && !isAlreadyFriend && (
                     isRequestPending ? (
                       <Tooltip title="Anuluj zaproszenie">
                         <IconButton

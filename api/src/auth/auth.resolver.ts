@@ -19,6 +19,8 @@ import { ChangeProfilePicResponse } from './responses/change-profile-pic-respons
 import { ChangeProfilePicInput } from './inputs/change-profile-pic.input';
 import { ForgotPasswordResponse } from './responses/forgot-password-response';
 import { ForgotPasswordInput } from './inputs/forgot-password.input';
+import { RefreshTokenInput } from './inputs/refresh-token.input';
+import { RefreshTokenResponse } from './responses/refresh-token-response';
 
 @Resolver()
 export class AuthResolver {
@@ -56,6 +58,12 @@ export class AuthResolver {
     @Args('logOutUserInput') logOutUserInput: LogOutUserInput,
   ): Promise<LogOutResponse> {
     return this.authService.logOut(logOutUserInput);
+  }
+
+  @Mutation(() => RefreshTokenResponse)
+  @Roles(Role.USER)
+  refreshToken(@Args('refreshTokenInput') refreshTokenInput: RefreshTokenInput) {
+    return this.authService.refreshToken(refreshTokenInput);
   }
 
   @Mutation(() => ChangeEmailResponse)
