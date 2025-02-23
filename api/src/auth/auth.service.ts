@@ -131,11 +131,18 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token')
     }
 
+    const accessTokenSecret = this.configService.get<string>('accessTokenSecret')
     const accessTokenExpiration = this.configService.get<string>('accessTokenExpiration')
 
     const newAccessToken = await this.jwtService.signAsync(
-      { sub: decodedToken.sub, email: decodedToken.email },
-      { expiresIn: accessTokenExpiration }
+      {
+        sub: decodedToken.sub,
+        email: decodedToken.email
+      },
+      {
+        secret: accessTokenSecret,
+        expiresIn: accessTokenExpiration
+      }
     )
 
     await this.redisService.saveAccessToken(decodedToken.sub, newAccessToken)
@@ -202,9 +209,7 @@ export class AuthService {
       },
     )
 
-    return {
-      userId: updatedUser.id,
-    }
+    return this.sign(updatedUser)
   }
 
   async changeProfilePic(changeProfilePicInput: ChangeProfilePicInput) {
@@ -228,9 +233,7 @@ export class AuthService {
       imgSrc: filePath,
     })
 
-    return {
-      userId: updatedUser.id,
-    }
+    return this.sign(updatedUser)
   }
 
   async forgotPassword(forgotPasswordInput: ForgotPasswordInput) {

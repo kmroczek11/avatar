@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import useRegisterUser from "../../../components/auth/hooks/useRegisterUser";
-import createRegisterUserClient from "../../../graphql/clients/registerUserClient";
+import createClient from "../../../graphql/clients/client";
 import { useCookies } from "react-cookie";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
 import { userWithEmailExistsMessage, userWithPhoneNumberExistsMessage } from "../../../translations/pl/errorMessages";
@@ -35,7 +35,7 @@ export default function RegisterForm(props: RegisterFormProps) {
     const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
     const { register } = useRegisterUser(
-        createRegisterUserClient(),
+        createClient(),
         setRegisterError,
         (data) => {
             setCookie('userId', data.registerUser.userId)

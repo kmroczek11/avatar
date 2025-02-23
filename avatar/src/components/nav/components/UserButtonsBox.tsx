@@ -9,11 +9,8 @@ import IconButton from "@mui/material/IconButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useCookies } from "react-cookie";
-import { LogOutUserMutation, LogOutUserMutationVariables, Role, useLogOutUserMutation } from "../../../generated/graphql";
-import createAccessClient from "../../../graphql/clients/accessClient";
+import { Role } from "../../../generated/graphql";
 import { useAuth } from "../../auth/components/AuthProvider";
 import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 
@@ -24,26 +21,8 @@ export default function UserButtonsBox() {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
     const [logoutStatus, setLogoutStatus] = useState<string>("");
-    const [cookies, setCookie, removeCookie] = useCookies(['userId']);
-    const { user, accessToken } = useAuth();
-
-    const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
-        createAccessClient(accessToken!),
-        {
-            onError: (error: Error) => {
-                let err: any = {};
-                err.data = error;
-                setLogoutStatus(err?.data?.response.errors[0].message);
-            },
-            onSuccess: (
-                data: LogOutUserMutation,
-                _variables: LogOutUserMutationVariables,
-                _context: unknown
-            ) => {
-                removeCookie('userId')
-            },
-        }
-    );
+    const [cookies] = useCookies(['userId']);
+    const { user, logOut } = useAuth();
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);

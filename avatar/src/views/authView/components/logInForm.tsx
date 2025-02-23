@@ -6,10 +6,9 @@ import { ColorButton, CustomAlert } from "../../../components/lib";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { invalidEmailOrPasswordMessage } from "../../../translations/pl/errorMessages";
-import createLogInUserClient from "../../../graphql/clients/logInUserClient";
+import createClient from "../../../graphql/clients/client";
 import useLogInUser from "../../../components/auth/hooks/useLogInUser";
 import { useCookies } from "react-cookie";
-import { useAuth } from "../../../components/auth/components/AuthProvider";
 
 interface LogInFormProps {
     setActive: (name: string) => void;
@@ -26,7 +25,7 @@ export default function LogInForm(props: LogInFormProps) {
     const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
     const { isLogInLoading, logIn } = useLogInUser(
-        createLogInUserClient(),
+        createClient(),
         setLogInError,
         (data) => {
             setCookie('userId', data.logInUser.userId)

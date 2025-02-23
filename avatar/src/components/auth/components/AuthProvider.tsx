@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import axios from "axios";
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from "@tanstack/react-query";
-import { useRefreshTokenMutation } from "../../../generated/graphql";
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, UseMutateFunction, useQuery } from "@tanstack/react-query";
+import { Exact, LogOutUserInput, LogOutUserMutation, LogOutUserMutationVariables, useLogOutUserMutation, useRefreshTokenMutation } from "../../../generated/graphql";
+import createClient from "../../../graphql/clients/client";
 import createAccessClient from "../../../graphql/clients/accessClient";
 import User from "../models/user";
 
@@ -12,12 +13,16 @@ const AuthContext = createContext<{
   getUserRefetch: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>
   ) => Promise<QueryObserverResult<User, unknown>>;
+  logOut: UseMutateFunction<LogOutUserMutation, Error, Exact<{ input: LogOutUserInput; }>, unknown>
 }>({
   user: null,
   accessToken: null,
   getUserRefetch: async () => {
     throw new Error("getUserRefetch not implemented");
-  }
+  },
+  logOut: () => {
+    throw new Error("logOut not implemented");
+  },
 });
 
 interface AuthProviderProps {
@@ -25,7 +30,7 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  const [cookies] = useCookies(["userId"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["userId"]);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -72,7 +77,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [userData, accessTokenData, refreshTokenData]);
 
-  const { mutate: refreshAccessToken } = useRefreshTokenMutation(createAccessClient(accessToken!), {
+  const { mutate: refreshAccessToken } = useRefreshTokenMutation(createClient(), {
     onSuccess: (data) => {
       setAccessToken(data.refreshToken.accessToken);
     },
@@ -81,40 +86,57 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
   });
 
-  const isTokenExpired = (token: string) => {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const currentTime = Math.floor(Date.now() / 1000);
-      return currentTime > payload.exp;
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      return true;
+  const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
+    createAccessClient(accessToken!),
+    {
+      onError: (error: Error) => {
+        let err: any = {};
+        err.data = error;
+      },
+      onSuccess: (
+        data: LogOutUserMutation,
+        _variables: LogOutUserMutationVariables,
+        _context: unknown
+      ) => {
+        removeCookie('userId')
+        setUser(null)
+      },
     }
-  };
-
-  const refreshTokenAndFetch = async () => {
-    if (isTokenExpired(accessToken!)) {
-      try {
-        await refreshAccessToken({
-          input: { refreshToken: refreshToken! }
-        });
-      } catch (error) {
-        console.error("Failed to refresh access token:", error);
-      }
-    }
-  };
+  )
 
   useEffect(() => {
-    if (accessToken && refreshToken) {
-      refreshTokenAndFetch();
-    }
-  }, [accessToken, refreshToken]);
+    if (!refreshToken || !accessToken) return
+  
+    const getTokenExpiryTime = (token: string) => {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]))
+        return payload.exp * 1000
+      } catch (error) {
+        console.error('Error decoding token:', error)
+        return Date.now()
+      }
+    };
+  
+    const expiryTime = getTokenExpiryTime(accessToken)
+    const timeUntilExpiry = expiryTime - Date.now()
+    const refreshTime = Math.max(timeUntilExpiry - 60 * 1000, 5000)
+  
+    console.log(`Next refresh in: ${refreshTime / 1000}s`)
+  
+    const timeout = setTimeout(() => {
+      console.log("Access token expired, refreshing...")
+      refreshAccessToken({ input: { refreshToken } })
+    }, refreshTime)
+  
+    return () => clearTimeout(timeout)
+  }, [accessToken, refreshToken])
 
   return (
     <AuthContext.Provider value={{
       user: user ?? null,
       accessToken: accessToken ?? null,
-      getUserRefetch
+      getUserRefetch,
+      logOut
     }}>
       {children}
     </AuthContext.Provider>

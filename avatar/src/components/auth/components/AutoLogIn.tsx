@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import useAutoLogInUser from "../hooks/useAutoLogInUser";
-import createAutoLogInUserClient from "../../../graphql/clients/autoLogInUserClient";
+import createClient from "../../../graphql/clients/client";
 import { useCookies } from "react-cookie";
 
 export default function AutoLogIn() {
@@ -8,7 +8,7 @@ export default function AutoLogIn() {
     const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
     const { isAutoLogInUserLoading, autoLogIn } = useAutoLogInUser(
-        createAutoLogInUserClient(),
+        createClient(),
         setAutoLoginError,
         (data) => {
             setCookie('userId', data.autoLogInUser.userId)
