@@ -65,11 +65,11 @@ export class UserService {
         imgSrc: true,
         friendRequestsReceived: {
           where: { creatorId },
-          select: { status: true },
+          select: { status: true, creatorId: true },
         },
         friendRequestsSent: {
           where: { receiverId: creatorId },
-          select: { status: true },
+          select: { status: true, creatorId: true },
         },
       },
     });

@@ -17,7 +17,7 @@ export class PostGroupBy {
     content!: string;
 
     @Field(() => String, {nullable:true})
-    imageUrl?: string;
+    imgSrc?: string;
 
     @Field(() => Date, {nullable:false})
     createdAt!: Date | string;

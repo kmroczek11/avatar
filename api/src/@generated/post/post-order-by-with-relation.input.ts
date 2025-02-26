@@ -17,7 +17,7 @@ export class PostOrderByWithRelationInput {
     content?: keyof typeof SortOrder;
 
     @Field(() => SortOrderInput, {nullable:true})
-    imageUrl?: SortOrderInput;
+    imgSrc?: SortOrderInput;
 
     @Field(() => SortOrder, {nullable:true})
     createdAt?: keyof typeof SortOrder;

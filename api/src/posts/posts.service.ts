@@ -1,18 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PostCreateInput } from 'src/@generated/post/post-create.input';
 import { Post } from 'src/@generated/post/post.model';
 import { CreatePostInput } from './inputs/create-post.input';
 import { GetFriendsPostsInput } from './inputs/get-friends-posts.input';
+import { FileUpload } from 'graphql-upload-ts';
+import { saveImage } from 'src/core/helpers/image-storage';
 
 @Injectable()
 export class PostsService {
   constructor(private readonly prisma: PrismaService) { }
 
   async createPost(createPostInput: CreatePostInput): Promise<Post> {
-    return this.prisma.post.create({
-      data: createPostInput,
-    });
+    const { title, content, image, authorId } = createPostInput
+
+    if (image) {
+      const imageData: FileUpload = await image
+
+      const filePath = await saveImage(imageData, 'posts')
+
+      return this.prisma.post.create({
+        data: {
+          title,
+          content,
+          imgSrc: filePath,
+          authorId
+        },
+      });
+    } else {
+      return this.prisma.post.create({
+        data: {
+          title,
+          content,
+          imgSrc: null,
+          authorId
+        },
+      });
+    }
   }
 
   async getFriendsPosts(getFriendsPostsInput: GetFriendsPostsInput): Promise<Post[]> {

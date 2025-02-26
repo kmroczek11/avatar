@@ -15,7 +15,7 @@ export class PostCountOrderByAggregateInput {
     content?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})
-    imageUrl?: keyof typeof SortOrder;
+    imgSrc?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})
     createdAt?: keyof typeof SortOrder;

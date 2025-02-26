@@ -24,11 +24,15 @@ export default function PostCard({ post }: PostProps) {
                 title={`${post?.author?.firstName} ${post?.author?.lastName}`}
                 subheader={new Date(post?.createdAt).toLocaleDateString()}
             />
-            {post?.imageUrl && (
+            {post?.imgSrc && (
                 <CardMedia
                     component="img"
                     height="200"
-                    image={post.imageUrl}
+                    image={post.imgSrc &&
+                        (process.env.NODE_ENV === "production"
+                            ? `${process.env.REACT_APP_HOST}/public/images/${post.imgSrc}`
+                            : `${process.env.REACT_APP_HOST}/images/${post.imgSrc}`)
+                    }
                     alt="Post Image"
                 />
             )}

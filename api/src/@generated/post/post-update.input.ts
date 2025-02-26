@@ -18,7 +18,7 @@ export class PostUpdateInput {
     content?: StringFieldUpdateOperationsInput;
 
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
-    imageUrl?: NullableStringFieldUpdateOperationsInput;
+    imgSrc?: NullableStringFieldUpdateOperationsInput;
 
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: DateTimeFieldUpdateOperationsInput;

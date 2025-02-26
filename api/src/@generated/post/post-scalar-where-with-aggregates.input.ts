@@ -26,7 +26,7 @@ export class PostScalarWhereWithAggregatesInput {
     content?: StringWithAggregatesFilter;
 
     @Field(() => StringNullableWithAggregatesFilter, {nullable:true})
-    imageUrl?: StringNullableWithAggregatesFilter;
+    imgSrc?: StringNullableWithAggregatesFilter;
 
     @Field(() => DateTimeWithAggregatesFilter, {nullable:true})
     createdAt?: DateTimeWithAggregatesFilter;

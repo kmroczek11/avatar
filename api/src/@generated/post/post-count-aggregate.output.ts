@@ -15,7 +15,7 @@ export class PostCountAggregate {
     content!: number;
 
     @Field(() => Int, {nullable:false})
-    imageUrl!: number;
+    imgSrc!: number;
 
     @Field(() => Int, {nullable:false})
     createdAt!: number;

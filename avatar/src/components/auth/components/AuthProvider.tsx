@@ -3,7 +3,6 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, UseMutateFunction, useQuery } from "@tanstack/react-query";
 import { Exact, LogOutUserInput, LogOutUserMutation, LogOutUserMutationVariables, useLogOutUserMutation, useRefreshTokenMutation } from "../../../generated/graphql";
-import createClient from "../../../graphql/clients/client";
 import createAccessClient from "../../../graphql/clients/accessClient";
 import User from "../models/user";
 
@@ -77,7 +76,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [userData, accessTokenData, refreshTokenData]);
 
-  const { mutate: refreshAccessToken } = useRefreshTokenMutation(createClient(), {
+  const { mutate: refreshAccessToken } = useRefreshTokenMutation(createAccessClient(accessToken!), {
     onSuccess: (data) => {
       setAccessToken(data.refreshToken.accessToken);
     },

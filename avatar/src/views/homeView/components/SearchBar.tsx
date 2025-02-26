@@ -20,7 +20,18 @@ export default function SearchBar() {
   const theme = useTheme();
   const { user, accessToken } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredUsers, setFilteredUsers] = useState<Array<{ id: string, imgSrc?: string | null, firstName: string, lastName: string, friendRequestStatus?: Status | null | undefined }>>([]);
+  const [filteredUsers, setFilteredUsers] = useState<Array<{
+    id: string,
+    imgSrc?: string | null,
+    firstName: string,
+    lastName: string,
+    friendRequestsReceived?: {
+      status: Status,
+      creatorId: string
+    }[] | null | undefined
+    friendRequestStatus?: Status | null | undefined,
+    creatorId?: string | null | undefined
+  }>>([]);
   const [sendFriendRequestStatus, setSendFriendRequestStatus] = useState<string>("");
 
   const { mutate: cancelFriendRequest } = useCancelFriendRequestMutation(createAccessClient(accessToken!), {
@@ -143,13 +154,12 @@ export default function SearchBar() {
             filteredUsers.map((filteredUser, index) => {
               const isRequestPending = filteredUser.friendRequestStatus === Status.Pending;
               const isAlreadyFriend = filteredUser.friendRequestStatus === Status.Accepted;
-              // const isUserCreator = filteredUser.creatorId === user?.id
+              const isCurrentUserSender = isRequestPending && filteredUser.friendRequestsReceived?.some(req => req.creatorId === user?.id);
               const isCurrentUser = filteredUser.id === user?.id;
 
               return (
                 <ListItem key={index} sx={{ padding: '8px 16px' }} secondaryAction={
-                  // !isCurrentUser && !isAlreadyFriend && isUserCreator && (
-                    !isCurrentUser && !isAlreadyFriend && (
+                  !isCurrentUser && !isAlreadyFriend && (
                     isRequestPending ? (
                       <Tooltip title="Anuluj zaproszenie">
                         <IconButton
@@ -160,6 +170,7 @@ export default function SearchBar() {
                               receiverId: filteredUser.id
                             }
                           })}
+                          disabled={!isCurrentUserSender}
                         >
                           <CancelIcon />
                         </IconButton>

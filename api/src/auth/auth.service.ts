@@ -18,7 +18,7 @@ import { ChangeEmailInput } from './inputs/change-email.input';
 import { ChangePasswordInput } from './inputs/change-password.input';
 import { ChangeProfilePicInput } from './inputs/change-profile-pic.input';
 import { FileUpload } from 'graphql-upload-ts';
-import { removeFile, saveImage } from './helpers/image-storage';
+import { removeFile, saveImage } from '../core/helpers/image-storage';
 import { ForgotPasswordInput } from './inputs/forgot-password.input';
 import * as generator from 'generate-password';
 import { MailService } from 'src/mail/mail.service';

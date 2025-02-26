@@ -61,7 +61,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => RefreshTokenResponse)
-  @Public()
+  @Roles(Role.USER)
   refreshToken(@Args('refreshTokenInput') refreshTokenInput: RefreshTokenInput) {
     return this.authService.refreshToken(refreshTokenInput);
   }

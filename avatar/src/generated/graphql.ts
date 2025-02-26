@@ -78,7 +78,7 @@ export type ChangeProfilePicResponse = {
 export type CreatePostInput = {
   authorId: Scalars['String']['input'];
   content: Scalars['String']['input'];
-  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  image: Scalars['Upload']['input'];
   title: Scalars['String']['input'];
 };
 
@@ -509,7 +509,7 @@ export type Post = {
   content: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
-  imageUrl?: Maybe<Scalars['String']['output']>;
+  imgSrc?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
 };
@@ -518,7 +518,7 @@ export type PostCreateManyAuthorInput = {
   content: Scalars['String']['input'];
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
-  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  imgSrc?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
@@ -544,7 +544,7 @@ export type PostCreateWithoutAuthorInput = {
   content: Scalars['String']['input'];
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
-  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  imgSrc?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
@@ -564,7 +564,7 @@ export type PostWhereInput = {
   content?: InputMaybe<StringFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
-  imageUrl?: InputMaybe<StringNullableFilter>;
+  imgSrc?: InputMaybe<StringNullableFilter>;
   title?: InputMaybe<StringFilter>;
   updatedAt?: InputMaybe<DateTimeFilter>;
 };
@@ -578,7 +578,7 @@ export type PostWhereUniqueInput = {
   content?: InputMaybe<StringFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
-  imageUrl?: InputMaybe<StringNullableFilter>;
+  imgSrc?: InputMaybe<StringNullableFilter>;
   title?: InputMaybe<StringFilter>;
   updatedAt?: InputMaybe<DateTimeFilter>;
 };
@@ -999,7 +999,7 @@ export type GetFriendsPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetFriendsPostsQuery = { __typename?: 'Query', getFriendsPosts: Array<{ __typename?: 'Post', id: string, title: string, content: string, imageUrl?: string | null, createdAt: any, author: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc?: string | null } }> };
+export type GetFriendsPostsQuery = { __typename?: 'Query', getFriendsPosts: Array<{ __typename?: 'Post', id: string, title: string, content: string, imgSrc?: string | null, createdAt: any, author: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc?: string | null } }> };
 
 export type ChangeEmailMutationVariables = Exact<{
   input: ChangeEmailInput;
@@ -1020,7 +1020,7 @@ export type FindUsersByNameQueryVariables = Exact<{
 }>;
 
 
-export type FindUsersByNameQuery = { __typename?: 'Query', findUsersByName: Array<{ __typename?: 'UserWithFriendRequestStatus', id: string, imgSrc?: string | null, firstName: string, lastName: string, friendRequestStatus?: Status | null }> };
+export type FindUsersByNameQuery = { __typename?: 'Query', findUsersByName: Array<{ __typename?: 'UserWithFriendRequestStatus', id: string, imgSrc?: string | null, firstName: string, lastName: string, friendRequestStatus?: Status | null, friendRequestsReceived?: Array<{ __typename?: 'FriendRequest', status: Status, creatorId: string }> | null }> };
 
 
 
@@ -1382,7 +1382,7 @@ export const GetFriendsPostsDocument = `
     id
     title
     content
-    imageUrl
+    imgSrc
     createdAt
     author {
       id
@@ -1474,6 +1474,10 @@ export const FindUsersByNameDocument = `
     imgSrc
     firstName
     lastName
+    friendRequestsReceived {
+      status
+      creatorId
+    }
     friendRequestStatus
   }
 }

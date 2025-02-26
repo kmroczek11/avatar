@@ -4,6 +4,10 @@ query FindUsersByName($input: FindByNameInput!) {
     imgSrc
     firstName
     lastName
+    friendRequestsReceived {
+      status
+      creatorId
+    }
     friendRequestStatus
   }
 }

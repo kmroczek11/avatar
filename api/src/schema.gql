@@ -58,7 +58,7 @@ type Post {
   id: ID!
   title: String!
   content: String!
-  imageUrl: String
+  imgSrc: String
   createdAt: DateTime!
   updatedAt: DateTime!
   authorId: String!
@@ -390,7 +390,7 @@ input PostCreateWithoutAuthorInput {
   id: String
   title: String!
   content: String!
-  imageUrl: String
+  imgSrc: String
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -407,7 +407,7 @@ input PostWhereUniqueInput {
   NOT: [PostWhereInput!]
   title: StringFilter
   content: StringFilter
-  imageUrl: StringNullableFilter
+  imgSrc: StringNullableFilter
   createdAt: DateTimeFilter
   updatedAt: DateTimeFilter
   authorId: StringFilter
@@ -421,7 +421,7 @@ input PostWhereInput {
   id: StringFilter
   title: StringFilter
   content: StringFilter
-  imageUrl: StringNullableFilter
+  imgSrc: StringNullableFilter
   createdAt: DateTimeFilter
   updatedAt: DateTimeFilter
   authorId: StringFilter
@@ -609,7 +609,7 @@ input PostCreateManyAuthorInput {
   id: String
   title: String!
   content: String!
-  imageUrl: String
+  imgSrc: String
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -773,6 +773,6 @@ input CancelFriendRequestInput {
 input CreatePostInput {
   title: String!
   content: String!
-  imageUrl: String
+  image: Upload!
   authorId: String!
 }

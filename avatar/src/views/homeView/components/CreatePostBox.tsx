@@ -1,22 +1,22 @@
 import React, { useState } from "react";
-import { Box, Button, Card, CardContent, CircularProgress, TextField, Typography } from "@mui/material";
+import { Box, CircularProgress, TextField, Typography } from "@mui/material";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
 import createAccessClient from "../../../graphql/clients/accessClient";
 import { useCreatePostMutation } from "../../../generated/graphql";
 import { ColorButton } from "../../../components/lib";
+import PostButtonsBox from "./PostButtonsBox";
 
 export default function CreatePostBox() {
     const { user, accessToken } = useAuth();
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
-    const [imageUrl, setImageUrl] = useState("");
+    const [title, setTitle] = useState<string>("");
+    const [content, setContent] = useState<string>("");
+    const [image, setImage] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const { isLoading, mutate: createPost } = useCreatePostMutation(createAccessClient(accessToken!), {
         onSuccess: () => {
             setTitle("");
             setContent("");
-            setImageUrl("");
             setError(null);
         },
     })
@@ -27,9 +27,44 @@ export default function CreatePostBox() {
             return;
         }
 
-        await createPost({
-            input: { title, content, imageUrl, authorId: user?.id! },
+        const formData = new FormData();
+        formData.append("operations", JSON.stringify({
+            query: `
+          mutation CreatePost($input: CreatePostInput!) {
+            createPost(createPostInput: $input) {
+                id
+            }
+        }
+        `,
+            variables: {
+                input: {
+                    title,
+                    content,
+                    image: null, // GraphQL Upload scalar requires `null` here
+                    authorId: user?.id!
+                },
+            },
+        }));
+
+        if (image) {
+            formData.append("map", JSON.stringify({ "0": ["variables.input.image"] }));
+            formData.append("0", image);
+        }
+
+        const response = await fetch(`${process.env.REACT_APP_HOST}/graphql`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "apollo-require-preflight": "true",
+            },
+            body: formData,
         });
+
+        const result = await response.json();
+
+        if (result.errors) {
+            throw new Error(result.errors[0].message);
+        }
     };
 
     return (
@@ -61,14 +96,7 @@ export default function CreatePostBox() {
                 onChange={(e) => setContent(e.target.value)}
                 sx={{ mb: 2 }}
             />
-            <TextField
-                fullWidth
-                label="Adres URL zdjęcia (opcjonalnie)"
-                variant="outlined"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                sx={{ mb: 2 }}
-            />
+            <PostButtonsBox setImage={setImage} />
             {error && (
                 <Typography color="error" sx={{ mb: 2 }}>
                     {error}

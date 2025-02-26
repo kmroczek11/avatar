@@ -26,7 +26,7 @@ export class PostScalarWhereInput {
     content?: StringFilter;
 
     @Field(() => StringNullableFilter, {nullable:true})
-    imageUrl?: StringNullableFilter;
+    imgSrc?: StringNullableFilter;
 
     @Field(() => DateTimeFilter, {nullable:true})
     createdAt?: DateTimeFilter;

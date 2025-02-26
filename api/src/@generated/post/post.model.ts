@@ -16,7 +16,7 @@ export class Post {
     content!: string;
 
     @Field(() => String, {nullable:true})
-    imageUrl!: string | null;
+    imgSrc!: string | null;
 
     @Field(() => Date, {nullable:false})
     createdAt!: Date;

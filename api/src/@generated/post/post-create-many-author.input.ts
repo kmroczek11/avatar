@@ -14,7 +14,7 @@ export class PostCreateManyAuthorInput {
     content!: string;
 
     @Field(() => String, {nullable:true})
-    imageUrl?: string;
+    imgSrc?: string;
 
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;

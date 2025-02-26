@@ -14,7 +14,7 @@ export class PostMinAggregateInput {
     content?: true;
 
     @Field(() => Boolean, {nullable:true})
-    imageUrl?: true;
+    imgSrc?: true;
 
     @Field(() => Boolean, {nullable:true})
     createdAt?: true;
