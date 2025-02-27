@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { socket } from './socket';
 import ConnectionState from './components/ConnectionState';
-import Events from './components/Messages';
-import ConnectionManager from './components/ConnectionManager';
-import MyForm from './components/MyForm';
+import Messages from './components/Messages';
+import ButtonsForm from './components/ButtonsForm';
+import Paper from '@mui/material/Paper';
+import ChatBar from './components/ChatBar';
+import { MinimalUser } from '../../generated/graphql';
 
-export default function Chat() {
+interface ChatBoxProps {
+    index: number;
+    user: MinimalUser
+    removeChatUser: (user: MinimalUser) => void
+}
+
+export default function ChatBox(props: ChatBoxProps) {
+    const { index, user, removeChatUser } = props
     const [isConnected, setIsConnected] = useState(socket.connected);
     const [messages, setMessages] = useState<string[]>([]);
 
@@ -18,7 +27,7 @@ export default function Chat() {
             setIsConnected(false);
         }
 
-        function onNewMessageEvent(message:string) {
+        function onNewMessageEvent(message: string) {
             setMessages(previous => [...previous, message]);
         }
 
@@ -34,11 +43,20 @@ export default function Chat() {
     }, []);
 
     return (
-        <div className="Chat">
-            <ConnectionState isConnected={isConnected} />
-            <Events messages={messages} />
-            <ConnectionManager />
-            <MyForm />
-        </div>
+        <Paper
+            elevation={3}
+            sx={{
+                width: 400,
+                height: 500,
+                display: "flex",
+                flexDirection: "column",
+                position: 'absolute',
+                bottom: 0,
+                right: 420 * (index + 1)
+            }}>
+            <ChatBar user={user} removeChatUser={removeChatUser} />
+            <Messages messages={messages} />
+            <ButtonsForm />
+        </Paper>
     )
 }

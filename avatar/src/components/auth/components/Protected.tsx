@@ -12,7 +12,7 @@ export default function Protected(props: ProtectedProps) {
   const { user } = useAuth();
   const location = useLocation();
 
-  return user?.roles.find((role) => allowedRoles?.includes(role)) ? (
+  return user?.roles?.find((role) => allowedRoles?.includes(role)) ? (
     children
   ) : (
     <Navigate to="/" state={{ from: location }} replace />

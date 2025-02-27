@@ -1,12 +1,18 @@
 import React from "react";
-import { Box, List, ListItem, ListItemAvatar, ListItemText, Typography, CircularProgress } from "@mui/material";
+import { Box, List, ListItem, ListItemAvatar, ListItemText, Typography, CircularProgress, Tooltip, IconButton } from "@mui/material";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
 import CustomAvatar from "../../../components/lib/CustomAvatar";
-import { GetAllFriendsQuery, useGetAllFriendsQuery } from "../../../generated/graphql";
+import { GetAllFriendsQuery, MinimalUser, useGetAllFriendsQuery } from "../../../generated/graphql";
 import createAccessClient from "../../../graphql/clients/accessClient";
 import { useTheme, Theme } from '@mui/material/styles';
+import ChatIcon from '@mui/icons-material/Chat';
 
-export default function FriendsBox() {
+interface FriendBoxProps {
+    addChatUser: (user: MinimalUser) => void
+}
+
+export default function FriendsBox(props: FriendBoxProps) {
+    const { addChatUser } = props;
     const { user, accessToken } = useAuth();
     const theme = useTheme<Theme>();
 
@@ -55,7 +61,13 @@ export default function FriendsBox() {
             <List>
                 {data?.getAllFriends.length ? (
                     data.getAllFriends.map((friend) => (
-                        <ListItem key={friend.id}>
+                        <ListItem key={friend.id} secondaryAction={
+                            <Tooltip title="Otwórz czat">
+                                <IconButton color="inherit" onClick={() => addChatUser(friend!)}>
+                                    <ChatIcon />
+                                </IconButton>
+                            </Tooltip>
+                        }>
                             <ListItemAvatar>
                                 <CustomAvatar name={`${friend.firstName} ${friend.lastName}`} imgSrc={
                                     friend.imgSrc &&

@@ -89,7 +89,7 @@ export default function UserButtonsBox() {
                         open={Boolean(anchorElUser)}
                         onClose={handleCloseUserMenu}
                     >
-                        {user.roles.includes(Role.User) && (
+                        {user.roles?.includes(Role.User) && (
                             <MenuItem onClick={() => navigate("/ustawienia")}>
                                 <ListItemIcon>
                                     <SettingsIcon fontSize="small" />
@@ -97,7 +97,7 @@ export default function UserButtonsBox() {
                                 Ustawienia
                             </MenuItem>
                         )}
-                        {user.roles.includes(Role.User) && (
+                        {user.roles?.includes(Role.User) && (
                             <MenuItem onClick={() => navigate("/oczekujace_zaproszenia")}>
                                 <ListItemIcon>
                                     <MarkEmailUnreadIcon fontSize="small" />

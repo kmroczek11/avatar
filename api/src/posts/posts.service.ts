@@ -19,7 +19,7 @@ export class PostsService {
 
       const filePath = await saveImage(imageData, 'posts')
 
-      return this.prisma.post.create({
+      return await this.prisma.post.create({
         data: {
           title,
           content,
@@ -28,7 +28,7 @@ export class PostsService {
         },
       });
     } else {
-      return this.prisma.post.create({
+      return await this.prisma.post.create({
         data: {
           title,
           content,

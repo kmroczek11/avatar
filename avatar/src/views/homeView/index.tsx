@@ -6,16 +6,33 @@ import Footer from '../../components/footer';
 import MapView from '../mapView';
 import FriendsBox from './components/FriendsBox';
 import Dropdown from './components/Dropdown';
+import ChatBox from '../../components/chat';
+import { useState } from 'react';
+import { MinimalUser } from '../../generated/graphql';
 
 export default function HomeView() {
     const { user } = useAuth();
+    const [chatUsers, setChatUsers] = useState<MinimalUser[]>([])
+
+    const addChatUser = (user: MinimalUser) => {
+        if (chatUsers.some((chatUser) => chatUser.id === user.id)) return
+
+        if (chatUsers.length == 4) return
+
+        setChatUsers([...chatUsers, user])
+    }
+
+    const removeChatUser = (user: MinimalUser) => {
+        setChatUsers(chatUsers.filter((chatUser) => chatUser.id !== user.id));
+    }
 
     return (
         user ?
             <Grid height="95vh" sx={{ position: 'relative' }}>
-                <Dropdown />
-                <FriendsBox />
                 <MapView />
+                <Dropdown />
+                <FriendsBox addChatUser={addChatUser} />
+                {chatUsers.map((chatUser, i) => <ChatBox user={chatUser} index={i} removeChatUser={removeChatUser} />)}
             </Grid> :
             <React.Fragment>
                 <Grid height="62vh">

@@ -2,9 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, UseMutateFunction, useQuery } from "@tanstack/react-query";
-import { Exact, LogOutUserInput, LogOutUserMutation, LogOutUserMutationVariables, useLogOutUserMutation, useRefreshTokenMutation } from "../../../generated/graphql";
+import { Exact, LogOutUserInput, LogOutUserMutation, LogOutUserMutationVariables, useLogOutUserMutation, User, useRefreshTokenMutation } from "../../../generated/graphql";
 import createAccessClient from "../../../graphql/clients/accessClient";
-import User from "../models/user";
 
 const AuthContext = createContext<{
   user: User | null;

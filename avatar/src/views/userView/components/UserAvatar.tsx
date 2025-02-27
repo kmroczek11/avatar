@@ -29,7 +29,7 @@ const stringToColor = (string: string) => {
 interface UserAvatarProps {
   name: string;
   size?: "small" | "medium" | "large";
-  imgSrc?: string;
+  imgSrc?: string | null | undefined;
   BadgeIcon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
     muiName: string;
   };
@@ -136,7 +136,7 @@ export default function UserAvatar(props: UserAvatarProps) {
         }
       >
         <Avatar
-          src={imgSrc}
+          src={imgSrc!}
           sx={{
             bgcolor: stringToColor(name),
             ...(size === "small" && { width: 50, height: 50, fontSize: 20 }),
