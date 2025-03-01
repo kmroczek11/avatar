@@ -5,6 +5,8 @@ import { FriendRequestCreateNestedManyWithoutCreatorInput } from '../friend-requ
 import { FriendRequestCreateNestedManyWithoutReceiverInput } from '../friend-request/friend-request-create-nested-many-without-receiver.input';
 import { FriendCreateNestedManyWithoutUser1Input } from '../friend/friend-create-nested-many-without-user-1.input';
 import { FriendCreateNestedManyWithoutUser2Input } from '../friend/friend-create-nested-many-without-user-2.input';
+import { ChatCreateNestedManyWithoutUsersInput } from '../chat/chat-create-nested-many-without-users.input';
+import { MessageCreateNestedManyWithoutSenderInput } from '../message/message-create-nested-many-without-sender.input';
 
 @InputType()
 export class UserCreateWithoutPostsInput {
@@ -44,4 +46,10 @@ export class UserCreateWithoutPostsInput {
 
     @Field(() => FriendCreateNestedManyWithoutUser2Input, {nullable:true})
     friendsOf?: FriendCreateNestedManyWithoutUser2Input;
+
+    @Field(() => ChatCreateNestedManyWithoutUsersInput, {nullable:true})
+    chats?: ChatCreateNestedManyWithoutUsersInput;
+
+    @Field(() => MessageCreateNestedManyWithoutSenderInput, {nullable:true})
+    messages?: MessageCreateNestedManyWithoutSenderInput;
 }

@@ -5,6 +5,8 @@ import { Role } from '../prisma/role.enum';
 import { FriendRequest } from '../friend-request/friend-request.model';
 import { Friend } from '../friend/friend.model';
 import { Post } from '../post/post.model';
+import { Chat } from '../chat/chat.model';
+import { Message } from '../message/message.model';
 import { UserCount } from './user-count.output';
 
 @ObjectType()
@@ -48,6 +50,12 @@ export class User {
 
     @Field(() => [Post], {nullable:true})
     posts?: Array<Post>;
+
+    @Field(() => [Chat], {nullable:true})
+    chats?: Array<Chat>;
+
+    @Field(() => [Message], {nullable:true})
+    messages?: Array<Message>;
 
     @Field(() => UserCount, {nullable:false})
     _count?: UserCount;

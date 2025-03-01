@@ -7,6 +7,8 @@ import { FriendRequestUncheckedUpdateManyWithoutCreatorNestedInput } from '../fr
 import { FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput } from '../friend-request/friend-request-unchecked-update-many-without-receiver-nested.input';
 import { FriendUncheckedUpdateManyWithoutUser1NestedInput } from '../friend/friend-unchecked-update-many-without-user-1-nested.input';
 import { PostUncheckedUpdateManyWithoutAuthorNestedInput } from '../post/post-unchecked-update-many-without-author-nested.input';
+import { ChatUncheckedUpdateManyWithoutUsersNestedInput } from '../chat/chat-unchecked-update-many-without-users-nested.input';
+import { MessageUncheckedUpdateManyWithoutSenderNestedInput } from '../message/message-unchecked-update-many-without-sender-nested.input';
 
 @InputType()
 export class UserUncheckedUpdateWithoutFriendsOfInput {
@@ -46,4 +48,10 @@ export class UserUncheckedUpdateWithoutFriendsOfInput {
 
     @Field(() => PostUncheckedUpdateManyWithoutAuthorNestedInput, {nullable:true})
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput;
+
+    @Field(() => ChatUncheckedUpdateManyWithoutUsersNestedInput, {nullable:true})
+    chats?: ChatUncheckedUpdateManyWithoutUsersNestedInput;
+
+    @Field(() => MessageUncheckedUpdateManyWithoutSenderNestedInput, {nullable:true})
+    messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput;
 }

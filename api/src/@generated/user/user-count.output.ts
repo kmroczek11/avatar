@@ -19,4 +19,10 @@ export class UserCount {
 
     @Field(() => Int, {nullable:false})
     posts?: number;
+
+    @Field(() => Int, {nullable:false})
+    chats?: number;
+
+    @Field(() => Int, {nullable:false})
+    messages?: number;
 }

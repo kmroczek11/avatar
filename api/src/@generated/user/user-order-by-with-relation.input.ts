@@ -5,6 +5,8 @@ import { SortOrderInput } from '../prisma/sort-order.input';
 import { FriendRequestOrderByRelationAggregateInput } from '../friend-request/friend-request-order-by-relation-aggregate.input';
 import { FriendOrderByRelationAggregateInput } from '../friend/friend-order-by-relation-aggregate.input';
 import { PostOrderByRelationAggregateInput } from '../post/post-order-by-relation-aggregate.input';
+import { ChatOrderByRelationAggregateInput } from '../chat/chat-order-by-relation-aggregate.input';
+import { MessageOrderByRelationAggregateInput } from '../message/message-order-by-relation-aggregate.input';
 
 @InputType()
 export class UserOrderByWithRelationInput {
@@ -47,4 +49,10 @@ export class UserOrderByWithRelationInput {
 
     @Field(() => PostOrderByRelationAggregateInput, {nullable:true})
     posts?: PostOrderByRelationAggregateInput;
+
+    @Field(() => ChatOrderByRelationAggregateInput, {nullable:true})
+    chats?: ChatOrderByRelationAggregateInput;
+
+    @Field(() => MessageOrderByRelationAggregateInput, {nullable:true})
+    messages?: MessageOrderByRelationAggregateInput;
 }

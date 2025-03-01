@@ -8,6 +8,8 @@ import { FriendRequestUpdateManyWithoutReceiverNestedInput } from '../friend-req
 import { FriendUpdateManyWithoutUser1NestedInput } from '../friend/friend-update-many-without-user-1-nested.input';
 import { FriendUpdateManyWithoutUser2NestedInput } from '../friend/friend-update-many-without-user-2-nested.input';
 import { PostUpdateManyWithoutAuthorNestedInput } from '../post/post-update-many-without-author-nested.input';
+import { ChatUpdateManyWithoutUsersNestedInput } from '../chat/chat-update-many-without-users-nested.input';
+import { MessageUpdateManyWithoutSenderNestedInput } from '../message/message-update-many-without-sender-nested.input';
 
 @InputType()
 export class UserUpdateInput {
@@ -50,4 +52,10 @@ export class UserUpdateInput {
 
     @Field(() => PostUpdateManyWithoutAuthorNestedInput, {nullable:true})
     posts?: PostUpdateManyWithoutAuthorNestedInput;
+
+    @Field(() => ChatUpdateManyWithoutUsersNestedInput, {nullable:true})
+    chats?: ChatUpdateManyWithoutUsersNestedInput;
+
+    @Field(() => MessageUpdateManyWithoutSenderNestedInput, {nullable:true})
+    messages?: MessageUpdateManyWithoutSenderNestedInput;
 }

@@ -37,6 +37,35 @@ model User {
   friends                Friend[]        @relation("FriendshipUser1")
   friendsOf              Friend[]        @relation("FriendshipUser2")
   posts                  Post[]
+  chats                  Chat[]          @relation("UserChats")
+  messages               Message[]
+}
+
+model ActiveChat {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  chatId    String
+  socketId  String   @unique
+}
+
+model Chat {
+  id        String    @id @default(uuid())
+  name      String? // Optional group name (for group chats)
+  isGroup   Boolean   @default(false) // Determines if it's a private or group chat
+  users     User[]    @relation("UserChats")
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  text      String
+  senderId  String
+  chatId    String
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
 
 model Friend {

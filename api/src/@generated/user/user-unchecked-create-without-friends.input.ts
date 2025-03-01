@@ -5,6 +5,8 @@ import { FriendRequestUncheckedCreateNestedManyWithoutCreatorInput } from '../fr
 import { FriendRequestUncheckedCreateNestedManyWithoutReceiverInput } from '../friend-request/friend-request-unchecked-create-nested-many-without-receiver.input';
 import { FriendUncheckedCreateNestedManyWithoutUser2Input } from '../friend/friend-unchecked-create-nested-many-without-user-2.input';
 import { PostUncheckedCreateNestedManyWithoutAuthorInput } from '../post/post-unchecked-create-nested-many-without-author.input';
+import { ChatUncheckedCreateNestedManyWithoutUsersInput } from '../chat/chat-unchecked-create-nested-many-without-users.input';
+import { MessageUncheckedCreateNestedManyWithoutSenderInput } from '../message/message-unchecked-create-nested-many-without-sender.input';
 
 @InputType()
 export class UserUncheckedCreateWithoutFriendsInput {
@@ -44,4 +46,10 @@ export class UserUncheckedCreateWithoutFriendsInput {
 
     @Field(() => PostUncheckedCreateNestedManyWithoutAuthorInput, {nullable:true})
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput;
+
+    @Field(() => ChatUncheckedCreateNestedManyWithoutUsersInput, {nullable:true})
+    chats?: ChatUncheckedCreateNestedManyWithoutUsersInput;
+
+    @Field(() => MessageUncheckedCreateNestedManyWithoutSenderInput, {nullable:true})
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderInput;
 }

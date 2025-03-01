@@ -6,6 +6,8 @@ import { EnumRoleNullableListFilter } from '../prisma/enum-role-nullable-list-fi
 import { FriendRequestListRelationFilter } from '../friend-request/friend-request-list-relation-filter.input';
 import { FriendListRelationFilter } from '../friend/friend-list-relation-filter.input';
 import { PostListRelationFilter } from '../post/post-list-relation-filter.input';
+import { ChatListRelationFilter } from '../chat/chat-list-relation-filter.input';
+import { MessageListRelationFilter } from '../message/message-list-relation-filter.input';
 
 @InputType()
 export class UserWhereInput {
@@ -57,4 +59,10 @@ export class UserWhereInput {
 
     @Field(() => PostListRelationFilter, {nullable:true})
     posts?: PostListRelationFilter;
+
+    @Field(() => ChatListRelationFilter, {nullable:true})
+    chats?: ChatListRelationFilter;
+
+    @Field(() => MessageListRelationFilter, {nullable:true})
+    messages?: MessageListRelationFilter;
 }
