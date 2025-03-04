@@ -8,27 +8,27 @@ import Tooltip from "@mui/material/Tooltip";
 import { MinimalUser } from "../../../generated/graphql";
 
 interface ChatBarProps {
-    user: MinimalUser,
+    friend: MinimalUser,
     removeChatUser: (user: MinimalUser) => void
 }
 
 export default function ChatBar(props: ChatBarProps) {
-    const { user, removeChatUser } = props;
+    const { friend, removeChatUser } = props;
 
     return (
         <AppBar position="static" color="primary" sx={{ p: 1 }}>
             <Toolbar sx={{ display: "flex", alignItems: "center", gap: 2, justifyContent: "space-between" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <CustomAvatar name={`${user.firstName} ${user.lastName}`} imgSrc={
-                        user.imgSrc &&
+                    <CustomAvatar name={`${friend.firstName} ${friend.lastName}`} imgSrc={
+                        friend.imgSrc &&
                         (process.env.NODE_ENV === "production"
-                            ? `${process.env.REACT_APP_HOST}/public/images/${user.imgSrc}`
-                            : `${process.env.REACT_APP_HOST}/images/${user.imgSrc}`)
+                            ? `${process.env.REACT_APP_HOST}/public/images/${friend.imgSrc}`
+                            : `${process.env.REACT_APP_HOST}/images/${friend.imgSrc}`)
                     } size="small" />
-                    <Typography variant="h6">{user.firstName} {user.lastName}</Typography>
+                    <Typography variant="h6">{friend.firstName} {friend.lastName}</Typography>
                 </div>
                 <Tooltip title="Zamknij">
-                    <IconButton color="inherit" onClick={() => removeChatUser(user)}>
+                    <IconButton color="inherit" onClick={() => removeChatUser(friend)}>
                         <CloseIcon />
                     </IconButton>
                 </Tooltip>

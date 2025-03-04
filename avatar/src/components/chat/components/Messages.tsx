@@ -1,8 +1,9 @@
 import { useRef } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { Message } from "../models/Message";
 
-export default function Messages({ messages }: { messages: string[] }) {
+export default function Messages({ messages }: { messages: Message[] }) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     return (
@@ -21,7 +22,7 @@ export default function Messages({ messages }: { messages: string[] }) {
                             mb: 1,
                         }}
                     >
-                        {message}
+                        {message.text}
                     </Typography>
                 )}
             <div ref={messagesEndRef} />

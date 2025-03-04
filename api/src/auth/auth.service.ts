@@ -254,4 +254,17 @@ export class AuthService {
       msg: 'Success',
     }
   }
+
+  async getJwtUser(jwt: string): Promise<User | null> {
+    const accessTokenSecret = this.configService.get<string>('accessTokenSecret');
+
+    try {
+      const decoded = await this.jwtService.verify<{ sub: string, email: string }>(jwt, { secret: accessTokenSecret });
+      if (!decoded?.sub) return null;
+
+      return await this.userService.findOneById(decoded.sub);
+    } catch (error) {
+      return null;
+    }
+  }
 }

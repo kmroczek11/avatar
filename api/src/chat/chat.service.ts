@@ -1,10 +1,10 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GetChatInput } from './inputs/get-chat.input';
-import { GetUserChatsInput } from './inputs/get-user-chats.input';
-import { GetUsersInChatInput } from './inputs/get-users-in-chat.input';
 import { CreateChatInput } from './inputs/create-chat.input';
 import { JoinChatInput } from './inputs/join-chat.input';
+import { Message } from 'src/@generated/message/message.model';
+import { MessageCreateInput } from 'src/@generated/message/message-create.input';
 
 @Injectable()
 export class ChatService {
@@ -48,30 +48,20 @@ export class ChatService {
         });
     }
 
-    async getUserChats(getUserChats: GetUserChatsInput) {
-        const { userId } = getUserChats;
-
-        return this.prisma.chat.findMany({
+    async getUserChats(userId: string) {
+        return await this.prisma.chat.findMany({
             where: { users: { some: { id: userId } } },
             include: { users: true, messages: { orderBy: { createdAt: 'desc' } } },
         });
     }
 
-    async getUsersInChat(getUsersInChatInput: GetUsersInChatInput) {
-        const { chatId } = getUsersInChatInput;
+    async getChatsWithUsers(userId: string) {
+        const chats = await this.getUserChats(userId)
 
-        const chat = await this.prisma.chat.findUnique({
-            where: { id: chatId },
-            include: {
-                users: true,
-            },
-        });
-
-        if (!chat) {
-            throw new NotFoundException(`Chat with ID ${chatId} not found`);
-        }
-
-        return chat.users;
+        return chats.map((chat) => ({
+            ...chats,
+            users: chat.users
+        }))
     }
 
     async joinChat(joinChatInput: JoinChatInput) {
@@ -113,5 +103,46 @@ export class ChatService {
                 }
             })
         }
+    }
+
+    async leaveChat(socketId: string) {
+        const activeChat = await this.prisma.activeChat.findUnique({
+            where: { socketId }
+        });
+
+        if (!activeChat) return null
+
+        return this.prisma.activeChat.delete({ where: { socketId } })
+    }
+
+    async getActiveUsers(chatId: string) {
+        return await this.prisma.activeChat.findMany({
+            where: { chatId },
+        })
+    }
+
+    async createMessage(message: MessageCreateInput) {
+        return await this.prisma.message.create({ data: message })
+    }
+
+    async getMessages(chatId: string) {
+        return await this.prisma.message.findMany({
+            where: { chatId },
+            orderBy: { createdAt: 'asc' },
+        });
+    }
+
+
+    // Note: Would remove below in production - helper methods
+    async removeActiveChats() {
+        return this.prisma.activeChat.deleteMany()
+    }
+
+    async removeMessages() {
+        return await this.prisma.message.deleteMany()
+    }
+
+    async removeChats() {
+        return await this.prisma.chat.deleteMany()
     }
 }

@@ -4,8 +4,17 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from "@mui/icons-material/Send";
 import Tooltip from '@mui/material/Tooltip';
+import { Message } from '../models/Message';
+import { Chat } from '../models/Chat';
+import { MinimalUser, User } from '../../../generated/graphql';
 
-export default function ButtonsForm() {
+interface ButtonsFormProps {
+  friend: MinimalUser
+  chat: Chat
+}
+
+export default function ButtonsForm(props: ButtonsFormProps) {
+  const { friend, chat } = props
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -13,7 +22,29 @@ export default function ButtonsForm() {
     event.preventDefault();
     setIsLoading(true);
 
-    socket.timeout(5000).emit('sendMessage', input, () => {
+    if (!input) return
+    sendMessage(input, chat)
+  }
+
+  function sendMessage(message: string, chat: Chat) {
+    const newMessage: Message = {
+      text: message,
+      chat
+    }
+
+    socket?.timeout(5000).emit('sendMessage', newMessage, () => {
+      setIsLoading(false);
+    });
+  }
+
+  function joinChat(friendId: string) {
+    socket?.timeout(5000).emit('joinChat', friendId, () => {
+      setIsLoading(false);
+    });
+  }
+
+  function leaveChat() {
+    socket?.timeout(5000).emit('leaveChat', () => {
       setIsLoading(false);
     });
   }

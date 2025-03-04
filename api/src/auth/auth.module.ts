@@ -30,5 +30,6 @@ dotenv.config();
     AutoLoginStrategy,
     JwtStrategy,
   ],
+  exports: [AuthService],
 })
 export class AuthModule { }

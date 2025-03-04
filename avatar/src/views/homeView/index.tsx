@@ -32,7 +32,7 @@ export default function HomeView() {
                 <MapView />
                 <Dropdown />
                 <FriendsBox addChatUser={addChatUser} />
-                {chatUsers.map((chatUser, i) => <ChatBox user={chatUser} index={i} removeChatUser={removeChatUser} />)}
+                {chatUsers.map((chatUser, i) => <ChatBox friend={chatUser} index={i} removeChatUser={removeChatUser} />)}
             </Grid> :
             <React.Fragment>
                 <Grid height="62vh">
