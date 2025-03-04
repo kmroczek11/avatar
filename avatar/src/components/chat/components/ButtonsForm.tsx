@@ -1,5 +1,4 @@
 import { FormEvent, useState } from 'react';
-import { socket } from '../socket';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from "@mui/icons-material/Send";
@@ -7,6 +6,8 @@ import Tooltip from '@mui/material/Tooltip';
 import { Message } from '../models/Message';
 import { Chat } from '../models/Chat';
 import { MinimalUser, User } from '../../../generated/graphql';
+import { useSocket } from './SocketProvider';
+import { useAuth } from '../../auth/components/AuthProvider';
 
 interface ButtonsFormProps {
   friend: MinimalUser
@@ -15,6 +16,8 @@ interface ButtonsFormProps {
 
 export default function ButtonsForm(props: ButtonsFormProps) {
   const { friend, chat } = props
+  const { user } = useAuth()
+  const { socket } = useSocket()
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,8 +30,14 @@ export default function ButtonsForm(props: ButtonsFormProps) {
   }
 
   function sendMessage(message: string, chat: Chat) {
+    console.log(message,
+      user?.id!,
+      chat)
+
     const newMessage: Message = {
       text: message,
+      createdAt: new Date(),
+      sender: user!,
       chat
     }
 
@@ -37,17 +46,17 @@ export default function ButtonsForm(props: ButtonsFormProps) {
     });
   }
 
-  function joinChat(friendId: string) {
-    socket?.timeout(5000).emit('joinChat', friendId, () => {
-      setIsLoading(false);
-    });
-  }
+  // function joinChat(friendId: string) {
+  //   socket?.timeout(5000).emit('joinChat', friendId, () => {
+  //     setIsLoading(false);
+  //   });
+  // }
 
-  function leaveChat() {
-    socket?.timeout(5000).emit('leaveChat', () => {
-      setIsLoading(false);
-    });
-  }
+  // function leaveChat() {
+  //   socket?.timeout(5000).emit('leaveChat', () => {
+  //     setIsLoading(false);
+  //   });
+  // }
 
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", alignItems: "center", padding: "8px" }}>

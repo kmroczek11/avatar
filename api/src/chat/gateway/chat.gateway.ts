@@ -40,6 +40,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   }
 
   async getChats(socket: Socket, userId: string) {
+    console.log('getChats')
     const chats = await this.chatService.getChatsWithUsers(userId)
 
     this.server.to(socket.id).emit('chats', chats)
@@ -53,27 +54,27 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('createChat')
   async createChat(socket: Socket, friend: MinimalUser) {
-    console.log('create chat')
     await this.chatService.createChat({ creator: socket.data.user, friend })
     await this.getChats(socket, socket.data.user.id);
   }
 
   @SubscribeMessage('sendMessage')
   async handleMessage(socket: Socket, newMessage: Message) {
+    console.log('sendMessage',newMessage)
     if (!newMessage.chat) return null
 
     const { user } = socket.data
     newMessage.sender = user
 
     if (newMessage.chat.id) {
-      const { id, createdAt, text, senderId, chatId } = newMessage
+      const { id, text, createdAt, sender, chat } = newMessage
 
       const message = await this.chatService.createMessage({
         id,
         createdAt,
         text,
-        sender: { connect: { id: senderId } },
-        chat: { connect: { id: chatId } }
+        sender: { connect: { id: sender.id } },
+        chat: { connect: { id: chat.id } }
       })
 
       newMessage.id = message.id

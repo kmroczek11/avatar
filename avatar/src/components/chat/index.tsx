@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { initializeSocket, socket } from './socket';
-import ConnectionState from './components/ConnectionState';
 import Messages from './components/Messages';
 import ButtonsForm from './components/ButtonsForm';
 import Paper from '@mui/material/Paper';
 import ChatBar from './components/ChatBar';
-import { Friend, MinimalUser } from '../../generated/graphql';
+import { MinimalUser } from '../../generated/graphql';
 import { Message } from './models/Message';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useAuth } from '../auth/components/AuthProvider';
 import { Chat } from './models/Chat';
+import { useSocket } from './components/SocketProvider';
 
 interface ChatBoxProps {
     index: number;
@@ -19,54 +17,44 @@ interface ChatBoxProps {
 
 export default function ChatBox(props: ChatBoxProps) {
     const { index, friend, removeChatUser } = props
-    const [isConnected, setIsConnected] = useState(socket?.connected);
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [chat, setChat] = useState<Chat | null>(null)
+    const { socket } = useSocket()
 
     function createChat(friend: MinimalUser) {
         console.log('create chat')
-        socket?.timeout(5000).emit('createChat', friend, (err: any, response: any) => {
-            setIsLoading(false);
-        
-            if (err) {
-                console.error("Chat creation timeout or error:", err);
-                return;
-            }
-        
-            console.log("Chat created successfully:", response);
-        });
+        socket?.timeout(5000).emit('createChat', friend);
     }
 
     useEffect(() => {
-        initializeSocket()
-        setIsLoading(true)
-        createChat(friend)
-    }, [])
-
-    useEffect(() => {
         function onConnect() {
-            setIsConnected(true);
-        }
-
-        function onDisconnect() {
-            setIsConnected(false);
+            console.log('connected')
+            setIsLoading(true)
+            createChat(friend)
         }
 
         function onChatsEvent(chats: Chat[]) {
-            setChat(chats[0]);
+            console.log('onChatsEvent')
+            console.log(chats)
+            setChat(chats[index]);
+            setIsLoading(false)
+        }
+
+        function onNewMessageEvent(message: Message) {
+            setMessages(previous => [...previous, message]);
         }
 
         socket?.on('connect', onConnect);
-        socket?.on('disconnect', onDisconnect);
         socket?.on('chats', onChatsEvent);
+        socket?.on('newMessage', onNewMessageEvent);
 
         return () => {
             socket?.off('connect', onConnect);
-            socket?.off('disconnect', onDisconnect);
             socket?.off('chats', onChatsEvent);
+            socket?.off('newMessage', onNewMessageEvent);
         };
-    }, []);
+    }, [socket]);
 
     return (
         <Paper
