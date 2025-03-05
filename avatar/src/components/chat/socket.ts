@@ -19,35 +19,8 @@ const URL = process.env.NODE_ENV === "production" ? undefined : "http://localhos
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents> | null = null
 
-const getCookie = (name: string): string | null => {
-    const value = `; ${document.cookie}`
-    const parts = value.split(`; ${name}=`)
-
-    if (parts.length === 2) {
-        return parts.pop()!.split(";").shift() || null
-    }
-
-    return null;
-};
-
-const getAccessToken = async (): Promise<string | null> => {
-    const userId = getCookie("userId")
-
-    if (!userId) return null
-
-    try {
-        const response = await axios.get(`${process.env.REACT_APP_HOST}/auth/getAccessToken/${userId}`);
-        return response.data
-    } catch (error) {
-        console.error("Error fetching access token:", error)
-        return null
-    }
-};
-
-export const initializeSocket = async (): Promise<Socket | null> => {
+export const initializeSocket = async (accessToken: string | null): Promise<Socket | null> => {
     if (socket) return socket
-
-    const accessToken = await getAccessToken()
 
     if (!accessToken) {
         console.error("No access token available, cannot connect to socket.")
@@ -55,7 +28,7 @@ export const initializeSocket = async (): Promise<Socket | null> => {
     }
 
     socket = io(URL, {
-        autoConnect: true,
+        autoConnect: false,
         transportOptions: {
             polling: {
                 extraHeaders: {

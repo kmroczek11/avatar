@@ -13,7 +13,7 @@ export class ChatService {
     async getChat(getChatInput: GetChatInput) {
         const { creatorId, friendId } = getChatInput;
 
-        return await this.prisma.chat.findFirst({
+        return this.prisma.chat.findFirst({
             where: {
                 users: {
                     every: {
@@ -49,9 +49,9 @@ export class ChatService {
     }
 
     async getUserChats(userId: string) {
-        return await this.prisma.chat.findMany({
+        return this.prisma.chat.findMany({
             where: { users: { some: { id: userId } } },
-            include: { users: true, messages: { orderBy: { createdAt: 'desc' } } },
+            include: { users: true, messages: { orderBy: { createdAt: 'asc' } } },
         });
     }
 
@@ -59,7 +59,7 @@ export class ChatService {
         const chats = await this.getUserChats(userId)
 
         return chats.map((chat) => ({
-            ...chats,
+            ...chat,
             users: chat.users
         }))
     }
@@ -116,17 +116,17 @@ export class ChatService {
     }
 
     async getActiveUsers(chatId: string) {
-        return await this.prisma.activeChat.findMany({
+        return this.prisma.activeChat.findMany({
             where: { chatId },
         })
     }
 
     async createMessage(message: MessageCreateInput) {
-        return await this.prisma.message.create({ data: message })
+        return this.prisma.message.create({ data: message })
     }
 
     async getMessages(chatId: string) {
-        return await this.prisma.message.findMany({
+        return this.prisma.message.findMany({
             where: { chatId },
             orderBy: { createdAt: 'asc' },
         });
@@ -139,10 +139,10 @@ export class ChatService {
     }
 
     async removeMessages() {
-        return await this.prisma.message.deleteMany()
+        return this.prisma.message.deleteMany()
     }
 
     async removeChats() {
-        return await this.prisma.chat.deleteMany()
+        return this.prisma.chat.deleteMany()
     }
 }

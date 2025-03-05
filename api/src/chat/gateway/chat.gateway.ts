@@ -40,7 +40,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   }
 
   async getChats(socket: Socket, userId: string) {
-    console.log('getChats')
     const chats = await this.chatService.getChatsWithUsers(userId)
 
     this.server.to(socket.id).emit('chats', chats)
@@ -60,7 +59,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('sendMessage')
   async handleMessage(socket: Socket, newMessage: Message) {
-    console.log('sendMessage',newMessage)
+    console.log('sendMessage')
     if (!newMessage.chat) return null
 
     const { user } = socket.data
@@ -82,6 +81,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       const activeChats = await this.chatService.getActiveUsers(newMessage.chat.id)
 
       activeChats.forEach((activeChat: ActiveChat) => {
+        console.log('emit',newMessage)
         this.server.to(activeChat.socketId).emit('newMessage', newMessage)
       })
     }

@@ -28,20 +28,26 @@ export default function ChatBox(props: ChatBoxProps) {
     }
 
     useEffect(() => {
+        if (!socket) return
+
         function onConnect() {
             console.log('connected')
-            setIsLoading(true)
-            createChat(friend)
         }
 
         function onChatsEvent(chats: Chat[]) {
             console.log('onChatsEvent')
             console.log(chats)
-            setChat(chats[index]);
+
+            if (chats.length > 0) {
+                setChat(chats[index])
+                setMessages(chats[index].messages || [])
+            }
+
             setIsLoading(false)
         }
 
         function onNewMessageEvent(message: Message) {
+            console.log('onNewMessage', message)
             setMessages(previous => [...previous, message]);
         }
 
@@ -55,6 +61,19 @@ export default function ChatBox(props: ChatBoxProps) {
             socket?.off('newMessage', onNewMessageEvent);
         };
     }, [socket]);
+
+    useEffect(() => {
+        setIsLoading(true)
+        socket?.connect()
+        createChat(friend)
+
+        return () => {
+            if (socket) {
+                console.log('Disconnecting socket');
+                socket.disconnect()
+            }
+        }
+    }, [friend, socket])
 
     return (
         <Paper
