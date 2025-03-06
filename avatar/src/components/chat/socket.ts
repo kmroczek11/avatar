@@ -7,11 +7,13 @@ import { Message } from "./models/Message";
 interface ServerToClientEvents {
     newMessage: (message: Message) => void
     chats: (chats: Chat[]) => void
+    messages: (messages: Message[]) => void
 }
 
 interface ClientToServerEvents {
     sendMessage: (message: Message, callback?: (err: any, response: any) => void) => void
     createChat: (friend: MinimalUser, callback?: (err: any, response: any) => void) => void
+    joinChat: (friendId: string, callback?: (err: any, response: any) => void) => void
 }
 
 // "undefined" means the URL will be computed from the `window.location` object

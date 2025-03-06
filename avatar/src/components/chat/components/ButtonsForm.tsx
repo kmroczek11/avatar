@@ -46,18 +46,6 @@ export default function ButtonsForm(props: ButtonsFormProps) {
     });
   }
 
-  // function joinChat(friendId: string) {
-  //   socket?.timeout(5000).emit('joinChat', friendId, () => {
-  //     setIsLoading(false);
-  //   });
-  // }
-
-  // function leaveChat() {
-  //   socket?.timeout(5000).emit('leaveChat', () => {
-  //     setIsLoading(false);
-  //   });
-  // }
-
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", alignItems: "center", padding: "8px" }}>
       <TextField
