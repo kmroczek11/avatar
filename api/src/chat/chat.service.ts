@@ -5,13 +5,15 @@ import { CreateChatInput } from './inputs/create-chat.input';
 import { JoinChatInput } from './inputs/join-chat.input';
 import { Message } from 'src/@generated/message/message.model';
 import { MessageCreateInput } from 'src/@generated/message/message-create.input';
+import { CreateMessageInput } from './inputs/create-message.input';
+import { LeaveChatInput } from './inputs/leave-chat.input';
 
 @Injectable()
 export class ChatService {
     constructor(private readonly prisma: PrismaService) { }
 
     async getChat(getChatInput: GetChatInput) {
-        const { creatorId, friendId } = getChatInput;
+        const { creatorId, friendId } = getChatInput
 
         return this.prisma.chat.findFirst({
             where: {
@@ -32,9 +34,7 @@ export class ChatService {
 
         const chat = await this.getChat({ creatorId: creator.id, friendId: friend.id })
 
-        if (chat) {
-            throw new ConflictException('Chat already exists between these users');
-        }
+        if (chat) return
 
         return this.prisma.chat.create({
             data: {
@@ -74,45 +74,31 @@ export class ChatService {
         }
 
         const activeChat = await this.prisma.activeChat.findFirst({
-            where: {
-                userId: creatorId,
-                chatId: chat.id,
-            },
+            where: { userId: creatorId, socketId }
         });
 
-        if (activeChat) {
-            await this.prisma.activeChat.delete({
-                where: {
-                    id: activeChat.id
-                }
-            })
-
+        if (!activeChat) {
             return this.prisma.activeChat.create({
                 data: {
                     userId: creatorId,
                     chatId: chat.id,
                     socketId
                 }
-            })
-        } else {
-            return this.prisma.activeChat.create({
-                data: {
-                    userId: creatorId,
-                    chatId: chat.id,
-                    socketId
-                }
-            })
+            });
         }
+
+        return activeChat;
     }
 
-    async leaveChat(socketId: string) {
-        const activeChat = await this.prisma.activeChat.findUnique({
-            where: { socketId }
+    async leaveChat(leaveChatInput: LeaveChatInput) {
+        const { chatId, socketId } = leaveChatInput
+
+        return this.prisma.activeChat.deleteMany({
+            where: {
+                chatId,
+                socketId
+            }
         });
-
-        if (!activeChat) return null
-
-        return this.prisma.activeChat.delete({ where: { socketId } })
     }
 
     async getActiveUsers(chatId: string) {
@@ -121,14 +107,25 @@ export class ChatService {
         })
     }
 
-    async createMessage(message: MessageCreateInput) {
-        return this.prisma.message.create({ data: message })
+    async createMessage(createMessageInput: CreateMessageInput) {
+        const { text, createdAt, senderId, chatId } = createMessageInput
+
+        return this.prisma.message.create({
+            data: {
+                text: text,
+                createdAt: createdAt || new Date(),
+                sender: { connect: { id: senderId } },
+                chat: { connect: { id: chatId } },
+            },
+            include: { sender: true, chat: true },
+        });
     }
 
     async getMessages(chatId: string) {
         return this.prisma.message.findMany({
             where: { chatId },
             orderBy: { createdAt: 'asc' },
+            include: { sender: true, chat: true },
         });
     }
 

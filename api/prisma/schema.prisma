@@ -42,14 +42,14 @@ model User {
 }
 
 model ActiveChat {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  chatId    String
-  socketId  String   @unique
+  id       String @id @default(cuid())
+  userId   String
+  chatId   String
+  socketId String
 }
 
 model Chat {
-  id        String    @id @default(uuid())
+  id        String    @id @default(cuid())
   name      String? // Optional group name (for group chats)
   isGroup   Boolean   @default(false) // Determines if it's a private or group chat
   users     User[]    @relation("UserChats")
@@ -59,7 +59,7 @@ model Chat {
 }
 
 model Message {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   text      String
   senderId  String
   chatId    String

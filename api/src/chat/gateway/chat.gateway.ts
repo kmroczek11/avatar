@@ -48,7 +48,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   handleDisconnect(socket: Socket) {
     console.log('disconnected')
 
-    this.chatService.leaveChat(socket.id)
+    this.chatService.leaveChat({ chatId: socket.data.chatId, socketId: socket.id })
   }
 
   @SubscribeMessage('createChat')
@@ -59,43 +59,41 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('sendMessage')
   async handleMessage(socket: Socket, newMessage: Message) {
-    console.log('sendMessage')
-    if (!newMessage.chat) return null
-
     const { user } = socket.data
     newMessage.sender = user
 
-    if (newMessage.chat.id) {
-      const { id, text, createdAt, sender, chat } = newMessage
+    if (newMessage.chatId) {
+      const { id, text, createdAt, senderId, chatId } = newMessage
 
       const message = await this.chatService.createMessage({
         id,
         createdAt,
         text,
-        sender: { connect: { id: sender.id } },
-        chat: { connect: { id: chat.id } }
+        senderId,
+        chatId
       })
 
       newMessage.id = message.id
 
-      const activeChats = await this.chatService.getActiveUsers(newMessage.chat.id)
+      const activeChats = await this.chatService.getActiveUsers(newMessage.chatId)
 
       activeChats.forEach((activeChat: ActiveChat) => {
-        console.log('emit',newMessage)
+        console.log('emit', newMessage)
         this.server.to(activeChat.socketId).emit('newMessage', newMessage)
       })
     }
   }
 
   @SubscribeMessage('joinChat')
-  async joinChat(socket: Socket, friendId: string) {
+  async joinChat(socket: Socket, [friendId, chatId]: [string, string]) {
+    socket.data.chatId = chatId
     const activeChat = await this.chatService.joinChat({ friendId, creatorId: socket.data.user.id, socketId: socket.id })
     const messages = await this.chatService.getMessages(activeChat.chatId)
     this.server.to(socket.id).emit('messages', messages)
   }
 
   @SubscribeMessage('leaveChat')
-  async leaveChat(socket: Socket) {
-    this.chatService.leaveChat(socket.id)
+  async leaveChat(socket: Socket, chatId: string) {
+    this.chatService.leaveChat({ chatId, socketId: socket.id })
   }
 }

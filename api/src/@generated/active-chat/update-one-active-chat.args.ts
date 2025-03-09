@@ -14,5 +14,5 @@ export class UpdateOneActiveChatArgs {
 
     @Field(() => ActiveChatWhereUniqueInput, {nullable:false})
     @Type(() => ActiveChatWhereUniqueInput)
-    where!: Prisma.AtLeast<ActiveChatWhereUniqueInput, 'id' | 'userId' | 'socketId'>;
+    where!: Prisma.AtLeast<ActiveChatWhereUniqueInput, 'id'>;
 }

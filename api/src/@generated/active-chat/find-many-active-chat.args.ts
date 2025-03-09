@@ -19,7 +19,7 @@ export class FindManyActiveChatArgs {
     orderBy?: Array<ActiveChatOrderByWithRelationInput>;
 
     @Field(() => ActiveChatWhereUniqueInput, {nullable:true})
-    cursor?: Prisma.AtLeast<ActiveChatWhereUniqueInput, 'id' | 'userId' | 'socketId'>;
+    cursor?: Prisma.AtLeast<ActiveChatWhereUniqueInput, 'id'>;
 
     @Field(() => Int, {nullable:true})
     take?: number;

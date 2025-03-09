@@ -9,12 +9,6 @@ export class ActiveChatWhereUniqueInput {
     @Field(() => String, {nullable:true})
     id?: string;
 
-    @Field(() => String, {nullable:true})
-    userId?: string;
-
-    @Field(() => String, {nullable:true})
-    socketId?: string;
-
     @Field(() => [ActiveChatWhereInput], {nullable:true})
     AND?: Array<ActiveChatWhereInput>;
 
@@ -25,5 +19,11 @@ export class ActiveChatWhereUniqueInput {
     NOT?: Array<ActiveChatWhereInput>;
 
     @Field(() => StringFilter, {nullable:true})
+    userId?: StringFilter;
+
+    @Field(() => StringFilter, {nullable:true})
     chatId?: StringFilter;
+
+    @Field(() => StringFilter, {nullable:true})
+    socketId?: StringFilter;
 }

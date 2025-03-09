@@ -30,15 +30,11 @@ export default function ButtonsForm(props: ButtonsFormProps) {
   }
 
   function sendMessage(message: string, chat: Chat) {
-    console.log(message,
-      user?.id!,
-      chat)
-
     const newMessage: Message = {
       text: message,
       createdAt: new Date(),
-      sender: user!,
-      chat
+      senderId: user?.id!,
+      chatId: chat?.id!
     }
 
     socket?.timeout(5000).emit('sendMessage', newMessage, () => {

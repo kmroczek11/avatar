@@ -5,6 +5,8 @@ export interface Message {
     id?: string;
     text: string;
     createdAt: Date;
-    sender: User;
-    chat: Chat
+    senderId: string;
+    chatId: string;
+    sender?: User;
+    chat?: Chat;
 }

@@ -13,7 +13,8 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
     sendMessage: (message: Message, callback?: (err: any, response: any) => void) => void
     createChat: (friend: MinimalUser, callback?: (err: any, response: any) => void) => void
-    joinChat: (friendId: string, callback?: (err: any, response: any) => void) => void
+    joinChat: (friendId: string, chatId: string, callback?: (err: any, response: any) => void) => void
+    leaveChat: (chatId: string, callback?: (err: any, response: any) => void) => void
 }
 
 // "undefined" means the URL will be computed from the `window.location` object

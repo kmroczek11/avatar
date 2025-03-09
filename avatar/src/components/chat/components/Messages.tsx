@@ -21,16 +21,16 @@ export default function Messages({ messages }: { messages: Message[] }) {
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: message.sender.id === user?.id ? "flex-end" : "flex-start",
+                        justifyContent: message.senderId === user?.id ? "flex-end" : "flex-start",
                         mb: 1,
                     }}
                 >
-                    {message.sender.id !== user?.id && (
+                    {message.senderId !== user?.id && (
                         <Box sx={{ mr: 1 }}>
                             <CustomAvatar
-                                name={`${message.sender.firstName} ${message.sender.lastName}`}
+                                name={`${message.sender?.firstName} ${message.sender?.lastName}`}
                                 imgSrc={
-                                    message.sender.imgSrc &&
+                                    message.sender?.imgSrc &&
                                     (process.env.NODE_ENV === "production"
                                         ? `${process.env.REACT_APP_HOST}/public/images/${message.sender.imgSrc}`
                                         : `${process.env.REACT_APP_HOST}/images/${message.sender.imgSrc}`)
@@ -43,7 +43,7 @@ export default function Messages({ messages }: { messages: Message[] }) {
                     <Typography
                         sx={{
                             color: "white",
-                            backgroundColor: message.sender.id === user?.id ? "black" : "grey",
+                            backgroundColor: message.senderId === user?.id ? "black" : "grey",
                             p: 1,
                             borderRadius: 2,
                             maxWidth: "75%",
@@ -52,12 +52,12 @@ export default function Messages({ messages }: { messages: Message[] }) {
                         {message.text}
                     </Typography>
 
-                    {message.sender.id === user?.id && (
+                    {message.senderId === user?.id && (
                         <Box sx={{ ml: 1 }}>
                             <CustomAvatar
-                                name={`${message.sender.firstName} ${message.sender.lastName}`}
+                                name={`${message.sender?.firstName} ${message.sender?.lastName}`}
                                 imgSrc={
-                                    message.sender.imgSrc &&
+                                    message.sender?.imgSrc &&
                                     (process.env.NODE_ENV === "production"
                                         ? `${process.env.REACT_APP_HOST}/public/images/${message.sender.imgSrc}`
                                         : `${process.env.REACT_APP_HOST}/images/${message.sender.imgSrc}`)

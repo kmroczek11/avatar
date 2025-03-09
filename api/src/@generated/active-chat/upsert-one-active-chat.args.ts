@@ -11,7 +11,7 @@ export class UpsertOneActiveChatArgs {
 
     @Field(() => ActiveChatWhereUniqueInput, {nullable:false})
     @Type(() => ActiveChatWhereUniqueInput)
-    where!: Prisma.AtLeast<ActiveChatWhereUniqueInput, 'id' | 'userId' | 'socketId'>;
+    where!: Prisma.AtLeast<ActiveChatWhereUniqueInput, 'id'>;
 
     @Field(() => ActiveChatCreateInput, {nullable:false})
     @Type(() => ActiveChatCreateInput)

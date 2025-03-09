@@ -1,125 +1,125 @@
-import React, { useState, useEffect } from "react"
-import Messages from "./components/Messages"
-import ButtonsForm from "./components/ButtonsForm"
-import Paper from "@mui/material/Paper"
-import ChatBar from "./components/ChatBar"
-import { MinimalUser } from "../../generated/graphql"
-import { Message } from "./models/Message"
-import CircularProgress from "@mui/material/CircularProgress"
-import { Chat } from "./models/Chat"
-import { useSocket } from "./components/SocketProvider"
+import React, { useState, useEffect } from "react";
+import Messages from "./components/Messages";
+import ButtonsForm from "./components/ButtonsForm";
+import Paper from "@mui/material/Paper";
+import ChatBar from "./components/ChatBar";
+import { MinimalUser } from "../../generated/graphql";
+import { Message } from "./models/Message";
+import CircularProgress from "@mui/material/CircularProgress";
+import { Chat } from "./models/Chat";
+import { useSocket } from "./components/SocketProvider";
 
 interface ChatBoxProps {
-    index: number
-    friend: MinimalUser
-    removeChatUser: (user: MinimalUser) => void
+  index: number;
+  friend: MinimalUser;
+  removeChatUser: (user: MinimalUser) => void;
 }
 
 export default function ChatBox(props: ChatBoxProps) {
-    const { index, friend, removeChatUser } = props
-    const [messages, setMessages] = useState<Message[]>([])
-    const [isLoading, setIsLoading] = useState(false)
-    const [chat, setChat] = useState<Chat | null>(null)
-    const { socket } = useSocket()
+  const { index, friend, removeChatUser } = props
+  const [messages, setMessages] = useState<Message[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [chat, setChat] = useState<Chat | null>(null)
+  const [hasCreatedChat, setHasCreatedChat] = useState(false)
+  const { socket } = useSocket()
 
-    function createChat(friend: MinimalUser) {
-        console.log("create chat")
-        socket?.timeout(5000).emit("createChat", friend)
+  function createChat(friend: MinimalUser) {
+    socket?.timeout(5000).emit("createChat", friend)
+  }
+
+  useEffect(() => {
+    if (!socket || !friend || hasCreatedChat) return
+
+    socket.connect()
+    setIsLoading(true)
+    createChat(friend)
+    setHasCreatedChat(true)
+  }, [socket, friend, hasCreatedChat])
+
+  useEffect(() => {
+    if (!socket) return
+
+    function onConnect() {
+      console.log("connected")
     }
 
-    useEffect(() => {
-        if (!socket) return
+    function onChatsEvent(chats: Chat[]) {
+      if (!friend) return
 
-        function onConnect() {
-            console.log("connected")
-        }
+      const foundChat = chats.find((chat) =>
+        chat.users.some((user) => user.id === friend.id)
+      )
 
-        function onChatsEvent(chats: Chat[]) {
-            const foundChat = chats.find(chat =>
-                chat.users.some(user => user.id === friend.id)
-            )
+      if (foundChat) {
+        setChat(foundChat)
+      }
 
-            if (foundChat) setChat(foundChat)
+      setIsLoading(false)
+    }
 
-            setIsLoading(false)
-        }
+    function onMessagesEvent(messages: Message[]) {
+      if (chat?.id === messages[0]?.chatId) {
+        setMessages(messages)
+      }
+    }
 
-        function onMessagesEvent(messages: Message[]) {
-            if (chat?.id) {
-                setMessages(prevMessages =>
-                    chat.id === prevMessages[0]?.chat.id ? messages : prevMessages
-                )
-            }
-        }
+    function onNewMessageEvent(message: Message) {
+      if (chat?.id === message.chatId) {
+        setMessages((previous) => [...previous, message])
+      }
+    }
 
-        function onNewMessageEvent(message: Message) {
-            console.log("onNewMessage", message)
-            if (chat?.id === message.chat.id) {
-                setMessages(previous => [...previous, message])
-            }
-        }
+    socket.on("connect", onConnect)
+    socket.on("chats", onChatsEvent)
+    socket.on("messages", onMessagesEvent)
+    socket.on("newMessage", onNewMessageEvent)
 
-        socket?.on("connect", onConnect)
-        socket?.on("chats", onChatsEvent)
-        socket?.on("messages", onMessagesEvent)
-        socket?.on("newMessage", onNewMessageEvent)
+    return () => {
+      socket.off("connect", onConnect)
+      socket.off("chats", onChatsEvent)
+      socket.off("messages", onMessagesEvent)
+      socket.off("newMessage", onNewMessageEvent)
+    }
+  }, [socket, chat, friend])
 
-        return () => {
-            socket?.off("connect", onConnect)
-            socket?.off("chats", onChatsEvent)
-            socket?.off("messages", onMessagesEvent)
-            socket?.off("newMessage", onNewMessageEvent)
-        }
-    }, [socket, chat])
+  useEffect(() => {
+    if (!socket || !friend || !chat) return
 
-    useEffect(() => {
-        setIsLoading(true)
-        socket?.connect()
-        createChat(friend)
+    socket.emit("joinChat", friend.id, chat.id)
 
-        return () => {
-            if (socket) {
-                console.log("Disconnecting socket")
-                socket.disconnect()
-            }
-        }
-    }, [friend, socket])
+    return () => {
+      socket.emit("leaveChat", chat.id)
+    }
+  }, [socket, friend, chat])
 
-    useEffect(() => {
-        if (!socket || !chat) return
-
-        console.log(`Joining chat ${chat.id} with ${friend.id}`)
-
-        socket.emit("joinChat", friend.id)
-
-        return () => {
-            console.log(`Leaving chat ${chat.id}`)
-            socket.emit("leaveChat", friend.id)
-        }
-    }, [socket, chat])
-
-    return (
-        <Paper
-            elevation={3}
-            sx={{
-                width: 400,
-                height: 500,
-                display: "flex",
-                flexDirection: "column",
-                position: "absolute",
-                bottom: 0,
-                right: 420 * (index + 1)
-            }}
-        >
-            {isLoading ? (
-                <CircularProgress sx={{ display: "block", margin: "auto", color: "#000" }} />
-            ) : (
-                <>
-                    <ChatBar friend={friend} removeChatUser={removeChatUser} />
-                    <Messages messages={messages} />
-                    <ButtonsForm friend={friend} chat={chat!} />
-                </>
-            )}
-        </Paper>
-    )
+  return (
+    <Paper
+      elevation={3}
+      sx={{
+        width: 400,
+        height: 500,
+        display: "flex",
+        flexDirection: "column",
+        position: "absolute",
+        bottom: 0,
+        right: 420 * (index + 1),
+      }}
+    >
+      {isLoading ? (
+        <CircularProgress sx={{ display: "block", margin: "auto", color: "#000" }} />
+      ) : (
+        <>
+          <ChatBar friend={friend} removeChatUser={removeChatUser} />
+          {chat ? (
+            <>
+              <Messages messages={messages} />
+              <ButtonsForm friend={friend} chat={chat} />
+            </>
+          ) : (
+            <div>Nie znaleziono czatu</div>
+          )}
+        </>
+      )}
+    </Paper>
+  )
 }
