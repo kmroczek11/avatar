@@ -39,6 +39,11 @@ export type AutoLogInUserInput = {
   userId: Scalars['String']['input'];
 };
 
+export type BoolFilter = {
+  equals?: InputMaybe<Scalars['Boolean']['input']>;
+  not?: InputMaybe<NestedBoolFilter>;
+};
+
 export type CancelFriendRequestInput = {
   creatorId: Scalars['String']['input'];
   receiverId: Scalars['String']['input'];
@@ -75,10 +80,105 @@ export type ChangeProfilePicResponse = {
   userId: Scalars['String']['output'];
 };
 
+export type Chat = {
+  __typename?: 'Chat';
+  _count: ChatCount;
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  isGroup: Scalars['Boolean']['output'];
+  messages?: Maybe<Array<Message>>;
+  name?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+  users?: Maybe<Array<User>>;
+};
+
+export type ChatCount = {
+  __typename?: 'ChatCount';
+  messages: Scalars['Int']['output'];
+  users: Scalars['Int']['output'];
+};
+
+export type ChatCreateNestedManyWithoutUsersInput = {
+  connect?: InputMaybe<Array<ChatWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<ChatCreateOrConnectWithoutUsersInput>>;
+  create?: InputMaybe<Array<ChatCreateWithoutUsersInput>>;
+};
+
+export type ChatCreateNestedOneWithoutMessagesInput = {
+  connect?: InputMaybe<ChatWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<ChatCreateOrConnectWithoutMessagesInput>;
+  create?: InputMaybe<ChatCreateWithoutMessagesInput>;
+};
+
+export type ChatCreateOrConnectWithoutMessagesInput = {
+  create: ChatCreateWithoutMessagesInput;
+  where: ChatWhereUniqueInput;
+};
+
+export type ChatCreateOrConnectWithoutUsersInput = {
+  create: ChatCreateWithoutUsersInput;
+  where: ChatWhereUniqueInput;
+};
+
+export type ChatCreateWithoutMessagesInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isGroup?: InputMaybe<Scalars['Boolean']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  users?: InputMaybe<UserCreateNestedManyWithoutChatsInput>;
+};
+
+export type ChatCreateWithoutUsersInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isGroup?: InputMaybe<Scalars['Boolean']['input']>;
+  messages?: InputMaybe<MessageCreateNestedManyWithoutChatInput>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type ChatListRelationFilter = {
+  every?: InputMaybe<ChatWhereInput>;
+  none?: InputMaybe<ChatWhereInput>;
+  some?: InputMaybe<ChatWhereInput>;
+};
+
+export type ChatRelationFilter = {
+  is?: InputMaybe<ChatWhereInput>;
+  isNot?: InputMaybe<ChatWhereInput>;
+};
+
+export type ChatWhereInput = {
+  AND?: InputMaybe<Array<ChatWhereInput>>;
+  NOT?: InputMaybe<Array<ChatWhereInput>>;
+  OR?: InputMaybe<Array<ChatWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<StringFilter>;
+  isGroup?: InputMaybe<BoolFilter>;
+  messages?: InputMaybe<MessageListRelationFilter>;
+  name?: InputMaybe<StringNullableFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  users?: InputMaybe<UserListRelationFilter>;
+};
+
+export type ChatWhereUniqueInput = {
+  AND?: InputMaybe<Array<ChatWhereInput>>;
+  NOT?: InputMaybe<Array<ChatWhereInput>>;
+  OR?: InputMaybe<Array<ChatWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isGroup?: InputMaybe<BoolFilter>;
+  messages?: InputMaybe<MessageListRelationFilter>;
+  name?: InputMaybe<StringNullableFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  users?: InputMaybe<UserListRelationFilter>;
+};
+
 export type CreatePostInput = {
   authorId: Scalars['String']['input'];
   content: Scalars['String']['input'];
-  image: Scalars['Upload']['input'];
+  image?: InputMaybe<Scalars['Upload']['input']>;
   title: Scalars['String']['input'];
 };
 
@@ -327,12 +427,12 @@ export type GetAllFriendsInput = {
   userId: Scalars['String']['input'];
 };
 
-export type GetFriendsPostsInput = {
-  userId: Scalars['String']['input'];
-};
-
 export type GetPendingRequestsInput = {
   receiverId: Scalars['String']['input'];
+};
+
+export type GetPostsInput = {
+  userId: Scalars['String']['input'];
 };
 
 export type LogInResponse = {
@@ -352,6 +452,111 @@ export type LogOutResponse = {
 
 export type LogOutUserInput = {
   userId: Scalars['String']['input'];
+};
+
+export type Message = {
+  __typename?: 'Message';
+  chat: Chat;
+  chatId: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  sender: User;
+  senderId: Scalars['String']['output'];
+  text: Scalars['String']['output'];
+};
+
+export type MessageCreateManyChatInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  senderId: Scalars['String']['input'];
+  text: Scalars['String']['input'];
+};
+
+export type MessageCreateManyChatInputEnvelope = {
+  data: Array<MessageCreateManyChatInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type MessageCreateManySenderInput = {
+  chatId: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  text: Scalars['String']['input'];
+};
+
+export type MessageCreateManySenderInputEnvelope = {
+  data: Array<MessageCreateManySenderInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type MessageCreateNestedManyWithoutChatInput = {
+  connect?: InputMaybe<Array<MessageWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<MessageCreateOrConnectWithoutChatInput>>;
+  create?: InputMaybe<Array<MessageCreateWithoutChatInput>>;
+  createMany?: InputMaybe<MessageCreateManyChatInputEnvelope>;
+};
+
+export type MessageCreateNestedManyWithoutSenderInput = {
+  connect?: InputMaybe<Array<MessageWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<MessageCreateOrConnectWithoutSenderInput>>;
+  create?: InputMaybe<Array<MessageCreateWithoutSenderInput>>;
+  createMany?: InputMaybe<MessageCreateManySenderInputEnvelope>;
+};
+
+export type MessageCreateOrConnectWithoutChatInput = {
+  create: MessageCreateWithoutChatInput;
+  where: MessageWhereUniqueInput;
+};
+
+export type MessageCreateOrConnectWithoutSenderInput = {
+  create: MessageCreateWithoutSenderInput;
+  where: MessageWhereUniqueInput;
+};
+
+export type MessageCreateWithoutChatInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  sender: UserCreateNestedOneWithoutMessagesInput;
+  text: Scalars['String']['input'];
+};
+
+export type MessageCreateWithoutSenderInput = {
+  chat: ChatCreateNestedOneWithoutMessagesInput;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  text: Scalars['String']['input'];
+};
+
+export type MessageListRelationFilter = {
+  every?: InputMaybe<MessageWhereInput>;
+  none?: InputMaybe<MessageWhereInput>;
+  some?: InputMaybe<MessageWhereInput>;
+};
+
+export type MessageWhereInput = {
+  AND?: InputMaybe<Array<MessageWhereInput>>;
+  NOT?: InputMaybe<Array<MessageWhereInput>>;
+  OR?: InputMaybe<Array<MessageWhereInput>>;
+  chat?: InputMaybe<ChatRelationFilter>;
+  chatId?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<StringFilter>;
+  sender?: InputMaybe<UserRelationFilter>;
+  senderId?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
+};
+
+export type MessageWhereUniqueInput = {
+  AND?: InputMaybe<Array<MessageWhereInput>>;
+  NOT?: InputMaybe<Array<MessageWhereInput>>;
+  OR?: InputMaybe<Array<MessageWhereInput>>;
+  chat?: InputMaybe<ChatRelationFilter>;
+  chatId?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  sender?: InputMaybe<UserRelationFilter>;
+  senderId?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
 };
 
 export type MinimalUser = {
@@ -454,6 +659,11 @@ export type MutationRejectFriendRequestArgs = {
 
 export type MutationSendFriendRequestArgs = {
   sendFriendRequestInput: SendFriendRequestInput;
+};
+
+export type NestedBoolFilter = {
+  equals?: InputMaybe<Scalars['Boolean']['input']>;
+  not?: InputMaybe<NestedBoolFilter>;
 };
 
 export type NestedDateTimeFilter = {
@@ -588,8 +798,8 @@ export type Query = {
   findOne: User;
   findUsersByName: Array<UserWithFriendRequestStatus>;
   getAllFriends: Array<MinimalUser>;
-  getFriendsPosts: Array<Post>;
   getPendingRequests: Array<FriendRequest>;
+  getPosts: Array<Post>;
 };
 
 
@@ -608,13 +818,13 @@ export type QueryGetAllFriendsArgs = {
 };
 
 
-export type QueryGetFriendsPostsArgs = {
-  getFriendsPostsInput: GetFriendsPostsInput;
+export type QueryGetPendingRequestsArgs = {
+  getPendingRequestsInput: GetPendingRequestsInput;
 };
 
 
-export type QueryGetPendingRequestsArgs = {
-  getPendingRequestsInput: GetPendingRequestsInput;
+export type QueryGetPostsArgs = {
+  getPostsInput: GetPostsInput;
 };
 
 export enum QueryMode {
@@ -693,6 +903,7 @@ export type StringNullableFilter = {
 export type User = {
   __typename?: 'User';
   _count: UserCount;
+  chats?: Maybe<Array<Chat>>;
   email: Scalars['String']['output'];
   firstName: Scalars['String']['output'];
   friendRequestsReceived?: Maybe<Array<FriendRequest>>;
@@ -702,6 +913,7 @@ export type User = {
   id: Scalars['ID']['output'];
   imgSrc?: Maybe<Scalars['String']['output']>;
   lastName: Scalars['String']['output'];
+  messages?: Maybe<Array<Message>>;
   password: Scalars['String']['output'];
   phoneNumber: Scalars['String']['output'];
   posts?: Maybe<Array<Post>>;
@@ -710,14 +922,17 @@ export type User = {
 
 export type UserCount = {
   __typename?: 'UserCount';
+  chats: Scalars['Int']['output'];
   friendRequestsReceived: Scalars['Int']['output'];
   friendRequestsSent: Scalars['Int']['output'];
   friends: Scalars['Int']['output'];
   friendsOf: Scalars['Int']['output'];
+  messages: Scalars['Int']['output'];
   posts: Scalars['Int']['output'];
 };
 
 export type UserCreateInput = {
+  chats?: InputMaybe<ChatCreateNestedManyWithoutUsersInput>;
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   friendRequestsReceived?: InputMaybe<FriendRequestCreateNestedManyWithoutReceiverInput>;
@@ -727,10 +942,17 @@ export type UserCreateInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   imgSrc?: InputMaybe<Scalars['String']['input']>;
   lastName: Scalars['String']['input'];
+  messages?: InputMaybe<MessageCreateNestedManyWithoutSenderInput>;
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
   posts?: InputMaybe<PostCreateNestedManyWithoutAuthorInput>;
   roles?: InputMaybe<UserCreaterolesInput>;
+};
+
+export type UserCreateNestedManyWithoutChatsInput = {
+  connect?: InputMaybe<Array<UserWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<UserCreateOrConnectWithoutChatsInput>>;
+  create?: InputMaybe<Array<UserCreateWithoutChatsInput>>;
 };
 
 export type UserCreateNestedOneWithoutFriendRequestsReceivedInput = {
@@ -757,6 +979,17 @@ export type UserCreateNestedOneWithoutFriendsOfInput = {
   create?: InputMaybe<UserCreateWithoutFriendsOfInput>;
 };
 
+export type UserCreateNestedOneWithoutMessagesInput = {
+  connect?: InputMaybe<UserWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<UserCreateOrConnectWithoutMessagesInput>;
+  create?: InputMaybe<UserCreateWithoutMessagesInput>;
+};
+
+export type UserCreateOrConnectWithoutChatsInput = {
+  create: UserCreateWithoutChatsInput;
+  where: UserWhereUniqueInput;
+};
+
 export type UserCreateOrConnectWithoutFriendRequestsReceivedInput = {
   create: UserCreateWithoutFriendRequestsReceivedInput;
   where: UserWhereUniqueInput;
@@ -777,7 +1010,30 @@ export type UserCreateOrConnectWithoutFriendsOfInput = {
   where: UserWhereUniqueInput;
 };
 
+export type UserCreateOrConnectWithoutMessagesInput = {
+  create: UserCreateWithoutMessagesInput;
+  where: UserWhereUniqueInput;
+};
+
+export type UserCreateWithoutChatsInput = {
+  email: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  friendRequestsReceived?: InputMaybe<FriendRequestCreateNestedManyWithoutReceiverInput>;
+  friendRequestsSent?: InputMaybe<FriendRequestCreateNestedManyWithoutCreatorInput>;
+  friends?: InputMaybe<FriendCreateNestedManyWithoutUser1Input>;
+  friendsOf?: InputMaybe<FriendCreateNestedManyWithoutUser2Input>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  imgSrc?: InputMaybe<Scalars['String']['input']>;
+  lastName: Scalars['String']['input'];
+  messages?: InputMaybe<MessageCreateNestedManyWithoutSenderInput>;
+  password: Scalars['String']['input'];
+  phoneNumber: Scalars['String']['input'];
+  posts?: InputMaybe<PostCreateNestedManyWithoutAuthorInput>;
+  roles?: InputMaybe<UserCreaterolesInput>;
+};
+
 export type UserCreateWithoutFriendRequestsReceivedInput = {
+  chats?: InputMaybe<ChatCreateNestedManyWithoutUsersInput>;
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   friendRequestsSent?: InputMaybe<FriendRequestCreateNestedManyWithoutCreatorInput>;
@@ -786,6 +1042,7 @@ export type UserCreateWithoutFriendRequestsReceivedInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   imgSrc?: InputMaybe<Scalars['String']['input']>;
   lastName: Scalars['String']['input'];
+  messages?: InputMaybe<MessageCreateNestedManyWithoutSenderInput>;
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
   posts?: InputMaybe<PostCreateNestedManyWithoutAuthorInput>;
@@ -793,6 +1050,7 @@ export type UserCreateWithoutFriendRequestsReceivedInput = {
 };
 
 export type UserCreateWithoutFriendRequestsSentInput = {
+  chats?: InputMaybe<ChatCreateNestedManyWithoutUsersInput>;
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   friendRequestsReceived?: InputMaybe<FriendRequestCreateNestedManyWithoutReceiverInput>;
@@ -801,6 +1059,7 @@ export type UserCreateWithoutFriendRequestsSentInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   imgSrc?: InputMaybe<Scalars['String']['input']>;
   lastName: Scalars['String']['input'];
+  messages?: InputMaybe<MessageCreateNestedManyWithoutSenderInput>;
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
   posts?: InputMaybe<PostCreateNestedManyWithoutAuthorInput>;
@@ -808,6 +1067,7 @@ export type UserCreateWithoutFriendRequestsSentInput = {
 };
 
 export type UserCreateWithoutFriendsInput = {
+  chats?: InputMaybe<ChatCreateNestedManyWithoutUsersInput>;
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   friendRequestsReceived?: InputMaybe<FriendRequestCreateNestedManyWithoutReceiverInput>;
@@ -816,6 +1076,7 @@ export type UserCreateWithoutFriendsInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   imgSrc?: InputMaybe<Scalars['String']['input']>;
   lastName: Scalars['String']['input'];
+  messages?: InputMaybe<MessageCreateNestedManyWithoutSenderInput>;
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
   posts?: InputMaybe<PostCreateNestedManyWithoutAuthorInput>;
@@ -823,11 +1084,30 @@ export type UserCreateWithoutFriendsInput = {
 };
 
 export type UserCreateWithoutFriendsOfInput = {
+  chats?: InputMaybe<ChatCreateNestedManyWithoutUsersInput>;
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   friendRequestsReceived?: InputMaybe<FriendRequestCreateNestedManyWithoutReceiverInput>;
   friendRequestsSent?: InputMaybe<FriendRequestCreateNestedManyWithoutCreatorInput>;
   friends?: InputMaybe<FriendCreateNestedManyWithoutUser1Input>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  imgSrc?: InputMaybe<Scalars['String']['input']>;
+  lastName: Scalars['String']['input'];
+  messages?: InputMaybe<MessageCreateNestedManyWithoutSenderInput>;
+  password: Scalars['String']['input'];
+  phoneNumber: Scalars['String']['input'];
+  posts?: InputMaybe<PostCreateNestedManyWithoutAuthorInput>;
+  roles?: InputMaybe<UserCreaterolesInput>;
+};
+
+export type UserCreateWithoutMessagesInput = {
+  chats?: InputMaybe<ChatCreateNestedManyWithoutUsersInput>;
+  email: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  friendRequestsReceived?: InputMaybe<FriendRequestCreateNestedManyWithoutReceiverInput>;
+  friendRequestsSent?: InputMaybe<FriendRequestCreateNestedManyWithoutCreatorInput>;
+  friends?: InputMaybe<FriendCreateNestedManyWithoutUser1Input>;
+  friendsOf?: InputMaybe<FriendCreateNestedManyWithoutUser2Input>;
   id?: InputMaybe<Scalars['String']['input']>;
   imgSrc?: InputMaybe<Scalars['String']['input']>;
   lastName: Scalars['String']['input'];
@@ -841,6 +1121,12 @@ export type UserCreaterolesInput = {
   set: Array<Role>;
 };
 
+export type UserListRelationFilter = {
+  every?: InputMaybe<UserWhereInput>;
+  none?: InputMaybe<UserWhereInput>;
+  some?: InputMaybe<UserWhereInput>;
+};
+
 export type UserRelationFilter = {
   is?: InputMaybe<UserWhereInput>;
   isNot?: InputMaybe<UserWhereInput>;
@@ -850,6 +1136,7 @@ export type UserWhereInput = {
   AND?: InputMaybe<Array<UserWhereInput>>;
   NOT?: InputMaybe<Array<UserWhereInput>>;
   OR?: InputMaybe<Array<UserWhereInput>>;
+  chats?: InputMaybe<ChatListRelationFilter>;
   email?: InputMaybe<StringFilter>;
   firstName?: InputMaybe<StringFilter>;
   friendRequestsReceived?: InputMaybe<FriendRequestListRelationFilter>;
@@ -859,6 +1146,7 @@ export type UserWhereInput = {
   id?: InputMaybe<StringFilter>;
   imgSrc?: InputMaybe<StringNullableFilter>;
   lastName?: InputMaybe<StringFilter>;
+  messages?: InputMaybe<MessageListRelationFilter>;
   password?: InputMaybe<StringFilter>;
   phoneNumber?: InputMaybe<StringFilter>;
   posts?: InputMaybe<PostListRelationFilter>;
@@ -869,6 +1157,7 @@ export type UserWhereUniqueInput = {
   AND?: InputMaybe<Array<UserWhereInput>>;
   NOT?: InputMaybe<Array<UserWhereInput>>;
   OR?: InputMaybe<Array<UserWhereInput>>;
+  chats?: InputMaybe<ChatListRelationFilter>;
   email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<StringFilter>;
   friendRequestsReceived?: InputMaybe<FriendRequestListRelationFilter>;
@@ -878,6 +1167,7 @@ export type UserWhereUniqueInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   imgSrc?: InputMaybe<StringNullableFilter>;
   lastName?: InputMaybe<StringFilter>;
+  messages?: InputMaybe<MessageListRelationFilter>;
   password?: InputMaybe<StringFilter>;
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
   posts?: InputMaybe<PostListRelationFilter>;
@@ -887,6 +1177,7 @@ export type UserWhereUniqueInput = {
 export type UserWithFriendRequestStatus = {
   __typename?: 'UserWithFriendRequestStatus';
   _count: UserCount;
+  chats?: Maybe<Array<Chat>>;
   email: Scalars['String']['output'];
   firstName: Scalars['String']['output'];
   friendRequestStatus?: Maybe<Status>;
@@ -897,6 +1188,7 @@ export type UserWithFriendRequestStatus = {
   id: Scalars['ID']['output'];
   imgSrc?: Maybe<Scalars['String']['output']>;
   lastName: Scalars['String']['output'];
+  messages?: Maybe<Array<Message>>;
   password: Scalars['String']['output'];
   phoneNumber: Scalars['String']['output'];
   posts?: Maybe<Array<Post>>;
@@ -994,12 +1286,12 @@ export type CreatePostMutationVariables = Exact<{
 
 export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string } };
 
-export type GetFriendsPostsQueryVariables = Exact<{
-  input: GetFriendsPostsInput;
+export type GetPostsQueryVariables = Exact<{
+  input: GetPostsInput;
 }>;
 
 
-export type GetFriendsPostsQuery = { __typename?: 'Query', getFriendsPosts: Array<{ __typename?: 'Post', id: string, title: string, content: string, imgSrc?: string | null, createdAt: any, author: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc?: string | null } }> };
+export type GetPostsQuery = { __typename?: 'Query', getPosts: Array<{ __typename?: 'Post', id: string, title: string, content: string, imgSrc?: string | null, createdAt: any, author: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc?: string | null } }> };
 
 export type ChangeEmailMutationVariables = Exact<{
   input: ChangeEmailInput;
@@ -1376,9 +1668,9 @@ export const useCreatePostMutation = <
 
 useCreatePostMutation.fetcher = (client: GraphQLClient, variables: CreatePostMutationVariables, headers?: RequestInit['headers']) => fetcher<CreatePostMutation, CreatePostMutationVariables>(client, CreatePostDocument, variables, headers);
 
-export const GetFriendsPostsDocument = `
-    query GetFriendsPosts($input: GetFriendsPostsInput!) {
-  getFriendsPosts(getFriendsPostsInput: $input) {
+export const GetPostsDocument = `
+    query GetPosts($input: GetPostsInput!) {
+  getPosts(getPostsInput: $input) {
     id
     title
     content
@@ -1394,26 +1686,26 @@ export const GetFriendsPostsDocument = `
 }
     `;
 
-export const useGetFriendsPostsQuery = <
-      TData = GetFriendsPostsQuery,
+export const useGetPostsQuery = <
+      TData = GetPostsQuery,
       TError = unknown
     >(
       client: GraphQLClient,
-      variables: GetFriendsPostsQueryVariables,
-      options?: UseQueryOptions<GetFriendsPostsQuery, TError, TData>,
+      variables: GetPostsQueryVariables,
+      options?: UseQueryOptions<GetPostsQuery, TError, TData>,
       headers?: RequestInit['headers']
     ) => {
     
-    return useQuery<GetFriendsPostsQuery, TError, TData>(
-      ['GetFriendsPosts', variables],
-      fetcher<GetFriendsPostsQuery, GetFriendsPostsQueryVariables>(client, GetFriendsPostsDocument, variables, headers),
+    return useQuery<GetPostsQuery, TError, TData>(
+      ['GetPosts', variables],
+      fetcher<GetPostsQuery, GetPostsQueryVariables>(client, GetPostsDocument, variables, headers),
       options
     )};
 
-useGetFriendsPostsQuery.getKey = (variables: GetFriendsPostsQueryVariables) => ['GetFriendsPosts', variables];
+useGetPostsQuery.getKey = (variables: GetPostsQueryVariables) => ['GetPosts', variables];
 
 
-useGetFriendsPostsQuery.fetcher = (client: GraphQLClient, variables: GetFriendsPostsQueryVariables, headers?: RequestInit['headers']) => fetcher<GetFriendsPostsQuery, GetFriendsPostsQueryVariables>(client, GetFriendsPostsDocument, variables, headers);
+useGetPostsQuery.fetcher = (client: GraphQLClient, variables: GetPostsQueryVariables, headers?: RequestInit['headers']) => fetcher<GetPostsQuery, GetPostsQueryVariables>(client, GetPostsDocument, variables, headers);
 
 export const ChangeEmailDocument = `
     mutation ChangeEmail($input: ChangeEmailInput!) {

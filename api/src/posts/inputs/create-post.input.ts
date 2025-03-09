@@ -9,7 +9,7 @@ export class CreatePostInput {
   @Field()
   content: string;
 
-  @Field(() => GraphQLUpload)
+  @Field(() => GraphQLUpload, { nullable: true })
   image?: Promise<FileUpload>;
 
   @Field()

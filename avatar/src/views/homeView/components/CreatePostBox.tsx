@@ -13,51 +13,51 @@ export default function CreatePostBox() {
     const [image, setImage] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const { isLoading, mutate: createPost } = useCreatePostMutation(createAccessClient(accessToken!), {
-        onSuccess: () => {
-            setTitle("");
-            setContent("");
-            setError(null);
-        },
-    })
-
     const handleSubmit = async () => {
         if (!title.trim() || !content.trim()) {
             setError("Tytuł i treść są wymagane!");
             return;
         }
 
-        const formData = new FormData();
-        formData.append("operations", JSON.stringify({
-            query: `
-          mutation CreatePost($input: CreatePostInput!) {
+        const input: any = {
+            title,
+            content,
+            authorId: user?.id!,
+        };
+
+        const query = `
+        mutation CreatePost($input: CreatePostInput!) {
             createPost(createPostInput: $input) {
                 id
             }
         }
-        `,
-            variables: {
-                input: {
-                    title,
-                    content,
-                    image: null, // GraphQL Upload scalar requires `null` here
-                    authorId: user?.id!
-                },
-            },
-        }));
+    `;
+
+        let body;
+    let headers: HeadersInit = {
+        Authorization: `Bearer ${accessToken}`,
+        "apollo-require-preflight": "true",
+
+    };
+    
+        if (image) {
+            input.image = null; // GraphQL Upload requires `null` as a placeholder
+        }
 
         if (image) {
-            formData.append("map", JSON.stringify({ "0": ["variables.input.image"] }));
-            formData.append("0", image);
+            body = new FormData();
+            body.append("operations", JSON.stringify({ query, variables: { input } }));
+            body.append("map", JSON.stringify({ "0": ["variables.input.image"] }));
+            body.append("0", image);
+        } else {
+            body = JSON.stringify({ query, variables: { input } });
+            headers["Content-Type"] = "application/json";
         }
 
         const response = await fetch(`${process.env.REACT_APP_HOST}/graphql`, {
             method: "POST",
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "apollo-require-preflight": "true",
-            },
-            body: formData,
+            headers,
+            body,
         });
 
         const result = await response.json();
@@ -65,6 +65,8 @@ export default function CreatePostBox() {
         if (result.errors) {
             throw new Error(result.errors[0].message);
         }
+
+        setImage(null)
     };
 
     return (
@@ -96,7 +98,7 @@ export default function CreatePostBox() {
                 onChange={(e) => setContent(e.target.value)}
                 sx={{ mb: 2 }}
             />
-            <PostButtonsBox setImage={setImage} />
+            <PostButtonsBox image={image}setImage={setImage} />
             {error && (
                 <Typography color="error" sx={{ mb: 2 }}>
                     {error}
@@ -106,10 +108,9 @@ export default function CreatePostBox() {
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={isLoading}
                 sx={{ width: 200 }}
             >
-                {isLoading ? <CircularProgress size={24} /> : "Dodaj post"}
+                Dodaj post
             </ColorButton>
         </Box>
     );

@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class GetFriendsPostsInput {
+export class GetPostsInput {
   @Field()
   userId: string;
 }

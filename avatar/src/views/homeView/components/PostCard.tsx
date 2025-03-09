@@ -1,10 +1,10 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardMedia, Typography, Avatar } from "@mui/material";
-import { GetFriendsPostsQuery } from "../../../generated/graphql";
+import { GetPostsQuery } from "../../../generated/graphql";
 import { CustomAvatar } from "../../../components/lib";
 
 interface PostProps {
-    post: GetFriendsPostsQuery["getFriendsPosts"][0];
+    post: GetPostsQuery["getPosts"][0];
 }
 
 export default function PostCard({ post }: PostProps) {

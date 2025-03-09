@@ -1,15 +1,15 @@
 import React from "react";
 import { CircularProgress, Typography } from "@mui/material";
-import PostCard from "./PostCard"; // Individual Post Component
+import PostCard from "./PostCard";
 import Grid from '@mui/material/Grid2';
-import { GetFriendsPostsQuery, useGetFriendsPostsQuery } from "../../../generated/graphql";
 import createAccessClient from "../../../graphql/clients/accessClient";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
+import { GetPostsQuery, useGetPostsQuery } from "../../../generated/graphql";
 
 export default function PostList() {
     const { user, accessToken } = useAuth()
 
-    const { data, isLoading, error } = useGetFriendsPostsQuery<GetFriendsPostsQuery, Error>(
+    const { data, isLoading, error } = useGetPostsQuery<GetPostsQuery, Error>(
         createAccessClient(accessToken!),
         {
             input: {
@@ -18,12 +18,13 @@ export default function PostList() {
         },
         {
             onSuccess: (data) => { },
+            refetchInterval: 1000
         }
     )
     if (isLoading) return <CircularProgress sx={{ display: "block", margin: "auto" }} />;
     if (error) return <Typography color="error">Błąd: {error.message}</Typography>;
 
-    const posts = data?.getFriendsPosts || [];
+    const posts = data?.getPosts || [];
 
     return (
         <Grid container spacing={3} sx={{ mt: 4, justifyContent: "center", width: '80%' }}>

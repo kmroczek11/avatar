@@ -2,7 +2,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Post } from 'src/@generated/post/post.model';
 import { PostsService } from './posts.service';
 import { CreatePostInput } from './inputs/create-post.input';
-import { GetFriendsPostsInput } from './inputs/get-friends-posts.input';
+import { GetPostsInput } from './inputs/get-posts.input';
 
 @Resolver((of) => Post)
 export class PostsResolver {
@@ -16,9 +16,9 @@ export class PostsResolver {
   }
 
   @Query(() => [Post])
-  getFriendsPosts(
-    @Args('getFriendsPostsInput') getFriendsPostsInput: GetFriendsPostsInput,
+  getPosts(
+    @Args('getPostsInput') getPostsInput: GetPostsInput,
   ): Promise<Post[]> {
-    return this.postsService.getFriendsPosts(getFriendsPostsInput);
+    return this.postsService.getPosts(getPostsInput);
   }
 }

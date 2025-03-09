@@ -1,5 +1,5 @@
-query GetFriendsPosts($input: GetFriendsPostsInput!){
-  getFriendsPosts(getFriendsPostsInput: $input) {
+query GetPosts($input: GetPostsInput!){
+  getPosts(getPostsInput: $input) {
     id
     title
     content
