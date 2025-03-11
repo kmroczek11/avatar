@@ -11,6 +11,8 @@ import imageCompression from "browser-image-compression";
 import { CustomAlert } from "../../../components/lib";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
 import { useCookies } from "react-cookie";
+import { useRefreshTokenMutation } from "../../../generated/graphql";
+import createClient from "../../../graphql/clients/client";
 
 const stringToColor = (string: string) => {
   let hash = 0;
@@ -54,18 +56,33 @@ const errorMessages = {
 
 export default function UserAvatar(props: UserAvatarProps) {
   const { name, size, imgSrc, BadgeIcon } = props;
-  const { user, accessToken, getUserRefetch } = useAuth();
+  const { user, accessToken, refreshToken, getUserRefetch } = useAuth();
   const [changeProfilePicStatus, setChangeProfilePicStatus] = useState<string>("");
   const [cookies, setCookie] = useCookies(["userId"]);
 
-  const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const input = e.target as HTMLInputElement;
+  const refreshAccessToken = useRefreshTokenMutation(createClient());
 
-    if (!input.files?.length) {
+  const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const htmlInput = e.target as HTMLInputElement;
+
+    if (!htmlInput.files?.length) {
       return;
     }
 
-    const image = input.files[0];
+    const input: any = {
+      userId: user?.id!,
+      image: null, // GraphQL Upload scalar requires `null` here
+    };
+
+    const query = `
+        mutation ChangeProfilePic($input: ChangeProfilePicInput!) {
+            changeProfilePic(changeProfilePicInput: $input) {
+              userId
+            }
+          }
+    `;
+
+    const image = htmlInput.files[0];
 
     const options = {
       maxSizeMB: 1,
@@ -80,38 +97,40 @@ export default function UserAvatar(props: UserAvatarProps) {
       });
 
       const formData = new FormData();
-      formData.append("operations", JSON.stringify({
-        query: `
-          mutation ChangeProfilePic($input: ChangeProfilePicInput!) {
-            changeProfilePic(changeProfilePicInput: $input) {
-              userId
-            }
-          }
-        `,
-        variables: {
-          input: {
-            userId: user?.id!,
-            image: null, // GraphQL Upload scalar requires `null` here
-          },
-        },
-      }));
-
+      formData.append("operations", JSON.stringify({ query, variables: { input } }));
       formData.append("map", JSON.stringify({ "0": ["variables.input.image"] }));
       formData.append("0", compressedFile);
 
-      const response = await fetch(`${process.env.REACT_APP_HOST}/graphql`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "apollo-require-preflight": "true",
-        },
-        body: formData,
-      });
+      const sendRequest = async (accessToken: string) => {
+        return await fetch(`${process.env.REACT_APP_HOST}/graphql`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "apollo-require-preflight": "true",
+          },
+          body: formData,
+        });
+      };
 
-      const result = await response.json();
+      let response = await sendRequest(accessToken!);
+      let result = await response.json();
 
-      if (result.errors) {
-        throw new Error(result.errors[0].message);
+      if (result.errors && result.errors[0].message === "Unauthorized") {
+        console.log("Access token expired, attempting to refresh...");
+
+        try {
+          const refreshResponse = await refreshAccessToken.mutateAsync({ input: { refreshToken: refreshToken! } });
+
+          const newAccessToken = refreshResponse?.refreshToken.accessToken;
+
+          if (!newAccessToken) throw new Error("User must re-authenticate");
+
+          response = await sendRequest(newAccessToken!);
+          result = await response.json();
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+          throw new Error("User must re-authenticate");
+        }
       }
 
       setCookie("userId", result.data.changeProfilePic.userId, { path: "/" });

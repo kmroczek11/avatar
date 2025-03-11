@@ -8,10 +8,10 @@ import { LoadingScreen } from "../../components/lib";
 import PendingRequestCard from "./components/PendingRequestCard";
 
 export default function PendingRequestsView() {
-    const { user, accessToken } = useAuth();
+    const { user, accessToken, refreshToken } = useAuth();
 
     const { data, isLoading } = useGetPendingRequestsQuery<GetPendingRequestsQuery, Error>(
-        createAccessClient(accessToken!),
+        createAccessClient(accessToken!, refreshToken!),
         {
             input: {
                 receiverId: user?.id!

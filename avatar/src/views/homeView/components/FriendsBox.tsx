@@ -13,11 +13,11 @@ interface FriendBoxProps {
 
 export default function FriendsBox(props: FriendBoxProps) {
     const { addChatUser } = props;
-    const { user, accessToken } = useAuth();
+    const { user, accessToken, refreshToken } = useAuth();
     const theme = useTheme<Theme>();
 
     const { data, isLoading, error } = useGetAllFriendsQuery<GetAllFriendsQuery, Error>(
-        createAccessClient(accessToken!),
+        createAccessClient(accessToken!, refreshToken!),
         {
             input: {
                 userId: user?.id!

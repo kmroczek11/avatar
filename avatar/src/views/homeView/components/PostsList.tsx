@@ -7,10 +7,10 @@ import { useAuth } from "../../../components/auth/components/AuthProvider";
 import { GetPostsQuery, useGetPostsQuery } from "../../../generated/graphql";
 
 export default function PostList() {
-    const { user, accessToken } = useAuth()
+    const { user, accessToken, refreshToken } = useAuth()
 
     const { data, isLoading, error } = useGetPostsQuery<GetPostsQuery, Error>(
-        createAccessClient(accessToken!),
+        createAccessClient(accessToken!, refreshToken!),
         {
             input: {
                 userId: user?.id!

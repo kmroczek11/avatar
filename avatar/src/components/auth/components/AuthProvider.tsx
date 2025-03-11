@@ -8,6 +8,7 @@ import createAccessClient from "../../../graphql/clients/accessClient";
 const AuthContext = createContext<{
   user: User | null;
   accessToken: string | null;
+  refreshToken: string | null;
   getUserRefetch: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>
   ) => Promise<QueryObserverResult<User, unknown>>;
@@ -15,6 +16,7 @@ const AuthContext = createContext<{
 }>({
   user: null,
   accessToken: null,
+  refreshToken: null,
   getUserRefetch: async () => {
     throw new Error("getUserRefetch not implemented");
   },
@@ -75,17 +77,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [userData, accessTokenData, refreshTokenData]);
 
-  const { mutate: refreshAccessToken } = useRefreshTokenMutation(createAccessClient(accessToken!), {
-    onSuccess: (data) => {
-      setAccessToken(data.refreshToken.accessToken);
-    },
-    onError: (error) => {
-      console.error("Error refreshing token:", error);
-    }
-  });
-
   const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
-    createAccessClient(accessToken!),
+    createAccessClient(accessToken!,refreshToken!),
     {
       onError: (error: Error) => {
         let err: any = {};
@@ -102,37 +95,11 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
   )
 
-  useEffect(() => {
-    if (!refreshToken || !accessToken) return
-  
-    const getTokenExpiryTime = (token: string) => {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]))
-        return payload.exp * 1000
-      } catch (error) {
-        console.error('Error decoding token:', error)
-        return Date.now()
-      }
-    };
-  
-    const expiryTime = getTokenExpiryTime(accessToken)
-    const timeUntilExpiry = expiryTime - Date.now()
-    const refreshTime = Math.max(timeUntilExpiry - 60 * 1000, 5000)
-  
-    console.log(`Next refresh in: ${refreshTime / 1000}s`)
-  
-    const timeout = setTimeout(() => {
-      console.log("Access token expired, refreshing...")
-      refreshAccessToken({ input: { refreshToken } })
-    }, refreshTime)
-  
-    return () => clearTimeout(timeout)
-  }, [accessToken, refreshToken])
-
   return (
     <AuthContext.Provider value={{
       user: user ?? null,
       accessToken: accessToken ?? null,
+      refreshToken: refreshToken ?? null,
       getUserRefetch,
       logOut
     }}>

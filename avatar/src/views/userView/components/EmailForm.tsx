@@ -22,11 +22,11 @@ const defaultValues = {
 const successMessage = "E-mail został zmieniony.";
 
 export default function EmailForm() {
-  const { user, accessToken, getUserRefetch } = useAuth();
+  const { user, accessToken, refreshToken, getUserRefetch } = useAuth();
   const [changeEmailStatus, setChangeEmailStatus] = useState<string>("");
   const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
-  const { isLoading, mutate } = useChangeEmailMutation<Error>(createAccessClient(accessToken!), {
+  const { isLoading, mutate } = useChangeEmailMutation<Error>(createAccessClient(accessToken!, refreshToken!), {
     onError: (error: Error) => {
       let err: any = {};
       err.data = error;

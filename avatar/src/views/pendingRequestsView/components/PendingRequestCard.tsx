@@ -19,14 +19,14 @@ interface PendingRequestCardProps {
 export default function PendingRequestCard(props: PendingRequestCardProps) {
   const { item } = props;
   const { id, firstName, lastName, imgSrc } = item;
-  const { user, accessToken } = useAuth()
+  const { user, accessToken, refreshToken } = useAuth()
 
-  const { mutate: acceptFriendRequest } = useAcceptFriendRequestMutation(createAccessClient(accessToken!), {
+  const { mutate: acceptFriendRequest } = useAcceptFriendRequestMutation(createAccessClient(accessToken!, refreshToken!), {
     onSuccess: () => { },
   }
   );
 
-  const { mutate: rejectFriendRequest } = useRejectFriendRequestMutation(createAccessClient(accessToken!), {
+  const { mutate: rejectFriendRequest } = useRejectFriendRequestMutation(createAccessClient(accessToken!, refreshToken!), {
     onSuccess: () => { },
   }
   );

@@ -18,7 +18,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 export default function SearchBar() {
   const theme = useTheme();
-  const { user, accessToken } = useAuth();
+  const { user, accessToken, refreshToken } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<Array<{
     id: string,
@@ -34,7 +34,7 @@ export default function SearchBar() {
   }>>([]);
   const [sendFriendRequestStatus, setSendFriendRequestStatus] = useState<string>("");
 
-  const { mutate: cancelFriendRequest } = useCancelFriendRequestMutation(createAccessClient(accessToken!), {
+  const { mutate: cancelFriendRequest } = useCancelFriendRequestMutation(createAccessClient(accessToken!, refreshToken!), {
     onSuccess: (_, variables) => {
       setFilteredUsers((prev) =>
         prev.map((user) =>
@@ -47,7 +47,7 @@ export default function SearchBar() {
   }
   );
 
-  const { isLoading: isSendFriendRequestLoading, mutate: sendFriendRequest } = useSendFriendRequestMutation<Error>(createAccessClient(accessToken!), {
+  const { isLoading: isSendFriendRequestLoading, mutate: sendFriendRequest } = useSendFriendRequestMutation<Error>(createAccessClient(accessToken!, refreshToken!), {
     onError: (error: Error) => {
       let err: any = {};
       err.data = error;
@@ -69,7 +69,7 @@ export default function SearchBar() {
   });
 
   const { data: usersList, isLoading: isFindUsersByNameLoading, refetch } = useFindUsersByNameQuery<FindUsersByNameQuery, Error>(
-    createAccessClient(accessToken!),
+    createAccessClient(accessToken!, refreshToken!),
     {
       input: {
         name: searchQuery,
