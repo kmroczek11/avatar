@@ -30,7 +30,6 @@ export default function ChatBox(props: ChatBoxProps) {
   useEffect(() => {
     if (!socket || !friend || hasCreatedChat) return
 
-    socket.connect()
     setIsLoading(true)
     createChat(friend)
     setHasCreatedChat(true)
@@ -38,10 +37,6 @@ export default function ChatBox(props: ChatBoxProps) {
 
   useEffect(() => {
     if (!socket) return
-
-    function onConnect() {
-      console.log("connected")
-    }
 
     function onChatsEvent(chats: Chat[]) {
       if (!friend) return
@@ -69,13 +64,11 @@ export default function ChatBox(props: ChatBoxProps) {
       }
     }
 
-    socket.on("connect", onConnect)
     socket.on("chats", onChatsEvent)
     socket.on("messages", onMessagesEvent)
     socket.on("newMessage", onNewMessageEvent)
 
     return () => {
-      socket.off("connect", onConnect)
       socket.off("chats", onChatsEvent)
       socket.off("messages", onMessagesEvent)
       socket.off("newMessage", onNewMessageEvent)
