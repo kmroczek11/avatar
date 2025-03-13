@@ -31,21 +31,20 @@ interface AuthProviderProps {
 
 export default function AuthProvider({ children }: AuthProviderProps) {
   const [cookies, setCookie, removeCookie] = useCookies(["userId"]);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
-  const { data: userData, refetch: getUserRefetch } = useQuery<User>({
+  const { refetch: getUserRefetch } = useQuery<User>({
     queryKey: ["user", cookies.userId],
     queryFn: async () => {
       if (!cookies.userId) throw new Error("No userId cookie found");
       const res = await axios.get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookies.userId}`);
+      setUser(res.data)
       return res.data;
     },
     enabled: !!cookies.userId,
   });
 
-  const { data: accessTokenData } = useQuery<string>({
+  const { data: accessToken } = useQuery<string>({
     queryKey: ["accessToken", cookies.userId],
     queryFn: async () => {
       if (!cookies.userId) throw new Error("No userId cookie found");
@@ -55,7 +54,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     enabled: !!cookies.userId,
   });
 
-  const { data: refreshTokenData } = useQuery<string>({
+  const { data: refreshToken } = useQuery<string>({
     queryKey: ["refreshToken", cookies.userId],
     queryFn: async () => {
       if (!cookies.userId) throw new Error("No userId cookie found");
@@ -64,18 +63,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     },
     enabled: !!cookies.userId,
   });
-
-  useEffect(() => {
-    if (userData) {
-      setUser(userData);
-    }
-    if (accessTokenData) {
-      setAccessToken(accessTokenData);
-    }
-    if (refreshTokenData) {
-      setRefreshToken(refreshTokenData);
-    }
-  }, [userData, accessTokenData, refreshTokenData]);
 
   const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
     createAccessClient(accessToken!,refreshToken!),
