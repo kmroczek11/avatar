@@ -14,6 +14,7 @@ import { Friend } from 'src/@generated/friend/friend.model';
 import { Prisma } from '@prisma/client'
 import { FriendRequestWithCreator } from './types/friendRequestWithCreator.type';
 import { GetAllFriendsInput } from './inputs/get-all-friends.input';
+import { Status } from 'src/@generated/prisma/status.enum';
 
 type PartialUser = Pick<Prisma.UserSelect, 'id' | 'firstName' | 'lastName' | 'imgSrc'>;
 
@@ -25,7 +26,7 @@ export class FriendsService {
         const { creatorId, receiverId } = sendFriendRequestInput;
 
         if (creatorId === receiverId) {
-            throw new HttpException('Can\'t send friend request to yourself', HttpStatus.BAD_REQUEST);
+            throw new HttpException("Can't send a friend request to yourself", HttpStatus.BAD_REQUEST);
         }
 
         const existingRequest = await this.prisma.friendRequest.findFirst({
@@ -38,11 +39,27 @@ export class FriendsService {
         });
 
         if (existingRequest) {
-            throw new HttpException("Friend request already sent or exists", HttpStatus.CONFLICT);
+            switch (existingRequest.status) {
+                case Status.PENDING:
+                case Status.ACCEPTED:
+                    throw new HttpException("Friend request already sent or exists", HttpStatus.CONFLICT);
+                case Status.CANCELED:
+                case Status.REJECTED:
+                    return await this.prisma.friendRequest.update({
+                        where: { id: existingRequest.id },
+                        data: { status: Status.PENDING },
+                    });
+                default:
+                    throw new HttpException("Unexpected status", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
 
         return await this.prisma.friendRequest.create({
-            data: sendFriendRequestInput,
+            data: {
+                creatorId,
+                receiverId,
+                status: Status.PENDING,
+            },
         });
     }
 
@@ -54,7 +71,7 @@ export class FriendsService {
                 creatorId_receiverId: { creatorId, receiverId }
             },
             data: {
-                status: 'ACCEPTED',
+                status: Status.ACCEPTED,
             },
         });
 
@@ -72,7 +89,7 @@ export class FriendsService {
         return await this.prisma.friendRequest.findMany({
             where: {
                 receiverId,
-                status: 'PENDING',
+                status: Status.PENDING,
             },
             include: {
                 creator: {
@@ -95,7 +112,7 @@ export class FriendsService {
                 creatorId_receiverId: { creatorId, receiverId }
             },
             data: {
-                status: 'REJECTED',
+                status: Status.REJECTED,
             },
         });
     }
@@ -108,7 +125,7 @@ export class FriendsService {
                 creatorId_receiverId: { creatorId, receiverId }
             },
             data: {
-                status: 'CANCELED',
+                status: Status.CANCELED,
             },
         });
     }

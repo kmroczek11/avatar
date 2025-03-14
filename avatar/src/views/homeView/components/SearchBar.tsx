@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent, useEffect, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
@@ -15,6 +15,7 @@ import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { debounce } from 'lodash';
 
 export default function SearchBar() {
   const theme = useTheme();
@@ -35,14 +36,8 @@ export default function SearchBar() {
   const [sendFriendRequestStatus, setSendFriendRequestStatus] = useState<string>("");
 
   const { mutate: cancelFriendRequest } = useCancelFriendRequestMutation(createAccessClient(accessToken!, refreshToken!), {
-    onSuccess: (_, variables) => {
-      setFilteredUsers((prev) =>
-        prev.map((user) =>
-          user.id === variables.input.receiverId
-            ? { ...user, friendRequestStatus: null }
-            : user
-        )
-      );
+    onSuccess: (data) => {
+      refetchFindUsersByName()
     },
   }
   );
@@ -58,17 +53,11 @@ export default function SearchBar() {
       _variables: SendFriendRequestMutationVariables,
       _context: unknown
     ) => {
-      setFilteredUsers((prev) =>
-        prev.map((user) =>
-          user.id === _variables.input.receiverId
-            ? { ...user, friendRequestStatus: Status.Pending }
-            : user
-        )
-      );
+      refetchFindUsersByName()
     },
   });
 
-  const { data: usersList, isLoading: isFindUsersByNameLoading, refetch } = useFindUsersByNameQuery<FindUsersByNameQuery, Error>(
+  const { data: usersList, isLoading: isFindUsersByNameLoading, refetch: refetchFindUsersByName } = useFindUsersByNameQuery<FindUsersByNameQuery, Error>(
     createAccessClient(accessToken!, refreshToken!),
     {
       input: {
@@ -86,16 +75,16 @@ export default function SearchBar() {
     }
   );
 
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value;
-    setSearchQuery(value);
+  const handleSearchChange = useMemo(
+    () => debounce((value: string) => {
+      setSearchQuery(value);
+    }, 300),
+    []
+  )
 
-    if (value.trim().length > 0) {
-      refetch();
-    } else {
-      setFilteredUsers([]);
-    }
-  };
+  const onSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleSearchChange(e.target.value);
+  }
 
   return (
     <Box
@@ -127,7 +116,7 @@ export default function SearchBar() {
           variant="standard"
           fullWidth
           value={searchQuery}
-          onChange={handleSearchChange}
+          onChange={onSearchInputChange}
           sx={{
             '& label': {
               color: theme.palette.primary.contrastText,
@@ -154,7 +143,7 @@ export default function SearchBar() {
             filteredUsers.map((filteredUser, index) => {
               const isRequestPending = filteredUser.friendRequestStatus === Status.Pending;
               const isAlreadyFriend = filteredUser.friendRequestStatus === Status.Accepted;
-              const isCurrentUserSender = isRequestPending && filteredUser.friendRequestsReceived?.some(req => req.creatorId === user?.id);
+              const isCurrentUserSender = filteredUser.friendRequestsReceived?.some(req => req.creatorId === user?.id);
               const isCurrentUser = filteredUser.id === user?.id;
 
               return (
@@ -164,12 +153,14 @@ export default function SearchBar() {
                       <Tooltip title="Anuluj zaproszenie">
                         <IconButton
                           aria-label="cancel-friend-request"
-                          onClick={() => cancelFriendRequest({
-                            input: {
-                              creatorId: user?.id!,
-                              receiverId: filteredUser.id
-                            }
-                          })}
+                          onClick={() =>
+                            cancelFriendRequest({
+                              input: {
+                                creatorId: user?.id!,
+                                receiverId: filteredUser.id
+                              }
+                            })
+                          }
                           disabled={!isCurrentUserSender}
                         >
                           <CancelIcon />
@@ -179,12 +170,14 @@ export default function SearchBar() {
                       <Tooltip title="Wyślij zaproszenie do znajomych">
                         <IconButton
                           aria-label="send-friend-request"
-                          onClick={() => sendFriendRequest({
-                            input: {
-                              creatorId: user?.id!,
-                              receiverId: filteredUser.id
-                            }
-                          })}
+                          onClick={() =>
+                            sendFriendRequest({
+                              input: {
+                                creatorId: user?.id!,
+                                receiverId: filteredUser.id
+                              }
+                            })
+                          }
                         >
                           <PersonAddIcon />
                         </IconButton>
@@ -215,8 +208,8 @@ export default function SearchBar() {
               <ListItemText primary={isFindUsersByNameLoading ? 'Ładowanie...' : 'Brak wyników'} />
             </ListItem>
           )}
-        </List>
+        </List >
       )}
-    </Box>
+    </Box >
   );
 }
