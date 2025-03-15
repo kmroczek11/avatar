@@ -7,7 +7,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import { useTheme } from '@mui/material/styles';
 import { FindUsersByNameQuery, SendFriendRequestMutation, SendFriendRequestMutationVariables, Status, useCancelFriendRequestMutation, useFindUsersByNameQuery, useSendFriendRequestMutation } from '../../../generated/graphql';
-import createAccessClient from '../../../graphql/clients/accessClient';
 import { useAuth } from '../../../components/auth/components/AuthProvider';
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import { CustomAvatar } from '../../../components/lib';
@@ -16,10 +15,11 @@ import IconButton from "@mui/material/IconButton";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { debounce } from 'lodash';
+import { useClient } from '../../../components/auth/components/ClientProvider';
 
 export default function SearchBar() {
   const theme = useTheme();
-  const { user, accessToken, refreshToken } = useAuth();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<Array<{
     id: string,
@@ -34,15 +34,16 @@ export default function SearchBar() {
     creatorId?: string | null | undefined
   }>>([]);
   const [sendFriendRequestStatus, setSendFriendRequestStatus] = useState<string>("");
+  const { accessClient } = useClient()
 
-  const { mutate: cancelFriendRequest } = useCancelFriendRequestMutation(createAccessClient(accessToken!, refreshToken!), {
+  const { mutate: cancelFriendRequest } = useCancelFriendRequestMutation(accessClient!, {
     onSuccess: (data) => {
       refetchFindUsersByName()
     },
   }
   );
 
-  const { isLoading: isSendFriendRequestLoading, mutate: sendFriendRequest } = useSendFriendRequestMutation<Error>(createAccessClient(accessToken!, refreshToken!), {
+  const { isLoading: isSendFriendRequestLoading, mutate: sendFriendRequest } = useSendFriendRequestMutation<Error>(accessClient!, {
     onError: (error: Error) => {
       let err: any = {};
       err.data = error;
@@ -58,7 +59,7 @@ export default function SearchBar() {
   });
 
   const { data: usersList, isLoading: isFindUsersByNameLoading, refetch: refetchFindUsersByName } = useFindUsersByNameQuery<FindUsersByNameQuery, Error>(
-    createAccessClient(accessToken!, refreshToken!),
+    accessClient!,
     {
       input: {
         name: searchQuery,

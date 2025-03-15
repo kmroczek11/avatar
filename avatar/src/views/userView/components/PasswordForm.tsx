@@ -10,11 +10,9 @@ import {
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
-import createAccessClient from "../../../graphql/clients/accessClient";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
-import axios from "axios";
 import { useCookies } from "react-cookie";
-import { useQuery } from "@tanstack/react-query";
+import { useClient } from "../../../components/auth/components/ClientProvider";
 
 YupPassword(Yup); // extend yup
 
@@ -28,12 +26,13 @@ const successMessage = "Hasło zostało zmienione.";
 const invalidPasswordMessage = "Nieprawidłowe hasło.";
 
 export default function PasswordForm() {
-  const { user, accessToken, refreshToken, getUserRefetch } = useAuth();
+  const { user, getUserRefetch } = useAuth();
   const [changePasswordStatus, setChangePasswordStatus] = useState<string>("");
   const [cookies, setCookie, removeCookie] = useCookies(['userId']);
+  const { accessClient } = useClient()
 
   const { isLoading, mutate } = useChangePasswordMutation<Error>(
-    createAccessClient(accessToken!, refreshToken!),
+    accessClient!,
     {
       onError: (error: Error) => {
         let err: any = {};

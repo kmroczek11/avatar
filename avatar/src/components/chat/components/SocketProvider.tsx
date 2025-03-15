@@ -2,10 +2,11 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { useAuth } from "../../auth/components/AuthProvider"
 import { io, Socket } from "socket.io-client";
 import { useRefreshTokenMutation } from "../../../generated/graphql";
-import createClient from "../../../graphql/clients/client";
 import { MinimalUser } from "../../../generated/graphql";
 import { Chat } from "../models/Chat";
 import { Message } from "../models/Message";
+import { useClient } from "../../auth/components/ClientProvider";
+import { useTokens } from "../../auth/components/TokensProvider";
 
 interface SocketProviderProps {
     socket: Socket | null
@@ -31,9 +32,10 @@ const URL = process.env.NODE_ENV === "production" ? undefined : "http://localhos
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)
-    const { accessToken, refreshToken } = useAuth()
+    const { client } = useClient()
+    const { refreshToken, accessToken } = useTokens()
 
-    const refreshAccessToken = useRefreshTokenMutation(createClient());
+    const refreshAccessToken = useRefreshTokenMutation(client!);
 
     function isAccessTokenExpired(accessToken: string | null): boolean {
         if (!accessToken) return true
@@ -120,12 +122,14 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }, [socket])
 
     useEffect(() => {
+        if (!refreshToken || !accessToken) return
+
         initializeSocket()
 
         return () => {
             socket?.disconnect()
         }
-    }, [accessToken, refreshToken])
+    }, [refreshToken, accessToken])
 
     return <SocketContext.Provider value={{ socket }}>{children}</SocketContext.Provider>
 }

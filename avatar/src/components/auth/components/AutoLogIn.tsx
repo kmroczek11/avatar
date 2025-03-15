@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import useAutoLogInUser from "../hooks/useAutoLogInUser";
-import createClient from "../../../graphql/clients/client";
 import { useCookies } from "react-cookie";
+import { useClient } from "./ClientProvider";
 
 export default function AutoLogIn() {
     const [autoLoginUserError, setAutoLoginError] = useState<string>("");
     const [cookies, setCookie, removeCookie] = useCookies(['userId']);
+    const { client } = useClient()
 
     const { isAutoLogInUserLoading, autoLogIn } = useAutoLogInUser(
-        createClient(),
+        client!,
         setAutoLoginError,
         (data) => {
             setCookie('userId', data.autoLogInUser.userId)
@@ -16,14 +17,14 @@ export default function AutoLogIn() {
     );
 
     useEffect(() => {
-        if (!cookies.userId) return
+        if (!cookies.userId || !client) return
 
         autoLogIn({
             input: {
                 userId: cookies.userId
             }
         })
-    }, [])
+    }, [client])
 
     return null
 }

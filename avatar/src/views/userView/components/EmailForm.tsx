@@ -9,11 +9,11 @@ import {
 } from "../../../generated/graphql";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import createAccessClient from "../../../graphql/clients/accessClient";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
+import { useClient } from "../../../components/auth/components/ClientProvider";
 
 const defaultValues = {
   newEmail: "",
@@ -22,11 +22,12 @@ const defaultValues = {
 const successMessage = "E-mail został zmieniony.";
 
 export default function EmailForm() {
-  const { user, accessToken, refreshToken, getUserRefetch } = useAuth();
+  const { user,  getUserRefetch } = useAuth();
   const [changeEmailStatus, setChangeEmailStatus] = useState<string>("");
   const [cookies, setCookie, removeCookie] = useCookies(['userId']);
+  const { accessClient } = useClient()
 
-  const { isLoading, mutate } = useChangeEmailMutation<Error>(createAccessClient(accessToken!, refreshToken!), {
+  const { isLoading, mutate } = useChangeEmailMutation<Error>(accessClient!, {
     onError: (error: Error) => {
       let err: any = {};
       err.data = error;

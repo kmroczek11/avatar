@@ -10,10 +10,9 @@ import Typography from "@mui/material/Typography";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import useRegisterUser from "../../../components/auth/hooks/useRegisterUser";
-import createClient from "../../../graphql/clients/client";
 import { useCookies } from "react-cookie";
-import { useAuth } from "../../../components/auth/components/AuthProvider";
 import { userWithEmailExistsMessage, userWithPhoneNumberExistsMessage } from "../../../translations/pl/errorMessages";
+import { useClient } from "../../../components/auth/components/ClientProvider";
 
 YupPassword(Yup); // extend yup
 
@@ -31,11 +30,12 @@ const defaultValues = {
 
 export default function RegisterForm(props: RegisterFormProps) {
     const { setActive } = props;
-    const [registerError, setRegisterError] = useState<string>("");
-    const [cookies, setCookie, removeCookie] = useCookies(['userId']);
+    const [registerError, setRegisterError] = useState<string>("")
+    const [cookies, setCookie, removeCookie] = useCookies(['userId'])
+    const { client } = useClient()
 
     const { register } = useRegisterUser(
-        createClient(),
+        client!,
         setRegisterError,
         (data) => {
             setCookie('userId', data.registerUser.userId)

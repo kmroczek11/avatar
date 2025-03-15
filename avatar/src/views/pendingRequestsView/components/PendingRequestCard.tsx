@@ -10,8 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useAcceptFriendRequestMutation, useRejectFriendRequestMutation } from "../../../generated/graphql";
-import createAccessClient from "../../../graphql/clients/accessClient";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
+import { useClient } from "../../../components/auth/components/ClientProvider";
 interface PendingRequestCardProps {
   item: { id: string; firstName: string; lastName: string, imgSrc?: string | null | undefined };
 }
@@ -19,14 +19,15 @@ interface PendingRequestCardProps {
 export default function PendingRequestCard(props: PendingRequestCardProps) {
   const { item } = props;
   const { id, firstName, lastName, imgSrc } = item;
-  const { user, accessToken, refreshToken } = useAuth()
+  const { user } = useAuth()
+  const { accessClient } = useClient()
 
-  const { mutate: acceptFriendRequest } = useAcceptFriendRequestMutation(createAccessClient(accessToken!, refreshToken!), {
+  const { mutate: acceptFriendRequest } = useAcceptFriendRequestMutation(accessClient!, {
     onSuccess: () => { },
   }
   );
 
-  const { mutate: rejectFriendRequest } = useRejectFriendRequestMutation(createAccessClient(accessToken!, refreshToken!), {
+  const { mutate: rejectFriendRequest } = useRejectFriendRequestMutation(accessClient!, {
     onSuccess: () => { },
   }
   );

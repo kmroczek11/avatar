@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AutoLogIn from "./components/auth/components/AutoLogIn";
 import AuthProvider from "./components/auth/components/AuthProvider";
 import { SocketProvider } from "./components/chat/components/SocketProvider";
+import { ClientProvider } from "./components/auth/components/ClientProvider";
+import { TokensProvider } from "./components/auth/components/TokensProvider";
 
 const theme = createTheme({
   palette: {
@@ -51,12 +53,16 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
-        <AuthProvider>
-          <SocketProvider>
-            <AutoLogIn />
-            {element}
-          </SocketProvider>
-        </AuthProvider>
+        <TokensProvider>
+          <ClientProvider>
+            <AuthProvider>
+              <SocketProvider>
+                <AutoLogIn />
+                {element}
+              </SocketProvider>
+            </AuthProvider>
+          </ClientProvider>
+        </TokensProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

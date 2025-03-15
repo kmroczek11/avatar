@@ -3,9 +3,10 @@ import { Box, List, ListItem, ListItemAvatar, ListItemText, Typography, Circular
 import { useAuth } from "../../../components/auth/components/AuthProvider";
 import CustomAvatar from "../../../components/lib/CustomAvatar";
 import { GetAllFriendsQuery, MinimalUser, useGetAllFriendsQuery } from "../../../generated/graphql";
-import createAccessClient from "../../../graphql/clients/accessClient";
 import { useTheme, Theme } from '@mui/material/styles';
 import ChatIcon from '@mui/icons-material/Chat';
+import { useClickAnyWhere } from "usehooks-ts";
+import { useClient } from "../../../components/auth/components/ClientProvider";
 
 interface FriendBoxProps {
     addChatUser: (user: MinimalUser) => void
@@ -13,18 +14,19 @@ interface FriendBoxProps {
 
 export default function FriendsBox(props: FriendBoxProps) {
     const { addChatUser } = props;
-    const { user, accessToken, refreshToken } = useAuth();
+    const { user } = useAuth();
     const theme = useTheme<Theme>();
+    const { accessClient } = useClient()
 
     const { data, isLoading, error } = useGetAllFriendsQuery<GetAllFriendsQuery, Error>(
-        createAccessClient(accessToken!, refreshToken!),
+        accessClient!,
         {
             input: {
                 userId: user?.id!
             }
         },
         {
-            enabled: !!accessToken,
+            enabled: !!accessClient,
             onSuccess: (data) => { },
         }
     )

@@ -2,15 +2,16 @@ import React from "react";
 import { CircularProgress, Typography } from "@mui/material";
 import PostCard from "./PostCard";
 import Grid from '@mui/material/Grid2';
-import createAccessClient from "../../../graphql/clients/accessClient";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
 import { GetPostsQuery, useGetPostsQuery } from "../../../generated/graphql";
+import { useClient } from "../../../components/auth/components/ClientProvider";
 
 export default function PostList() {
-    const { user, accessToken, refreshToken } = useAuth()
+    const { user } = useAuth()
+    const { accessClient } = useClient()
 
     const { data, isLoading, error } = useGetPostsQuery<GetPostsQuery, Error>(
-        createAccessClient(accessToken!, refreshToken!),
+        accessClient!,
         {
             input: {
                 userId: user?.id!

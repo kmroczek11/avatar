@@ -12,7 +12,8 @@ import { CustomAlert } from "../../../components/lib";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
 import { useCookies } from "react-cookie";
 import { useRefreshTokenMutation } from "../../../generated/graphql";
-import createClient from "../../../graphql/clients/client";
+import { useClient } from "../../../components/auth/components/ClientProvider";
+import { useTokens } from "../../../components/auth/components/TokensProvider";
 
 const stringToColor = (string: string) => {
   let hash = 0;
@@ -56,11 +57,13 @@ const errorMessages = {
 
 export default function UserAvatar(props: UserAvatarProps) {
   const { name, size, imgSrc, BadgeIcon } = props;
-  const { user, accessToken, refreshToken, getUserRefetch } = useAuth();
+  const { user, getUserRefetch } = useAuth();
   const [changeProfilePicStatus, setChangeProfilePicStatus] = useState<string>("");
   const [cookies, setCookie] = useCookies(["userId"]);
+  const { client } = useClient()
+  const { refreshToken, accessToken } = useTokens()
 
-  const refreshAccessToken = useRefreshTokenMutation(createClient());
+  const refreshAccessToken = useRefreshTokenMutation(client!)
 
   const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const htmlInput = e.target as HTMLInputElement;

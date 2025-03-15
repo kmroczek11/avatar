@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import { Box, CircularProgress, TextField, Typography } from "@mui/material";
 import { useAuth } from "../../../components/auth/components/AuthProvider";
-import createAccessClient from "../../../graphql/clients/accessClient";
 import { useCreatePostMutation, useRefreshTokenMutation } from "../../../generated/graphql";
 import { ColorButton } from "../../../components/lib";
 import PostButtonsBox from "./PostButtonsBox";
-import createClient from "../../../graphql/clients/client";
+import { useClient } from "../../../components/auth/components/ClientProvider";
+import { useTokens } from "../../../components/auth/components/TokensProvider";
 
 export default function CreatePostBox() {
-    const { user, accessToken, refreshToken } = useAuth();
+    const { user } = useAuth();
     const [title, setTitle] = useState<string>("");
     const [content, setContent] = useState<string>("");
     const [image, setImage] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const { client } = useClient()
+    const { refreshToken, accessToken } = useTokens()
 
-    const refreshAccessToken = useRefreshTokenMutation(createClient());
+    const refreshAccessToken = useRefreshTokenMutation(client!);
 
     const handleSubmit = async () => {
         if (!title.trim() || !content.trim()) {

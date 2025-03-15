@@ -3,15 +3,16 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid2";
 import { useAuth } from "../../components/auth/components/AuthProvider";
 import { GetPendingRequestsQuery, useGetPendingRequestsQuery } from "../../generated/graphql";
-import createAccessClient from "../../graphql/clients/accessClient";
 import { LoadingScreen } from "../../components/lib";
 import PendingRequestCard from "./components/PendingRequestCard";
+import { useClient } from "../../components/auth/components/ClientProvider";
 
 export default function PendingRequestsView() {
-    const { user, accessToken, refreshToken } = useAuth();
+    const { user } = useAuth();
+    const { accessClient } = useClient()
 
     const { data, isLoading } = useGetPendingRequestsQuery<GetPendingRequestsQuery, Error>(
-        createAccessClient(accessToken!, refreshToken!),
+        accessClient!,
         {
             input: {
                 receiverId: user?.id!
