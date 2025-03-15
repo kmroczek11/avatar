@@ -99,9 +99,12 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     useEffect(() => {
+        initializeClient()
+    }, [])
+
+    useEffect(() => {
         if (!refreshToken || !accessToken) return
 
-        initializeClient()
         initializeAccessClient()
     }, [refreshToken, accessToken])
 

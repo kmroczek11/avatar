@@ -28,7 +28,7 @@ interface AuthProviderProps {
 export default function AuthProvider({ children }: AuthProviderProps) {
   const [cookies, setCookie, removeCookie] = useCookies(["userId"]);
   const [user, setUser] = useState<User | null>(null);
-  const { client } = useClient()
+  const { accessClient } = useClient()
 
   const { refetch: getUserRefetch } = useQuery<User>({
     queryKey: ["user", cookies.userId],
@@ -42,7 +42,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   });
 
   const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
-    client!,
+    accessClient!,
     {
       onError: (error: Error) => {
         let err: any = {};
