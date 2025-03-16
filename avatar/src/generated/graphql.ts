@@ -797,9 +797,12 @@ export type Query = {
   __typename?: 'Query';
   findOne: User;
   findUsersByName: Array<UserWithFriendRequestStatus>;
+  getAccessToken: Scalars['String']['output'];
   getAllFriends: Array<MinimalUser>;
   getPendingRequests: Array<FriendRequest>;
   getPosts: Array<Post>;
+  getRefreshToken: Scalars['String']['output'];
+  getUser: User;
 };
 
 
@@ -810,6 +813,11 @@ export type QueryFindOneArgs = {
 
 export type QueryFindUsersByNameArgs = {
   findByNameInput: FindByNameInput;
+};
+
+
+export type QueryGetAccessTokenArgs = {
+  userId: Scalars['String']['input'];
 };
 
 
@@ -825,6 +833,16 @@ export type QueryGetPendingRequestsArgs = {
 
 export type QueryGetPostsArgs = {
   getPostsInput: GetPostsInput;
+};
+
+
+export type QueryGetRefreshTokenArgs = {
+  userId: Scalars['String']['input'];
+};
+
+
+export type QueryGetUserArgs = {
+  userId: Scalars['String']['input'];
 };
 
 export enum QueryMode {
@@ -1209,6 +1227,27 @@ export type ForgotPasswordMutationVariables = Exact<{
 
 export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: { __typename?: 'ForgotPasswordResponse', msg: string } };
 
+export type GetAccessTokenQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type GetAccessTokenQuery = { __typename?: 'Query', getAccessToken: string };
+
+export type GetRefreshTokenQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type GetRefreshTokenQuery = { __typename?: 'Query', getRefreshToken: string };
+
+export type GetUserQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, phoneNumber: string, imgSrc?: string | null, roles?: Array<Role> | null } };
+
 export type LogInUserMutationVariables = Exact<{
   input: LogInUserInput;
 }>;
@@ -1367,6 +1406,95 @@ export const useForgotPasswordMutation = <
 
 
 useForgotPasswordMutation.fetcher = (client: GraphQLClient, variables: ForgotPasswordMutationVariables, headers?: RequestInit['headers']) => fetcher<ForgotPasswordMutation, ForgotPasswordMutationVariables>(client, ForgotPasswordDocument, variables, headers);
+
+export const GetAccessTokenDocument = `
+    query GetAccessToken($userId: String!) {
+  getAccessToken(userId: $userId)
+}
+    `;
+
+export const useGetAccessTokenQuery = <
+      TData = GetAccessTokenQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetAccessTokenQueryVariables,
+      options?: UseQueryOptions<GetAccessTokenQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetAccessTokenQuery, TError, TData>(
+      ['GetAccessToken', variables],
+      fetcher<GetAccessTokenQuery, GetAccessTokenQueryVariables>(client, GetAccessTokenDocument, variables, headers),
+      options
+    )};
+
+useGetAccessTokenQuery.getKey = (variables: GetAccessTokenQueryVariables) => ['GetAccessToken', variables];
+
+
+useGetAccessTokenQuery.fetcher = (client: GraphQLClient, variables: GetAccessTokenQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAccessTokenQuery, GetAccessTokenQueryVariables>(client, GetAccessTokenDocument, variables, headers);
+
+export const GetRefreshTokenDocument = `
+    query GetRefreshToken($userId: String!) {
+  getRefreshToken(userId: $userId)
+}
+    `;
+
+export const useGetRefreshTokenQuery = <
+      TData = GetRefreshTokenQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetRefreshTokenQueryVariables,
+      options?: UseQueryOptions<GetRefreshTokenQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetRefreshTokenQuery, TError, TData>(
+      ['GetRefreshToken', variables],
+      fetcher<GetRefreshTokenQuery, GetRefreshTokenQueryVariables>(client, GetRefreshTokenDocument, variables, headers),
+      options
+    )};
+
+useGetRefreshTokenQuery.getKey = (variables: GetRefreshTokenQueryVariables) => ['GetRefreshToken', variables];
+
+
+useGetRefreshTokenQuery.fetcher = (client: GraphQLClient, variables: GetRefreshTokenQueryVariables, headers?: RequestInit['headers']) => fetcher<GetRefreshTokenQuery, GetRefreshTokenQueryVariables>(client, GetRefreshTokenDocument, variables, headers);
+
+export const GetUserDocument = `
+    query GetUser($userId: String!) {
+  getUser(userId: $userId) {
+    id
+    firstName
+    lastName
+    email
+    phoneNumber
+    imgSrc
+    roles
+  }
+}
+    `;
+
+export const useGetUserQuery = <
+      TData = GetUserQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetUserQueryVariables,
+      options?: UseQueryOptions<GetUserQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetUserQuery, TError, TData>(
+      ['GetUser', variables],
+      fetcher<GetUserQuery, GetUserQueryVariables>(client, GetUserDocument, variables, headers),
+      options
+    )};
+
+useGetUserQuery.getKey = (variables: GetUserQueryVariables) => ['GetUser', variables];
+
+
+useGetUserQuery.fetcher = (client: GraphQLClient, variables: GetUserQueryVariables, headers?: RequestInit['headers']) => fetcher<GetUserQuery, GetUserQueryVariables>(client, GetUserDocument, variables, headers);
 
 export const LogInUserDocument = `
     mutation LogInUser($input: LogInUserInput!) {

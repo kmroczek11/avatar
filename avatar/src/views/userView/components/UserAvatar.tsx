@@ -57,11 +57,11 @@ const errorMessages = {
 
 export default function UserAvatar(props: UserAvatarProps) {
   const { name, size, imgSrc, BadgeIcon } = props;
-  const { user, getUserRefetch } = useAuth();
+  const { user, getUserRefetch, logOut } = useAuth();
   const [changeProfilePicStatus, setChangeProfilePicStatus] = useState<string>("");
   const [cookies, setCookie] = useCookies(["userId"]);
   const { client } = useClient()
-  const { refreshToken, accessToken } = useTokens()
+  const { refreshToken, accessToken, setAccessToken } = useTokens()
 
   const refreshAccessToken = useRefreshTokenMutation(client!)
 
@@ -119,20 +119,21 @@ export default function UserAvatar(props: UserAvatarProps) {
       let result = await response.json();
 
       if (result.errors && result.errors[0].message === "Unauthorized") {
-        console.log("Access token expired, attempting to refresh...");
-
         try {
           const refreshResponse = await refreshAccessToken.mutateAsync({ input: { refreshToken: refreshToken! } });
 
           const newAccessToken = refreshResponse?.refreshToken.accessToken;
 
-          if (!newAccessToken) throw new Error("User must re-authenticate");
+          if (!newAccessToken) {
+            logOut({ input: { userId: user?.id! } })
+          }
+
+          setAccessToken(newAccessToken)
 
           response = await sendRequest(newAccessToken!);
           result = await response.json();
         } catch (refreshError) {
-          console.error("Token refresh failed:", refreshError);
-          throw new Error("User must re-authenticate");
+          logOut({ input: { userId: user?.id! } })
         }
       }
 

@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { LogInResponse } from './responses/logIn-response';
 import { RegisterUserInput } from './inputs/register-user.input';
@@ -21,10 +21,16 @@ import { ForgotPasswordResponse } from './responses/forgot-password-response';
 import { ForgotPasswordInput } from './inputs/forgot-password.input';
 import { RefreshTokenInput } from './inputs/refresh-token.input';
 import { RefreshTokenResponse } from './responses/refresh-token-response';
+import { RedisService } from 'src/redis/redis.service';
+import { User } from 'src/@generated/user/user.model';
 
 @Resolver()
 export class AuthResolver {
-  constructor(private authService: AuthService) { }
+  constructor
+    (
+      private authService: AuthService,
+      private readonly redisService: RedisService
+    ) { }
 
   @Mutation(() => LogInResponse)
   @Public()
@@ -53,7 +59,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => LogOutResponse)
-  @Roles(Role.USER)
+  @Public()
   logOutUser(
     @Args('logOutUserInput') logOutUserInput: LogOutUserInput,
   ): Promise<LogOutResponse> {
@@ -94,5 +100,23 @@ export class AuthResolver {
     @Args('forgotPasswordInput') forgotPasswordInput: ForgotPasswordInput,
   ) {
     return this.authService.forgotPassword(forgotPasswordInput);
+  }
+
+  @Query(() => User)
+  @Public()
+  getUser(@Args('userId') userId: string): Promise<User | null> {
+    return this.redisService.getUser(userId);
+  }
+
+  @Query(() => String)
+  @Public()
+  getAccessToken(@Args('userId') userId: string): Promise<string | null> {
+    return this.redisService.getAccessToken(userId);
+  }
+
+  @Query(() => String)
+  @Public()
+  getRefreshToken(@Args('userId') userId: string): Promise<string | null> {
+    return this.redisService.getRefreshToken(userId);
   }
 }

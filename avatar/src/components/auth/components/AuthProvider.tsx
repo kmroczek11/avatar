@@ -1,73 +1,66 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import axios from "axios";
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, UseMutateFunction, useQuery } from "@tanstack/react-query";
-import { Exact, LogOutUserInput, LogOutUserMutation, LogOutUserMutationVariables, useLogOutUserMutation, User, useRefreshTokenMutation } from "../../../generated/graphql";
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, UseMutateFunction } from "@tanstack/react-query";
+import { Exact, GetUserQuery, LogOutUserInput, LogOutUserMutation, LogOutUserMutationVariables, useGetUserQuery, useLogOutUserMutation } from "../../../generated/graphql";
 import { useClient } from "./ClientProvider";
-
-const AuthContext = createContext<{
-  user: User | null;
-  getUserRefetch: <TPageData>(
-    options?: RefetchOptions & RefetchQueryFilters<TPageData>
-  ) => Promise<QueryObserverResult<User, unknown>>;
-  logOut: UseMutateFunction<LogOutUserMutation, Error, Exact<{ input: LogOutUserInput; }>, unknown>
-}>({
-  user: null,
-  getUserRefetch: async () => {
-    throw new Error("getUserRefetch not implemented");
-  },
-  logOut: () => {
-    throw new Error("logOut not implemented");
-  },
-});
+import { User } from "../models/User";
+import useAutoLogInUser from "../hooks/useAutoLogInUser";
+import { GraphQLClient } from "graphql-request";
 
 interface AuthProviderProps {
-  children: React.ReactNode;
+  user: User | null;
+  getUserRefetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<GetUserQuery, Error>>;
+  logOut: UseMutateFunction<LogOutUserMutation, Error, Exact<{ input: LogOutUserInput }>, unknown>;
 }
 
-export default function AuthProvider({ children }: AuthProviderProps) {
+const AuthContext = createContext<AuthProviderProps | undefined>(undefined);
+
+const client = new GraphQLClient(`${process.env.REACT_APP_HOST}/graphql`)
+
+export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const [cookies, setCookie, removeCookie] = useCookies(["userId"]);
   const [user, setUser] = useState<User | null>(null);
-  const { accessClient } = useClient()
+  const [autoLoginUserError, setAutoLoginError] = useState<string>("");
 
-  const { refetch: getUserRefetch } = useQuery<User>({
-    queryKey: ["user", cookies.userId],
-    queryFn: async () => {
-      if (!cookies.userId) throw new Error("No userId cookie found");
-      const res = await axios.get(`${process.env.REACT_APP_HOST}/auth/getUser/${cookies.userId}`);
-      setUser(res.data)
-      return res.data;
+  const { data, refetch: getUserRefetch } = useGetUserQuery<GetUserQuery, Error>(
+    client,
+    { userId: cookies.userId },
+    {
+      enabled: !!cookies.userId,
+      onSuccess: (data) => setUser(data.getUser),
+    }
+  );
+
+  const logOutMutation = useLogOutUserMutation<Error>(client, {
+    onError: (error) => console.error("Logout error:", error),
+    onSuccess: () => {
+      removeCookie("userId");
+      setUser(null);
     },
-    enabled: !!cookies.userId,
   });
 
-  const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
-    accessClient!,
-    {
-      onError: (error: Error) => {
-        let err: any = {};
-        err.data = error;
-      },
-      onSuccess: (
-        data: LogOutUserMutation,
-        _variables: LogOutUserMutationVariables,
-        _context: unknown
-      ) => {
-        removeCookie('userId')
-        setUser(null)
-      },
-    }
-  )
+  const logOut = logOutMutation.mutate
+
+  const { isAutoLogInUserLoading, autoLogIn } = useAutoLogInUser(client, setAutoLoginError, () => { })
+
+  useEffect(() => {
+    if (!cookies.userId) return;
+    autoLogIn({ input: { userId: cookies.userId } });
+  }, [cookies.userId]);
 
   return (
-    <AuthContext.Provider value={{
-      user: user ?? null,
-      getUserRefetch,
-      logOut
-    }}>
+    <AuthContext.Provider value={{ user: user ?? null, getUserRefetch, logOut }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

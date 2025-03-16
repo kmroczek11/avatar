@@ -8,7 +8,6 @@ import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { AutoLoginStrategy } from './strategies/autoLogin.strategy';
 import { UserModule } from 'src/user/user.module';
-import { AuthController } from './auth.controller';
 import { RedisModule } from 'src/redis/redis.module';
 import { MailModule } from 'src/mail/mail.module';
 
@@ -22,7 +21,6 @@ dotenv.config();
     RedisModule,
     MailModule
   ],
-  controllers: [AuthController],
   providers: [
     AuthService,
     AuthResolver,

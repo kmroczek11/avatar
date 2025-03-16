@@ -8,13 +8,13 @@ import { useClient } from "../../../components/auth/components/ClientProvider";
 import { useTokens } from "../../../components/auth/components/TokensProvider";
 
 export default function CreatePostBox() {
-    const { user } = useAuth();
+    const { user, logOut } = useAuth();
     const [title, setTitle] = useState<string>("");
     const [content, setContent] = useState<string>("");
     const [image, setImage] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
     const { client } = useClient()
-    const { refreshToken, accessToken } = useTokens()
+    const { refreshToken, accessToken, setAccessToken } = useTokens()
 
     const refreshAccessToken = useRefreshTokenMutation(client!);
 
@@ -72,20 +72,21 @@ export default function CreatePostBox() {
         let result = await response.json();
 
         if (result.errors && result.errors[0].message === "Unauthorized") {
-            console.log("Access token expired, attempting to refresh...");
-
             try {
-                const refreshResponse = await refreshAccessToken.mutateAsync({ input: { refreshToken: refreshToken! } }); 
+                const refreshResponse = await refreshAccessToken.mutateAsync({ input: { refreshToken: refreshToken! } });
 
                 const newAccessToken = refreshResponse?.refreshToken.accessToken;
 
-                if (!newAccessToken) throw new Error("User must re-authenticate");
+                if (!newAccessToken) {
+                    logOut({ input: { userId: user?.id! } })
+                }
+
+                setAccessToken(newAccessToken)
 
                 response = await sendRequest(newAccessToken!);
                 result = await response.json();
             } catch (refreshError) {
-                console.error("Token refresh failed:", refreshError);
-                throw new Error("User must re-authenticate");
+                logOut({ input: { userId: user?.id! } })
             }
         }
 

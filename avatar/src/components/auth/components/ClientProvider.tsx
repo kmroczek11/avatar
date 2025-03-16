@@ -3,10 +3,6 @@ import { GraphQLClient, gql, Variables, RequestDocument, RequestOptions } from "
 import { useAuth } from "./AuthProvider";
 import { GraphQLClientRequestHeaders } from "graphql-request/build/esm/types";
 import { RefreshTokenMutation, RefreshTokenMutationVariables } from "../../../generated/graphql";
-import { useCookies } from "react-cookie";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useToggle } from "usehooks-ts";
 import { useTokens } from "./TokensProvider";
 
 interface ClientProviderProps {
@@ -27,16 +23,11 @@ const REFRESH_TOKEN_MUTATION = gql`
 export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
     const [client, setClient] = useState<GraphQLClient | null>(null)
     const [accessClient, setAccessClient] = useState<GraphQLClient | null>(null)
-    const { refreshToken, accessToken } = useTokens()
+    const { refreshToken, accessToken, setAccessToken } = useTokens()
+    const { user, logOut } = useAuth()
 
     function initializeClient() {
-        const client = new GraphQLClient(`${process.env.REACT_APP_HOST}/graphql` as string, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-
-        setClient(client)
+        setClient(new GraphQLClient(`${process.env.REACT_APP_HOST}/graphql`))
     }
 
     function initializeAccessClient() {
@@ -62,8 +53,6 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
                 }
             } catch (error: any) {
                 if (error.response.errors[0].message === "Unauthorized") {
-                    console.log("Access token expired, attempting to refresh...")
-
                     try {
                         const refreshClient = client
                         const response = await refreshClient.request<RefreshTokenMutation, RefreshTokenMutationVariables>(
@@ -73,8 +62,10 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
 
                         const newAccessToken = response?.refreshToken?.accessToken
                         if (!newAccessToken) {
-                            throw new Error("User must re-authenticate")
+                            logOut({ input: { userId: user?.id! } })
                         }
+
+                        setAccessToken(newAccessToken)
 
                         client.setHeaders({
                             Authorization: `Bearer ${newAccessToken}`,
@@ -87,8 +78,7 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
                             return await originalRequest(documentOrOptions as RequestOptions<T, V>);
                         }
                     } catch (refreshError) {
-                        console.error("Token refresh failed:", refreshError)
-                        throw new Error("User must re-authenticate");
+                        logOut({ input: { userId: user?.id! } })
                     }
                 }
                 throw error;

@@ -34,6 +34,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)
     const { client } = useClient()
     const { refreshToken, accessToken } = useTokens()
+    const { user, logOut } = useAuth()
 
     const refreshAccessToken = useRefreshTokenMutation(client!);
 
@@ -52,26 +53,17 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     async function initializeSocket() {
         let newAccessToken = accessToken
 
-        if (!accessToken || isAccessTokenExpired(accessToken)) {
-            console.warn("Access token expired, attempting to refresh...")
-
-            if (!refreshToken) {
-                console.error("No refresh token available, cannot connect to socket.")
-                return null;
-            }
-
+        if (isAccessTokenExpired(accessToken)) {
             try {
                 const refreshResponse = await refreshAccessToken.mutateAsync({ input: { refreshToken: refreshToken! } });
 
                 newAccessToken = refreshResponse?.refreshToken.accessToken;
 
                 if (!newAccessToken) {
-                    console.error("Failed to refresh token, cannot connect to socket.")
-                    return null
+                    logOut!({ input: { userId: user?.id! } })
                 }
             } catch (error) {
-                console.error("Error refreshing token:", error)
-                return null
+                logOut!({ input: { userId: user?.id! } })
             }
         }
 
@@ -98,16 +90,14 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
             if (!socket) return
 
             if (err.message === "Unauthorized") {
-                console.warn("Socket authorization failed, refreshing token...");
-
-                const newToken = await refreshAccessToken.mutateAsync({ input: { refreshToken: refreshToken! } });
+                const newToken = await refreshAccessToken.mutateAsync({ input: { refreshToken: refreshToken! } })
 
                 if (newToken) {
-                    socket.auth = { token: `Bearer ${newToken.refreshToken.accessToken}` };
-                    socket.connect(); // Reconnect with new token
+                    socket.auth = { token: `Bearer ${newToken.refreshToken.accessToken}` }
+                    socket.connect()
                 } else {
-                    console.error("Re-authentication failed, disconnecting socket.");
-                    socket.disconnect();
+                    logOut!({ input: { userId: user?.id! } })
+                    socket.disconnect()
                 }
             }
         }
@@ -122,14 +112,14 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }, [socket])
 
     useEffect(() => {
-        if (!refreshToken || !accessToken) return
+        if (!refreshToken || !accessToken || !client || !user) return
 
         initializeSocket()
 
         return () => {
             socket?.disconnect()
         }
-    }, [refreshToken, accessToken])
+    }, [refreshToken, accessToken, client, user])
 
     return <SocketContext.Provider value={{ socket }}>{children}</SocketContext.Provider>
 }
