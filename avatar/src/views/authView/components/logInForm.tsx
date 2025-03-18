@@ -1,7 +1,7 @@
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid2";
 import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
 import { ColorButton, CustomAlert } from "../../../components/lib";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -9,6 +9,7 @@ import { invalidEmailOrPasswordMessage } from "../../../translations/pl/errorMes
 import useLogInUser from "../../../components/auth/hooks/useLogInUser";
 import { useCookies } from "react-cookie";
 import { useClient } from "../../../components/auth/components/ClientProvider";
+import ForgotPasswordDialog from "./ForgotPasswordDialog";
 
 interface LogInFormProps {
     setActive: (name: string) => void;
@@ -24,6 +25,7 @@ export default function LogInForm(props: LogInFormProps) {
     const [logInError, setLogInError] = useState<string>("")
     const [cookies, setCookie, removeCookie] = useCookies(['userId'])
     const { client } = useClient()
+    const [openForgotPasswordDialog, setOpenForgotPasswordDialog] = useState(false)
 
     const { isLogInLoading, logIn } = useLogInUser(
         client!,
@@ -124,13 +126,13 @@ export default function LogInForm(props: LogInFormProps) {
                             >
                                 Zaloguj
                             </ColorButton>
-                            {/* <Button
-                    variant="text"
-                    sx={{ color: "#000", textTransform: "none" }}
-                    onClick={() => setOpenForgotPasswordDialog(true)}
-                  >
-                    Nie pamiętam hasła
-                  </Button> */}
+                            <Button
+                                variant="text"
+                                sx={{ color: "#000", textTransform: "none" }}
+                                onClick={() => setOpenForgotPasswordDialog(true)}
+                            >
+                                Nie pamiętam hasła
+                            </Button>
                             <Button
                                 variant="text"
                                 sx={{ color: "#000", textTransform: "none" }}
@@ -138,12 +140,12 @@ export default function LogInForm(props: LogInFormProps) {
                             >
                                 Nie masz jeszcze konta? Zarejestruj się
                             </Button>
-                            {/* {openForgotPasswordDialog && (
-                    <ForgotPasswordDialog
-                      open={openForgotPasswordDialog}
-                      handleClose={() => setOpenForgotPasswordDialog(false)}
-                    />
-                  )} */}
+                            {openForgotPasswordDialog && (
+                                <ForgotPasswordDialog
+                                    open={openForgotPasswordDialog}
+                                    handleClose={() => setOpenForgotPasswordDialog(false)}
+                                />
+                            )}
                         </Grid>
                     </Form>
                 );

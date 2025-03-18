@@ -6,11 +6,16 @@ import { ColorButton } from "../../../components/lib";
 import PostButtonsBox from "./PostButtonsBox";
 import { useClient } from "../../../components/auth/components/ClientProvider";
 import { useTokens } from "../../../components/auth/components/TokensProvider";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+
+const defaultValues = {
+    title: "",
+    content: ""
+};
 
 export default function CreatePostBox() {
     const { user, logOut } = useAuth();
-    const [title, setTitle] = useState<string>("");
-    const [content, setContent] = useState<string>("");
     const [image, setImage] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
     const { client } = useClient()
@@ -18,12 +23,7 @@ export default function CreatePostBox() {
 
     const refreshAccessToken = useRefreshTokenMutation(client!);
 
-    const handleSubmit = async () => {
-        if (!title.trim() || !content.trim()) {
-            setError("Tytuł i treść są wymagane!");
-            return;
-        }
-
+    const handleSubmit = async (title: string, content: string) => {
         const input: any = {
             title,
             content,
@@ -98,48 +98,96 @@ export default function CreatePostBox() {
     };
 
     return (
-        <Box sx={{
-            width: '80%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-        }}
+        <Formik
+            initialValues={defaultValues}
+            onSubmit={(values, { setSubmitting }) => {
+                setSubmitting(true);
+
+                const { title, content } = values;
+
+                handleSubmit(title, content)
+
+            }}
+            validationSchema={Yup.object().shape({
+                title: Yup.string()
+                    .required("Wymagane"),
+                content: Yup.string()
+                    .required("Wymagane"),
+            })}
         >
-            <Typography variant="h5" gutterBottom>
-                O czym myślisz?
-            </Typography>
-            <TextField
-                fullWidth
-                label="Tytuł"
-                variant="outlined"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                sx={{ mb: 2 }}
-            />
-            <TextField
-                fullWidth
-                label="Treść"
-                variant="outlined"
-                multiline
-                rows={4}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                sx={{ mb: 2 }}
-            />
-            <PostButtonsBox image={image} setImage={setImage} />
-            {error && (
-                <Typography color="error" sx={{ mb: 2 }}>
-                    {error}
-                </Typography>
-            )}
-            <ColorButton
-                variant="contained"
-                color="primary"
-                onClick={handleSubmit}
-                sx={{ width: 200 }}
-            >
-                Dodaj post
-            </ColorButton>
-        </Box>
-    );
+            {(props) => {
+                const {
+                    values,
+                    touched,
+                    errors,
+                    dirty,
+                    isSubmitting,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    handleReset,
+                } = props;
+                return (
+                    <Form onSubmit={handleSubmit}
+                        style={{
+                            width: '80%',
+                        }}
+                    >
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center'
+                        }}
+                        >
+                            <Typography variant="h5" gutterBottom>
+                                O czym myślisz?
+                            </Typography>
+                            <TextField
+                                id="title-input"
+                                name="title"
+                                fullWidth
+                                label="Tytuł"
+                                variant="outlined"
+                                value={values.title}
+                                onChange={handleChange}
+                                sx={{ mb: 2 }}
+                                required
+                            />
+                            <TextField
+                                id="content-input"
+                                name="content"
+                                fullWidth
+                                label="Treść"
+                                variant="outlined"
+                                multiline
+                                rows={4}
+                                value={values.content}
+                                onChange={handleChange}
+                                sx={{ mb: 2 }}
+                                helperText={
+                                    errors.content && touched.content && errors.content
+                                }
+                                error={errors.content && touched.content ? true : false}
+                                required
+                            />
+                            <PostButtonsBox image={image} setImage={setImage} />
+                            {error && (
+                                <Typography color="error" sx={{ mb: 2 }}>
+                                    {error}
+                                </Typography>
+                            )}
+                            <ColorButton
+                                variant="contained"
+                                color="primary"
+                                type="submit"
+                                sx={{ width: 200 }}
+                            >
+                                Dodaj post
+                            </ColorButton>
+                        </Box>
+                    </Form>
+                );
+            }}
+        </Formik>
+    )
 };
