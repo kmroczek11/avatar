@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+generator nestgraphql {
+  provider = "node node_modules/prisma-nestjs-graphql"
+  output   = "../src/@generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+}
+
+enum Status {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELED
+}
+
+model User {
+  id                     String          @id @default(cuid())
+  firstName              String
+  lastName               String
+  email                  String          @unique
+  password               String
+  phoneNumber            String          @unique
+  imgSrc                 String?
+  roles                  Role[]          @default([USER])
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
+  friends                Friend[]        @relation("FriendshipUser1")
+  friendsOf              Friend[]        @relation("FriendshipUser2")
+  posts                  Post[]
+  chats                  Chat[]          @relation("UserChats")
+  messages               Message[]
+}
+
+model ActiveChat {
+  id       String @id @default(cuid())
+  userId   String
+  chatId   String
+  socketId String
+}
+
+model Chat {
+  id        String    @id @default(cuid())
+  name      String? // Optional group name (for group chats)
+  isGroup   Boolean   @default(false) // Determines if it's a private or group chat
+  users     User[]    @relation("UserChats")
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  text      String
+  senderId  String
+  chatId    String
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Friend {
+  id      String @id @default(cuid())
+  userId1 String
+  userId2 String
+
+  user1 User @relation("FriendshipUser1", fields: [userId1], references: [id])
+  user2 User @relation("FriendshipUser2", fields: [userId2], references: [id])
+
+  @@unique([userId1, userId2])
+}
+
+model FriendRequest {
+  id         String @id @default(cuid())
+  creatorId  String
+  receiverId String
+  creator    User   @relation("SentFriendRequests", fields: [creatorId], references: [id])
+  receiver   User   @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
+  status     Status @default(PENDING)
+
+  @@unique([creatorId, receiverId])
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String   @db.VarChar(255)
+  content   String
+  imgSrc    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
+}

@@ -1,0 +1,5 @@
+mutation RejectFriendRequest($input: RejectFriendRequestInput!) {
+  rejectFriendRequest(rejectFriendRequestInput: $input){
+    id
+  }
+}

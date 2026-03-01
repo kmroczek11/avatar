@@ -1,0 +1,23 @@
+services:
+  avatar:
+    build:
+      context: .
+      dockerfile: .docker/avatar/dev/Dockerfile
+      args:
+        VITE_HOST: ${VITE_HOST}
+        VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY}
+        VITE_GOOGLE_MAPS_MAP_ID: ${VITE_GOOGLE_MAPS_MAP_ID}
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    environment:
+      - VITE_HOST
+      - VITE_GOOGLE_MAPS_API_KEY
+      - VITE_GOOGLE_MAPS_MAP_ID
+    ports:
+      - "8080:3000"
+    networks:
+      - frontend
+
+networks:
+  frontend:

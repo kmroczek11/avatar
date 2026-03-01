@@ -1,0 +1,15 @@
+query GetPosts($input: GetPostsInput!){
+  getPosts(getPostsInput: $input) {
+    id
+    title
+    content
+    imgSrc
+    createdAt
+    author {
+      id
+      firstName
+      lastName
+      imgSrc
+    }
+  }
+}

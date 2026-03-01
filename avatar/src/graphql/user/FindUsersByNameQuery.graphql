@@ -1,0 +1,13 @@
+query FindUsersByName($input: FindByNameInput!) {
+  findUsersByName(findByNameInput: $input) {
+    id
+    imgSrc
+    firstName
+    lastName
+    friendRequestsReceived {
+      status
+      creatorId
+    }
+    friendRequestStatus
+  }
+}

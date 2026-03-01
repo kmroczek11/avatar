@@ -1,0 +1,1070 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type LogInResponse {
+  userId: String!
+}
+
+type LogOutResponse {
+  msg: String!
+}
+
+type ChangeEmailResponse {
+  userId: String!
+}
+
+type ChangePasswordResponse {
+  userId: String!
+}
+
+type ChangeProfilePicResponse {
+  userId: String!
+}
+
+type ForgotPasswordResponse {
+  msg: String!
+}
+
+type RefreshTokenResponse {
+  accessToken: String!
+}
+
+type FriendRequest {
+  id: ID!
+  creatorId: String!
+  receiverId: String!
+  status: Status!
+  creator: User!
+  receiver: User!
+}
+
+enum Status {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELED
+}
+
+type Friend {
+  id: ID!
+  userId1: String!
+  userId2: String!
+  user1: User!
+  user2: User!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  imgSrc: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  authorId: String!
+  author: User!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Message {
+  id: ID!
+  text: String!
+  senderId: String!
+  chatId: String!
+  createdAt: DateTime!
+  sender: User!
+  chat: Chat!
+}
+
+type ChatCount {
+  users: Int!
+  messages: Int!
+}
+
+type Chat {
+  id: ID!
+  name: String
+  isGroup: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  users: [User!]
+  messages: [Message!]
+  _count: ChatCount!
+}
+
+type UserCount {
+  friendRequestsSent: Int!
+  friendRequestsReceived: Int!
+  friends: Int!
+  friendsOf: Int!
+  posts: Int!
+  chats: Int!
+  messages: Int!
+}
+
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: [Role!]
+  friendRequestsSent: [FriendRequest!]
+  friendRequestsReceived: [FriendRequest!]
+  friends: [Friend!]
+  friendsOf: [Friend!]
+  posts: [Post!]
+  chats: [Chat!]
+  messages: [Message!]
+  _count: UserCount!
+}
+
+enum Role {
+  USER
+}
+
+type UserWithFriendRequestStatus {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: [Role!]
+  friendRequestsSent: [FriendRequest!]
+  friendRequestsReceived: [FriendRequest!]
+  friends: [Friend!]
+  friendsOf: [Friend!]
+  posts: [Post!]
+  chats: [Chat!]
+  messages: [Message!]
+  _count: UserCount!
+  friendRequestStatus: Status
+}
+
+type MinimalUser {
+  id: String!
+  firstName: String!
+  lastName: String!
+  imgSrc: String
+}
+
+type Query {
+  getUser(userId: String!): User!
+  getAccessToken(userId: String!): String!
+  getRefreshToken(userId: String!): String!
+  findOne(email: String!): User!
+  findUsersByName(findByNameInput: FindByNameInput!): [UserWithFriendRequestStatus!]!
+  getPendingRequests(getPendingRequestsInput: GetPendingRequestsInput!): [FriendRequest!]!
+  getAllFriends(getAllFriendsInput: GetAllFriendsInput!): [MinimalUser!]!
+  getPosts(getPostsInput: GetPostsInput!): [Post!]!
+}
+
+input FindByNameInput {
+  name: String!
+  creatorId: String!
+}
+
+input GetPendingRequestsInput {
+  receiverId: String!
+}
+
+input GetAllFriendsInput {
+  userId: String!
+}
+
+input GetPostsInput {
+  userId: String!
+}
+
+type Mutation {
+  registerUser(registerUserInput: RegisterUserInput!): LogInResponse!
+  logInUser(logInUserInput: LogInUserInput!): LogInResponse!
+  autoLogInUser(autoLogInUserInput: AutoLogInUserInput!): LogInResponse!
+  logOutUser(logOutUserInput: LogOutUserInput!): LogOutResponse!
+  refreshToken(refreshTokenInput: RefreshTokenInput!): RefreshTokenResponse!
+  changeEmail(changeEmailInput: ChangeEmailInput!): ChangeEmailResponse!
+  changePassword(changePasswordInput: ChangePasswordInput!): ChangePasswordResponse!
+  changeProfilePic(changeProfilePicInput: ChangeProfilePicInput!): ChangeProfilePicResponse!
+  forgotPassword(forgotPasswordInput: ForgotPasswordInput!): ForgotPasswordResponse!
+  createUser(createUserInput: UserCreateInput!): User!
+  sendFriendRequest(sendFriendRequestInput: SendFriendRequestInput!): FriendRequest!
+  acceptFriendRequest(acceptFriendRequestInput: AcceptFriendRequestInput!): FriendRequest!
+  rejectFriendRequest(rejectFriendRequestInput: RejectFriendRequestInput!): FriendRequest!
+  cancelFriendRequest(cancelFriendRequestInput: CancelFriendRequestInput!): FriendRequest!
+  createPost(createPostInput: CreatePostInput!): Post!
+}
+
+input RegisterUserInput {
+  firstName: String!
+  lastName: String!
+  email: EmailAddress!
+  password: String!
+  phoneNumber: PhoneNumber!
+}
+
+"""
+A field whose value conforms to the standard internet email address format as specified in HTML Spec: https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address.
+"""
+scalar EmailAddress @specifiedBy(url: "https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address")
+
+"""
+A field whose value conforms to the standard E.164 format as specified in: https://en.wikipedia.org/wiki/E.164. Basically this is +17895551234.
+"""
+scalar PhoneNumber
+
+input LogInUserInput {
+  email: EmailAddress!
+  password: String!
+}
+
+input AutoLogInUserInput {
+  userId: String!
+}
+
+input LogOutUserInput {
+  userId: String!
+}
+
+input RefreshTokenInput {
+  refreshToken: String!
+}
+
+input ChangeEmailInput {
+  id: String!
+  email: EmailAddress!
+}
+
+input ChangePasswordInput {
+  id: String!
+  oldPassword: String!
+  newPassword: String!
+}
+
+input ChangeProfilePicInput {
+  userId: String!
+  image: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input ForgotPasswordInput {
+  email: EmailAddress!
+}
+
+input UserCreateInput {
+  id: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: UserCreaterolesInput
+  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
+  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  friends: FriendCreateNestedManyWithoutUser1Input
+  friendsOf: FriendCreateNestedManyWithoutUser2Input
+  posts: PostCreateNestedManyWithoutAuthorInput
+  chats: ChatCreateNestedManyWithoutUsersInput
+  messages: MessageCreateNestedManyWithoutSenderInput
+}
+
+input UserCreaterolesInput {
+  set: [Role!]!
+}
+
+input FriendRequestCreateNestedManyWithoutCreatorInput {
+  create: [FriendRequestCreateWithoutCreatorInput!]
+  connectOrCreate: [FriendRequestCreateOrConnectWithoutCreatorInput!]
+  createMany: FriendRequestCreateManyCreatorInputEnvelope
+  connect: [FriendRequestWhereUniqueInput!]
+}
+
+input FriendRequestCreateWithoutCreatorInput {
+  id: String
+  status: Status
+  receiver: UserCreateNestedOneWithoutFriendRequestsReceivedInput!
+}
+
+input UserCreateNestedOneWithoutFriendRequestsReceivedInput {
+  create: UserCreateWithoutFriendRequestsReceivedInput
+  connectOrCreate: UserCreateOrConnectWithoutFriendRequestsReceivedInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutFriendRequestsReceivedInput {
+  id: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: UserCreaterolesInput
+  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
+  friends: FriendCreateNestedManyWithoutUser1Input
+  friendsOf: FriendCreateNestedManyWithoutUser2Input
+  posts: PostCreateNestedManyWithoutAuthorInput
+  chats: ChatCreateNestedManyWithoutUsersInput
+  messages: MessageCreateNestedManyWithoutSenderInput
+}
+
+input FriendCreateNestedManyWithoutUser1Input {
+  create: [FriendCreateWithoutUser1Input!]
+  connectOrCreate: [FriendCreateOrConnectWithoutUser1Input!]
+  createMany: FriendCreateManyUser1InputEnvelope
+  connect: [FriendWhereUniqueInput!]
+}
+
+input FriendCreateWithoutUser1Input {
+  id: String
+  user2: UserCreateNestedOneWithoutFriendsOfInput!
+}
+
+input UserCreateNestedOneWithoutFriendsOfInput {
+  create: UserCreateWithoutFriendsOfInput
+  connectOrCreate: UserCreateOrConnectWithoutFriendsOfInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutFriendsOfInput {
+  id: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: UserCreaterolesInput
+  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
+  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  friends: FriendCreateNestedManyWithoutUser1Input
+  posts: PostCreateNestedManyWithoutAuthorInput
+  chats: ChatCreateNestedManyWithoutUsersInput
+  messages: MessageCreateNestedManyWithoutSenderInput
+}
+
+input FriendRequestCreateNestedManyWithoutReceiverInput {
+  create: [FriendRequestCreateWithoutReceiverInput!]
+  connectOrCreate: [FriendRequestCreateOrConnectWithoutReceiverInput!]
+  createMany: FriendRequestCreateManyReceiverInputEnvelope
+  connect: [FriendRequestWhereUniqueInput!]
+}
+
+input FriendRequestCreateWithoutReceiverInput {
+  id: String
+  status: Status
+  creator: UserCreateNestedOneWithoutFriendRequestsSentInput!
+}
+
+input UserCreateNestedOneWithoutFriendRequestsSentInput {
+  create: UserCreateWithoutFriendRequestsSentInput
+  connectOrCreate: UserCreateOrConnectWithoutFriendRequestsSentInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutFriendRequestsSentInput {
+  id: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: UserCreaterolesInput
+  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  friends: FriendCreateNestedManyWithoutUser1Input
+  friendsOf: FriendCreateNestedManyWithoutUser2Input
+  posts: PostCreateNestedManyWithoutAuthorInput
+  chats: ChatCreateNestedManyWithoutUsersInput
+  messages: MessageCreateNestedManyWithoutSenderInput
+}
+
+input FriendCreateNestedManyWithoutUser2Input {
+  create: [FriendCreateWithoutUser2Input!]
+  connectOrCreate: [FriendCreateOrConnectWithoutUser2Input!]
+  createMany: FriendCreateManyUser2InputEnvelope
+  connect: [FriendWhereUniqueInput!]
+}
+
+input FriendCreateWithoutUser2Input {
+  id: String
+  user1: UserCreateNestedOneWithoutFriendsInput!
+}
+
+input UserCreateNestedOneWithoutFriendsInput {
+  create: UserCreateWithoutFriendsInput
+  connectOrCreate: UserCreateOrConnectWithoutFriendsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutFriendsInput {
+  id: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: UserCreaterolesInput
+  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
+  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  friendsOf: FriendCreateNestedManyWithoutUser2Input
+  posts: PostCreateNestedManyWithoutAuthorInput
+  chats: ChatCreateNestedManyWithoutUsersInput
+  messages: MessageCreateNestedManyWithoutSenderInput
+}
+
+input PostCreateNestedManyWithoutAuthorInput {
+  create: [PostCreateWithoutAuthorInput!]
+  connectOrCreate: [PostCreateOrConnectWithoutAuthorInput!]
+  createMany: PostCreateManyAuthorInputEnvelope
+  connect: [PostWhereUniqueInput!]
+}
+
+input PostCreateWithoutAuthorInput {
+  id: String
+  title: String!
+  content: String!
+  imgSrc: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input PostCreateOrConnectWithoutAuthorInput {
+  where: PostWhereUniqueInput!
+  create: PostCreateWithoutAuthorInput!
+}
+
+input PostWhereUniqueInput {
+  id: String
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  title: StringFilter
+  content: StringFilter
+  imgSrc: StringNullableFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  authorId: StringFilter
+  author: UserRelationFilter
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  id: StringFilter
+  title: StringFilter
+  content: StringFilter
+  imgSrc: StringNullableFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  authorId: StringFilter
+  author: UserRelationFilter
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeFilter
+}
+
+input NestedDateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeFilter
+}
+
+input UserRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  id: StringFilter
+  firstName: StringFilter
+  lastName: StringFilter
+  email: StringFilter
+  password: StringFilter
+  phoneNumber: StringFilter
+  imgSrc: StringNullableFilter
+  roles: EnumRoleNullableListFilter
+  friendRequestsSent: FriendRequestListRelationFilter
+  friendRequestsReceived: FriendRequestListRelationFilter
+  friends: FriendListRelationFilter
+  friendsOf: FriendListRelationFilter
+  posts: PostListRelationFilter
+  chats: ChatListRelationFilter
+  messages: MessageListRelationFilter
+}
+
+input EnumRoleNullableListFilter {
+  equals: [Role!]
+  has: Role
+  hasEvery: [Role!]
+  hasSome: [Role!]
+  isEmpty: Boolean
+}
+
+input FriendRequestListRelationFilter {
+  every: FriendRequestWhereInput
+  some: FriendRequestWhereInput
+  none: FriendRequestWhereInput
+}
+
+input FriendRequestWhereInput {
+  AND: [FriendRequestWhereInput!]
+  OR: [FriendRequestWhereInput!]
+  NOT: [FriendRequestWhereInput!]
+  id: StringFilter
+  creatorId: StringFilter
+  receiverId: StringFilter
+  status: EnumStatusFilter
+  creator: UserRelationFilter
+  receiver: UserRelationFilter
+}
+
+input EnumStatusFilter {
+  equals: Status
+  in: [Status!]
+  notIn: [Status!]
+  not: NestedEnumStatusFilter
+}
+
+input NestedEnumStatusFilter {
+  equals: Status
+  in: [Status!]
+  notIn: [Status!]
+  not: NestedEnumStatusFilter
+}
+
+input FriendListRelationFilter {
+  every: FriendWhereInput
+  some: FriendWhereInput
+  none: FriendWhereInput
+}
+
+input FriendWhereInput {
+  AND: [FriendWhereInput!]
+  OR: [FriendWhereInput!]
+  NOT: [FriendWhereInput!]
+  id: StringFilter
+  userId1: StringFilter
+  userId2: StringFilter
+  user1: UserRelationFilter
+  user2: UserRelationFilter
+}
+
+input PostListRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
+input ChatListRelationFilter {
+  every: ChatWhereInput
+  some: ChatWhereInput
+  none: ChatWhereInput
+}
+
+input ChatWhereInput {
+  AND: [ChatWhereInput!]
+  OR: [ChatWhereInput!]
+  NOT: [ChatWhereInput!]
+  id: StringFilter
+  name: StringNullableFilter
+  isGroup: BoolFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  users: UserListRelationFilter
+  messages: MessageListRelationFilter
+}
+
+input BoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
+input NestedBoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
+input UserListRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
+}
+
+input MessageListRelationFilter {
+  every: MessageWhereInput
+  some: MessageWhereInput
+  none: MessageWhereInput
+}
+
+input MessageWhereInput {
+  AND: [MessageWhereInput!]
+  OR: [MessageWhereInput!]
+  NOT: [MessageWhereInput!]
+  id: StringFilter
+  text: StringFilter
+  senderId: StringFilter
+  chatId: StringFilter
+  createdAt: DateTimeFilter
+  sender: UserRelationFilter
+  chat: ChatRelationFilter
+}
+
+input ChatRelationFilter {
+  is: ChatWhereInput
+  isNot: ChatWhereInput
+}
+
+input PostCreateManyAuthorInputEnvelope {
+  data: [PostCreateManyAuthorInput!]!
+  skipDuplicates: Boolean
+}
+
+input PostCreateManyAuthorInput {
+  id: String
+  title: String!
+  content: String!
+  imgSrc: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input ChatCreateNestedManyWithoutUsersInput {
+  create: [ChatCreateWithoutUsersInput!]
+  connectOrCreate: [ChatCreateOrConnectWithoutUsersInput!]
+  connect: [ChatWhereUniqueInput!]
+}
+
+input ChatCreateWithoutUsersInput {
+  id: String
+  name: String
+  isGroup: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  messages: MessageCreateNestedManyWithoutChatInput
+}
+
+input MessageCreateNestedManyWithoutChatInput {
+  create: [MessageCreateWithoutChatInput!]
+  connectOrCreate: [MessageCreateOrConnectWithoutChatInput!]
+  createMany: MessageCreateManyChatInputEnvelope
+  connect: [MessageWhereUniqueInput!]
+}
+
+input MessageCreateWithoutChatInput {
+  id: String
+  text: String!
+  createdAt: DateTime
+  sender: UserCreateNestedOneWithoutMessagesInput!
+}
+
+input UserCreateNestedOneWithoutMessagesInput {
+  create: UserCreateWithoutMessagesInput
+  connectOrCreate: UserCreateOrConnectWithoutMessagesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutMessagesInput {
+  id: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: UserCreaterolesInput
+  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
+  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  friends: FriendCreateNestedManyWithoutUser1Input
+  friendsOf: FriendCreateNestedManyWithoutUser2Input
+  posts: PostCreateNestedManyWithoutAuthorInput
+  chats: ChatCreateNestedManyWithoutUsersInput
+}
+
+input UserCreateOrConnectWithoutMessagesInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutMessagesInput!
+}
+
+input UserWhereUniqueInput {
+  id: String
+  email: String
+  phoneNumber: String
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  firstName: StringFilter
+  lastName: StringFilter
+  password: StringFilter
+  imgSrc: StringNullableFilter
+  roles: EnumRoleNullableListFilter
+  friendRequestsSent: FriendRequestListRelationFilter
+  friendRequestsReceived: FriendRequestListRelationFilter
+  friends: FriendListRelationFilter
+  friendsOf: FriendListRelationFilter
+  posts: PostListRelationFilter
+  chats: ChatListRelationFilter
+  messages: MessageListRelationFilter
+}
+
+input MessageCreateOrConnectWithoutChatInput {
+  where: MessageWhereUniqueInput!
+  create: MessageCreateWithoutChatInput!
+}
+
+input MessageWhereUniqueInput {
+  id: String
+  AND: [MessageWhereInput!]
+  OR: [MessageWhereInput!]
+  NOT: [MessageWhereInput!]
+  text: StringFilter
+  senderId: StringFilter
+  chatId: StringFilter
+  createdAt: DateTimeFilter
+  sender: UserRelationFilter
+  chat: ChatRelationFilter
+}
+
+input MessageCreateManyChatInputEnvelope {
+  data: [MessageCreateManyChatInput!]!
+  skipDuplicates: Boolean
+}
+
+input MessageCreateManyChatInput {
+  id: String
+  text: String!
+  senderId: String!
+  createdAt: DateTime
+}
+
+input ChatCreateOrConnectWithoutUsersInput {
+  where: ChatWhereUniqueInput!
+  create: ChatCreateWithoutUsersInput!
+}
+
+input ChatWhereUniqueInput {
+  id: String
+  AND: [ChatWhereInput!]
+  OR: [ChatWhereInput!]
+  NOT: [ChatWhereInput!]
+  name: StringNullableFilter
+  isGroup: BoolFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  users: UserListRelationFilter
+  messages: MessageListRelationFilter
+}
+
+input MessageCreateNestedManyWithoutSenderInput {
+  create: [MessageCreateWithoutSenderInput!]
+  connectOrCreate: [MessageCreateOrConnectWithoutSenderInput!]
+  createMany: MessageCreateManySenderInputEnvelope
+  connect: [MessageWhereUniqueInput!]
+}
+
+input MessageCreateWithoutSenderInput {
+  id: String
+  text: String!
+  createdAt: DateTime
+  chat: ChatCreateNestedOneWithoutMessagesInput!
+}
+
+input ChatCreateNestedOneWithoutMessagesInput {
+  create: ChatCreateWithoutMessagesInput
+  connectOrCreate: ChatCreateOrConnectWithoutMessagesInput
+  connect: ChatWhereUniqueInput
+}
+
+input ChatCreateWithoutMessagesInput {
+  id: String
+  name: String
+  isGroup: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  users: UserCreateNestedManyWithoutChatsInput
+}
+
+input UserCreateNestedManyWithoutChatsInput {
+  create: [UserCreateWithoutChatsInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutChatsInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateWithoutChatsInput {
+  id: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phoneNumber: String!
+  imgSrc: String
+  roles: UserCreaterolesInput
+  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
+  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  friends: FriendCreateNestedManyWithoutUser1Input
+  friendsOf: FriendCreateNestedManyWithoutUser2Input
+  posts: PostCreateNestedManyWithoutAuthorInput
+  messages: MessageCreateNestedManyWithoutSenderInput
+}
+
+input UserCreateOrConnectWithoutChatsInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutChatsInput!
+}
+
+input ChatCreateOrConnectWithoutMessagesInput {
+  where: ChatWhereUniqueInput!
+  create: ChatCreateWithoutMessagesInput!
+}
+
+input MessageCreateOrConnectWithoutSenderInput {
+  where: MessageWhereUniqueInput!
+  create: MessageCreateWithoutSenderInput!
+}
+
+input MessageCreateManySenderInputEnvelope {
+  data: [MessageCreateManySenderInput!]!
+  skipDuplicates: Boolean
+}
+
+input MessageCreateManySenderInput {
+  id: String
+  text: String!
+  chatId: String!
+  createdAt: DateTime
+}
+
+input UserCreateOrConnectWithoutFriendsInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutFriendsInput!
+}
+
+input FriendCreateOrConnectWithoutUser2Input {
+  where: FriendWhereUniqueInput!
+  create: FriendCreateWithoutUser2Input!
+}
+
+input FriendWhereUniqueInput {
+  id: String
+  userId1_userId2: FriendUserId1UserId2CompoundUniqueInput
+  AND: [FriendWhereInput!]
+  OR: [FriendWhereInput!]
+  NOT: [FriendWhereInput!]
+  userId1: StringFilter
+  userId2: StringFilter
+  user1: UserRelationFilter
+  user2: UserRelationFilter
+}
+
+input FriendUserId1UserId2CompoundUniqueInput {
+  userId1: String!
+  userId2: String!
+}
+
+input FriendCreateManyUser2InputEnvelope {
+  data: [FriendCreateManyUser2Input!]!
+  skipDuplicates: Boolean
+}
+
+input FriendCreateManyUser2Input {
+  id: String
+  userId1: String!
+}
+
+input UserCreateOrConnectWithoutFriendRequestsSentInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutFriendRequestsSentInput!
+}
+
+input FriendRequestCreateOrConnectWithoutReceiverInput {
+  where: FriendRequestWhereUniqueInput!
+  create: FriendRequestCreateWithoutReceiverInput!
+}
+
+input FriendRequestWhereUniqueInput {
+  id: String
+  creatorId_receiverId: FriendRequestCreatorIdReceiverIdCompoundUniqueInput
+  AND: [FriendRequestWhereInput!]
+  OR: [FriendRequestWhereInput!]
+  NOT: [FriendRequestWhereInput!]
+  creatorId: StringFilter
+  receiverId: StringFilter
+  status: EnumStatusFilter
+  creator: UserRelationFilter
+  receiver: UserRelationFilter
+}
+
+input FriendRequestCreatorIdReceiverIdCompoundUniqueInput {
+  creatorId: String!
+  receiverId: String!
+}
+
+input FriendRequestCreateManyReceiverInputEnvelope {
+  data: [FriendRequestCreateManyReceiverInput!]!
+  skipDuplicates: Boolean
+}
+
+input FriendRequestCreateManyReceiverInput {
+  id: String
+  creatorId: String!
+  status: Status
+}
+
+input UserCreateOrConnectWithoutFriendsOfInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutFriendsOfInput!
+}
+
+input FriendCreateOrConnectWithoutUser1Input {
+  where: FriendWhereUniqueInput!
+  create: FriendCreateWithoutUser1Input!
+}
+
+input FriendCreateManyUser1InputEnvelope {
+  data: [FriendCreateManyUser1Input!]!
+  skipDuplicates: Boolean
+}
+
+input FriendCreateManyUser1Input {
+  id: String
+  userId2: String!
+}
+
+input UserCreateOrConnectWithoutFriendRequestsReceivedInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutFriendRequestsReceivedInput!
+}
+
+input FriendRequestCreateOrConnectWithoutCreatorInput {
+  where: FriendRequestWhereUniqueInput!
+  create: FriendRequestCreateWithoutCreatorInput!
+}
+
+input FriendRequestCreateManyCreatorInputEnvelope {
+  data: [FriendRequestCreateManyCreatorInput!]!
+  skipDuplicates: Boolean
+}
+
+input FriendRequestCreateManyCreatorInput {
+  id: String
+  receiverId: String!
+  status: Status
+}
+
+input SendFriendRequestInput {
+  creatorId: String!
+  receiverId: String!
+}
+
+input AcceptFriendRequestInput {
+  creatorId: String!
+  receiverId: String!
+}
+
+input RejectFriendRequestInput {
+  creatorId: String!
+  receiverId: String!
+}
+
+input CancelFriendRequestInput {
+  creatorId: String!
+  receiverId: String!
+}
+
+input CreatePostInput {
+  title: String!
+  content: String!
+  image: Upload
+  authorId: String!
+}

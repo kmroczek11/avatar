@@ -1,0 +1,50 @@
+import type { FileUpload } from 'graphql-upload-ts';
+import { join, extname } from 'path';
+import * as fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
+import { HttpException, HttpStatus } from '@nestjs/common';
+
+const validFileExtensions = ['.png', '.jpg', '.jpeg'];
+const validMimeTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+
+export const saveImage = async (image: FileUpload, folder: string) => {
+  const { filename, createReadStream, mimetype } = image;
+
+  const extension = extname(filename);
+
+  if (!validFileExtensions.includes(extension)) {
+    throw new HttpException('Invalid extension', HttpStatus.BAD_REQUEST);
+  }
+
+  if (!validMimeTypes.includes(mimetype)) {
+    throw new HttpException('Invalid mime type', HttpStatus.BAD_REQUEST);
+  }
+
+  const stream = createReadStream();
+
+  const fileName = uuidv4() + extension;
+
+  const filePath = folder + '/' + fileName;
+
+  const imagesFolderPath = join(process.cwd(), `public/images`);
+
+  const fullImagePath = join(imagesFolderPath + '/' + filePath);
+
+  await stream.pipe(fs.createWriteStream(fullImagePath));
+
+  return filePath;
+};
+
+export const removeFile = (filePath: string): void => {
+  const filesFolderPath = join(process.cwd(), `public/images`);
+
+  const fullFilePath = join(filesFolderPath + '/' + filePath);
+
+  console.log(fullFilePath);
+
+  try {
+    fs.unlinkSync(fullFilePath);
+  } catch (err) {
+    console.error(err);
+  }
+};
