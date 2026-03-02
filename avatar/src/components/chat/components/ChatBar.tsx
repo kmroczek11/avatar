@@ -21,9 +21,9 @@ export default function ChatBar(props: ChatBarProps) {
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <CustomAvatar name={`${friend.firstName} ${friend.lastName}`} imgSrc={
                         friend.imgSrc &&
-                        (process.env.NODE_ENV === "production"
-                            ? `${process.env.VITE_HOST}/public/images/${friend.imgSrc}`
-                            : `${process.env.VITE_HOST}/images/${friend.imgSrc}`)
+                        (import.meta.env.NODE_ENV === "production"
+                            ? `${import.meta.env.VITE_HOST}/public/images/${friend.imgSrc}`
+                            : `${import.meta.env.VITE_HOST}/images/${friend.imgSrc}`)
                     } size="small" />
                     <Typography variant="h6">{friend.firstName} {friend.lastName}</Typography>
                 </div>

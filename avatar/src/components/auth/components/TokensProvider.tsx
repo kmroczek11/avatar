@@ -17,7 +17,7 @@ const TokensContext = createContext<TokensProviderProps>({
     },
 })
 
-const client = new GraphQLClient(`${process.env.VITE_HOST}/graphql`)
+const client = new GraphQLClient(`${import.meta.env.VITE_HOST}/graphql`)
 
 export const TokensProvider = ({ children }: { children: React.ReactNode }) => {
     const [cookies, setCookie, removeCookie] = useCookies(["userId"])

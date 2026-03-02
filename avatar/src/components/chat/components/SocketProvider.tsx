@@ -28,7 +28,7 @@ interface ClientToServerEvents {
 const SocketContext = createContext<SocketProviderProps>({ socket: null })
 
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = process.env.NODE_ENV === "production" ? undefined : "http://localhost:5000"
+const URL = import.meta.env.MODE === "production" ? undefined : import.meta.env.VITE_HOST
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)

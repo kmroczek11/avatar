@@ -16,9 +16,9 @@ export default function PostCard({ post }: PostProps) {
                         name={`${post?.author?.firstName} ${post?.author?.lastName}`}
                         size="small"
                         imgSrc={post?.author?.imgSrc &&
-                            (process.env.NODE_ENV === "production"
-                                ? `${process.env.VITE_HOST}/public/images/${post?.author?.imgSrc}`
-                                : `${process.env.VITE_HOST}/images/${post?.author?.imgSrc}`)}
+                            (import.meta.env.NODE_ENV === "production"
+                                ? `${import.meta.env.VITE_HOST}/public/images/${post?.author?.imgSrc}`
+                                : `${import.meta.env.VITE_HOST}/images/${post?.author?.imgSrc}`)}
                     />
                 }
                 title={`${post?.author?.firstName} ${post?.author?.lastName}`}
@@ -29,9 +29,9 @@ export default function PostCard({ post }: PostProps) {
                     component="img"
                     height="200"
                     image={post.imgSrc &&
-                        (process.env.NODE_ENV === "production"
-                            ? `${process.env.VITE_HOST}/public/images/${post.imgSrc}`
-                            : `${process.env.VITE_HOST}/images/${post.imgSrc}`)
+                        (import.meta.env.NODE_ENV === "production"
+                            ? `${import.meta.env.VITE_HOST}/public/images/${post.imgSrc}`
+                            : `${import.meta.env.VITE_HOST}/images/${post.imgSrc}`)
                     }
                     alt="Post Image"
                 />

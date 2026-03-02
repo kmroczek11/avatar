@@ -31,9 +31,9 @@ export default function Messages({ messages }: { messages: Message[] }) {
                                 name={`${message.sender?.firstName} ${message.sender?.lastName}`}
                                 imgSrc={
                                     message.sender?.imgSrc &&
-                                    (process.env.NODE_ENV === "production"
-                                        ? `${process.env.VITE_HOST}/public/images/${message.sender.imgSrc}`
-                                        : `${process.env.VITE_HOST}/images/${message.sender.imgSrc}`)
+                                    (import.meta.env.NODE_ENV === "production"
+                                        ? `${import.meta.env.VITE_HOST}/public/images/${message.sender.imgSrc}`
+                                        : `${import.meta.env.VITE_HOST}/images/${message.sender.imgSrc}`)
                                 }
                                 size="small"
                             />
@@ -58,9 +58,9 @@ export default function Messages({ messages }: { messages: Message[] }) {
                                 name={`${message.sender?.firstName} ${message.sender?.lastName}`}
                                 imgSrc={
                                     message.sender?.imgSrc &&
-                                    (process.env.NODE_ENV === "production"
-                                        ? `${process.env.VITE_HOST}/public/images/${message.sender.imgSrc}`
-                                        : `${process.env.VITE_HOST}/images/${message.sender.imgSrc}`)
+                                    (import.meta.env.NODE_ENV === "production"
+                                        ? `${import.meta.env.VITE_HOST}/public/images/${message.sender.imgSrc}`
+                                        : `${import.meta.env.VITE_HOST}/images/${message.sender.imgSrc}`)
                                 }
                                 size="small"
                             />

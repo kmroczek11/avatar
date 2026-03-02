@@ -73,9 +73,9 @@ export default function FriendsBox(props: FriendBoxProps) {
                             <ListItemAvatar>
                                 <CustomAvatar name={`${friend.firstName} ${friend.lastName}`} imgSrc={
                                     friend.imgSrc &&
-                                    (process.env.NODE_ENV === "production"
-                                        ? `${process.env.VITE_HOST}/public/images/${friend.imgSrc}`
-                                        : `${process.env.VITE_HOST}/images/${friend.imgSrc}`)
+                                    (import.meta.env.NODE_ENV === "production"
+                                        ? `${import.meta.env.VITE_HOST}/public/images/${friend.imgSrc}`
+                                        : `${import.meta.env.VITE_HOST}/images/${friend.imgSrc}`)
                                 } size="small" />
                             </ListItemAvatar>
                             <ListItemText primary={`${friend.firstName} ${friend.lastName}`} />

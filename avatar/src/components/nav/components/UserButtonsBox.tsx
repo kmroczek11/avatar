@@ -51,9 +51,9 @@ export default function UserButtonsBox() {
                                 size="small"
                                 imgSrc={
                                     user?.imgSrc &&
-                                    (process.env.NODE_ENV === "development"
-                                        ? `${process.env.VITE_HOST}/images/${user.imgSrc}`
-                                        : `${process.env.VITE_HOST}/public/images/${user.imgSrc}`)
+                                    (import.meta.env.NODE_ENV === "development"
+                                        ? `${import.meta.env.VITE_HOST}/images/${user.imgSrc}`
+                                        : `${import.meta.env.VITE_HOST}/public/images/${user.imgSrc}`)
                                 }
                             />
                         </IconButton>

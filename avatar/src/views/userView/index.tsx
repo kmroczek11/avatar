@@ -50,9 +50,9 @@ export default function UserView(){
           size="large"
           imgSrc={
             user?.imgSrc &&
-            (process.env.NODE_ENV === "production"
-              ? `${process.env.VITE_HOST}/public/images/${user?.imgSrc}`
-              : `${process.env.VITE_HOST}/images/${user?.imgSrc}`)
+            (import.meta.env.NODE_ENV === "production"
+              ? `${import.meta.env.VITE_HOST}/public/images/${user?.imgSrc}`
+              : `${import.meta.env.VITE_HOST}/images/${user?.imgSrc}`)
           }
           BadgeIcon={AddAPhotoIcon}
         />

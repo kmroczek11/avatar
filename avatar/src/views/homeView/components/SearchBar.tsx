@@ -192,9 +192,9 @@ export default function SearchBar() {
                       size="small"
                       imgSrc={
                         filteredUser.imgSrc &&
-                        (process.env.NODE_ENV === "production"
-                          ? `${process.env.VITE_HOST}/public/images/${filteredUser.imgSrc}`
-                          : `${process.env.VITE_HOST}/images/${filteredUser.imgSrc}`)
+                        (import.meta.env.NODE_ENV === "production"
+                          ? `${import.meta.env.VITE_HOST}/public/images/${filteredUser.imgSrc}`
+                          : `${import.meta.env.VITE_HOST}/images/${filteredUser.imgSrc}`)
                       }
                     />
                   </ListItemAvatar>

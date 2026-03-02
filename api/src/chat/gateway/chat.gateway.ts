@@ -9,7 +9,7 @@ import { ActiveChat } from 'src/@generated/active-chat/active-chat.model';
 import { Friend } from 'src/@generated/friend/friend.model';
 import MinimalUser from 'src/friends/classes/minimal-user.class';
 
-@WebSocketGateway({ cors: { origin: ['http://localhost:3000'] } })
+@WebSocketGateway({ cors: { origin: ['http://localhost:8080'] } })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit {
   constructor(private authService: AuthService, private chatService: ChatService) { }
 

@@ -19,7 +19,7 @@ export default function MapView() {
 
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.VITE_GOOGLE_MAPS_API_KEY!,
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY!,
     libraries,
     version: 'beta',
   });
@@ -87,7 +87,7 @@ export default function MapView() {
       center={{ lat: currentLocation.lat, lng: currentLocation.lng }}
       zoom={16} // Adjust zoom as needed
       options={{
-        mapId: process.env.VITE_GOOGLE_MAPS_MAP_ID!,
+        mapId: import.meta.env.VITE_GOOGLE_MAPS_MAP_ID!,
       }}
       onLoad={handleMapLoad}
     >
