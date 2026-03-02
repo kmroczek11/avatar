@@ -51,8 +51,8 @@ export default function UserView(){
           imgSrc={
             user?.imgSrc &&
             (process.env.NODE_ENV === "production"
-              ? `${process.env.REACT_APP_HOST}/public/images/${user?.imgSrc}`
-              : `${process.env.REACT_APP_HOST}/images/${user?.imgSrc}`)
+              ? `${process.env.VITE_HOST}/public/images/${user?.imgSrc}`
+              : `${process.env.VITE_HOST}/images/${user?.imgSrc}`)
           }
           BadgeIcon={AddAPhotoIcon}
         />

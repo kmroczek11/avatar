@@ -46,10 +46,10 @@ export class UserWhereInput {
     roles?: EnumRoleNullableListFilter;
 
     @Field(() => FriendRequestListRelationFilter, {nullable:true})
-    friendRequestsSent?: FriendRequestListRelationFilter;
+    sentFriendRequests?: FriendRequestListRelationFilter;
 
     @Field(() => FriendRequestListRelationFilter, {nullable:true})
-    friendRequestsReceived?: FriendRequestListRelationFilter;
+    receivedFriendRequests?: FriendRequestListRelationFilter;
 
     @Field(() => FriendListRelationFilter, {nullable:true})
     friends?: FriendListRelationFilter;

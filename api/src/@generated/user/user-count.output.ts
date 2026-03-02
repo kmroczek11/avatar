@@ -6,10 +6,10 @@ import { Int } from '@nestjs/graphql';
 export class UserCount {
 
     @Field(() => Int, {nullable:false})
-    friendRequestsSent?: number;
+    sentFriendRequests?: number;
 
     @Field(() => Int, {nullable:false})
-    friendRequestsReceived?: number;
+    receivedFriendRequests?: number;
 
     @Field(() => Int, {nullable:false})
     friends?: number;

@@ -36,10 +36,10 @@ export class UserUncheckedCreateWithoutFriendsInput {
     roles?: UserCreaterolesInput;
 
     @Field(() => FriendRequestUncheckedCreateNestedManyWithoutCreatorInput, {nullable:true})
-    friendRequestsSent?: FriendRequestUncheckedCreateNestedManyWithoutCreatorInput;
+    sentFriendRequests?: FriendRequestUncheckedCreateNestedManyWithoutCreatorInput;
 
     @Field(() => FriendRequestUncheckedCreateNestedManyWithoutReceiverInput, {nullable:true})
-    friendRequestsReceived?: FriendRequestUncheckedCreateNestedManyWithoutReceiverInput;
+    receivedFriendRequests?: FriendRequestUncheckedCreateNestedManyWithoutReceiverInput;
 
     @Field(() => FriendUncheckedCreateNestedManyWithoutUser2Input, {nullable:true})
     friendsOf?: FriendUncheckedCreateNestedManyWithoutUser2Input;

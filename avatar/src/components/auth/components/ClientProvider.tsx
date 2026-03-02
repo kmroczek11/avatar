@@ -27,11 +27,11 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
     const { user, logOut } = useAuth()
 
     function initializeClient() {
-        setClient(new GraphQLClient(`${process.env.REACT_APP_HOST}/graphql`))
+        setClient(new GraphQLClient(`${process.env.VITE_HOST}/graphql`))
     }
 
     function initializeAccessClient() {
-        const client = new GraphQLClient(`${process.env.REACT_APP_HOST}/graphql`, {
+        const client = new GraphQLClient(`${process.env.VITE_HOST}/graphql`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json",

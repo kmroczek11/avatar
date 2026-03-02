@@ -193,8 +193,8 @@ export default function SearchBar() {
                       imgSrc={
                         filteredUser.imgSrc &&
                         (process.env.NODE_ENV === "production"
-                          ? `${process.env.REACT_APP_HOST}/public/images/${filteredUser.imgSrc}`
-                          : `${process.env.REACT_APP_HOST}/images/${filteredUser.imgSrc}`)
+                          ? `${process.env.VITE_HOST}/public/images/${filteredUser.imgSrc}`
+                          : `${process.env.VITE_HOST}/images/${filteredUser.imgSrc}`)
                       }
                     />
                   </ListItemAvatar>

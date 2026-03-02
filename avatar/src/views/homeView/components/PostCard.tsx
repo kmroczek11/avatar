@@ -17,8 +17,8 @@ export default function PostCard({ post }: PostProps) {
                         size="small"
                         imgSrc={post?.author?.imgSrc &&
                             (process.env.NODE_ENV === "production"
-                                ? `${process.env.REACT_APP_HOST}/public/images/${post?.author?.imgSrc}`
-                                : `${process.env.REACT_APP_HOST}/images/${post?.author?.imgSrc}`)}
+                                ? `${process.env.VITE_HOST}/public/images/${post?.author?.imgSrc}`
+                                : `${process.env.VITE_HOST}/images/${post?.author?.imgSrc}`)}
                     />
                 }
                 title={`${post?.author?.firstName} ${post?.author?.lastName}`}
@@ -30,8 +30,8 @@ export default function PostCard({ post }: PostProps) {
                     height="200"
                     image={post.imgSrc &&
                         (process.env.NODE_ENV === "production"
-                            ? `${process.env.REACT_APP_HOST}/public/images/${post.imgSrc}`
-                            : `${process.env.REACT_APP_HOST}/images/${post.imgSrc}`)
+                            ? `${process.env.VITE_HOST}/public/images/${post.imgSrc}`
+                            : `${process.env.VITE_HOST}/images/${post.imgSrc}`)
                     }
                     alt="Post Image"
                 />

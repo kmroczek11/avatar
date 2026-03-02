@@ -32,8 +32,8 @@ export default function Messages({ messages }: { messages: Message[] }) {
                                 imgSrc={
                                     message.sender?.imgSrc &&
                                     (process.env.NODE_ENV === "production"
-                                        ? `${process.env.REACT_APP_HOST}/public/images/${message.sender.imgSrc}`
-                                        : `${process.env.REACT_APP_HOST}/images/${message.sender.imgSrc}`)
+                                        ? `${process.env.VITE_HOST}/public/images/${message.sender.imgSrc}`
+                                        : `${process.env.VITE_HOST}/images/${message.sender.imgSrc}`)
                                 }
                                 size="small"
                             />
@@ -59,8 +59,8 @@ export default function Messages({ messages }: { messages: Message[] }) {
                                 imgSrc={
                                     message.sender?.imgSrc &&
                                     (process.env.NODE_ENV === "production"
-                                        ? `${process.env.REACT_APP_HOST}/public/images/${message.sender.imgSrc}`
-                                        : `${process.env.REACT_APP_HOST}/images/${message.sender.imgSrc}`)
+                                        ? `${process.env.VITE_HOST}/public/images/${message.sender.imgSrc}`
+                                        : `${process.env.VITE_HOST}/images/${message.sender.imgSrc}`)
                                 }
                                 size="small"
                             />

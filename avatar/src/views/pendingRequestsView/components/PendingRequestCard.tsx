@@ -54,8 +54,8 @@ export default function PendingRequestCard(props: PendingRequestCardProps) {
             imgSrc={
               imgSrc &&
               (process.env.NODE_ENV === "production"
-                ? `${process.env.REACT_APP_HOST}/public/images/${imgSrc}`
-                : `${process.env.REACT_APP_HOST}/images/${imgSrc}`)
+                ? `${process.env.VITE_HOST}/public/images/${imgSrc}`
+                : `${process.env.VITE_HOST}/images/${imgSrc}`)
             }
           />
           <Typography component="div" variant="h2">

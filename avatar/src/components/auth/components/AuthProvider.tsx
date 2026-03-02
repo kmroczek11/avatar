@@ -17,7 +17,7 @@ interface AuthProviderProps {
 
 const AuthContext = createContext<AuthProviderProps | undefined>(undefined);
 
-const client = new GraphQLClient(`${process.env.REACT_APP_HOST}/graphql`)
+const client = new GraphQLClient(`${process.env.VITE_HOST}/graphql`)
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const [cookies, setCookie, removeCookie] = useCookies(["userId"]);

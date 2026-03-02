@@ -1,8 +1,8 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { Status } from '../prisma/status.enum';
-import { UserCreateNestedOneWithoutFriendRequestsSentInput } from '../user/user-create-nested-one-without-friend-requests-sent.input';
-import { UserCreateNestedOneWithoutFriendRequestsReceivedInput } from '../user/user-create-nested-one-without-friend-requests-received.input';
+import { UserCreateNestedOneWithoutSentFriendRequestsInput } from '../user/user-create-nested-one-without-sent-friend-requests.input';
+import { UserCreateNestedOneWithoutReceivedFriendRequestsInput } from '../user/user-create-nested-one-without-received-friend-requests.input';
 
 @InputType()
 export class FriendRequestCreateInput {
@@ -13,9 +13,9 @@ export class FriendRequestCreateInput {
     @Field(() => Status, {nullable:true})
     status?: keyof typeof Status;
 
-    @Field(() => UserCreateNestedOneWithoutFriendRequestsSentInput, {nullable:false})
-    creator!: UserCreateNestedOneWithoutFriendRequestsSentInput;
+    @Field(() => UserCreateNestedOneWithoutSentFriendRequestsInput, {nullable:false})
+    creator!: UserCreateNestedOneWithoutSentFriendRequestsInput;
 
-    @Field(() => UserCreateNestedOneWithoutFriendRequestsReceivedInput, {nullable:false})
-    receiver!: UserCreateNestedOneWithoutFriendRequestsReceivedInput;
+    @Field(() => UserCreateNestedOneWithoutReceivedFriendRequestsInput, {nullable:false})
+    receiver!: UserCreateNestedOneWithoutReceivedFriendRequestsInput;
 }

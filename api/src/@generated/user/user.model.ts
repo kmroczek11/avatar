@@ -37,10 +37,10 @@ export class User {
     roles!: Array<keyof typeof Role>;
 
     @Field(() => [FriendRequest], {nullable:true})
-    friendRequestsSent?: Array<FriendRequest>;
+    sentFriendRequests?: Array<FriendRequest>;
 
     @Field(() => [FriendRequest], {nullable:true})
-    friendRequestsReceived?: Array<FriendRequest>;
+    receivedFriendRequests?: Array<FriendRequest>;
 
     @Field(() => [Friend], {nullable:true})
     friends?: Array<Friend>;

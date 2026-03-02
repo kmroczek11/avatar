@@ -38,10 +38,10 @@ export class UserUncheckedUpdateWithoutPostsInput {
     roles?: UserUpdaterolesInput;
 
     @Field(() => FriendRequestUncheckedUpdateManyWithoutCreatorNestedInput, {nullable:true})
-    friendRequestsSent?: FriendRequestUncheckedUpdateManyWithoutCreatorNestedInput;
+    sentFriendRequests?: FriendRequestUncheckedUpdateManyWithoutCreatorNestedInput;
 
     @Field(() => FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput, {nullable:true})
-    friendRequestsReceived?: FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput;
+    receivedFriendRequests?: FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput;
 
     @Field(() => FriendUncheckedUpdateManyWithoutUser1NestedInput, {nullable:true})
     friends?: FriendUncheckedUpdateManyWithoutUser1NestedInput;

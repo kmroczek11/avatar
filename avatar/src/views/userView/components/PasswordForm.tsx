@@ -28,7 +28,7 @@ const invalidPasswordMessage = "Nieprawidłowe hasło.";
 export default function PasswordForm() {
   const { user, getUserRefetch } = useAuth();
   const [changePasswordStatus, setChangePasswordStatus] = useState<string>("");
-  const [cookies, setCookie] = useCookies(['userId']);
+  const [cookies, setCookie, removeCookie] = useCookies(['userId']);
   const { accessClient } = useClient()
 
   const { isLoading, mutate } = useChangePasswordMutation<Error>(

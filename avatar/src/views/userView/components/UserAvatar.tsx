@@ -105,7 +105,7 @@ export default function UserAvatar(props: UserAvatarProps) {
       formData.append("0", compressedFile);
 
       const sendRequest = async (accessToken: string) => {
-        return await fetch(`${process.env.REACT_APP_HOST}/graphql`, {
+        return await fetch(`${process.env.VITE_HOST}/graphql`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${accessToken}`,

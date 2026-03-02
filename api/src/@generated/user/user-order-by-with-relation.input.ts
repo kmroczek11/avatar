@@ -36,10 +36,10 @@ export class UserOrderByWithRelationInput {
     roles?: keyof typeof SortOrder;
 
     @Field(() => FriendRequestOrderByRelationAggregateInput, {nullable:true})
-    friendRequestsSent?: FriendRequestOrderByRelationAggregateInput;
+    sentFriendRequests?: FriendRequestOrderByRelationAggregateInput;
 
     @Field(() => FriendRequestOrderByRelationAggregateInput, {nullable:true})
-    friendRequestsReceived?: FriendRequestOrderByRelationAggregateInput;
+    receivedFriendRequests?: FriendRequestOrderByRelationAggregateInput;
 
     @Field(() => FriendOrderByRelationAggregateInput, {nullable:true})
     friends?: FriendOrderByRelationAggregateInput;

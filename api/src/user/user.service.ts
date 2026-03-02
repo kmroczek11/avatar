@@ -63,11 +63,11 @@ export class UserService {
         firstName: true,
         lastName: true,
         imgSrc: true,
-        friendRequestsReceived: {
+        receivedFriendRequests: {
           where: { creatorId },
           select: { status: true, creatorId: true },
         },
-        friendRequestsSent: {
+        sentFriendRequests: {
           where: { receiverId: creatorId },
           select: { status: true, creatorId: true },
         },
@@ -75,8 +75,8 @@ export class UserService {
     });
 
     return users.map((user) => {
-      const receivedRequest = user.friendRequestsReceived.length ? user.friendRequestsReceived[0].status : null;
-      const sentRequest = user.friendRequestsSent.length ? user.friendRequestsSent[0].status : null;
+      const receivedRequest = user.receivedFriendRequests.length ? user.receivedFriendRequests[0].status : null;
+      const sentRequest = user.sentFriendRequests.length ? user.sentFriendRequests[0].status : null;
 
       return {
         ...user,

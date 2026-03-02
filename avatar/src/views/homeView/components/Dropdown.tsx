@@ -28,7 +28,7 @@ export default function Dropdown() {
             display: "flex",
             justifyContent: "center",
             position: 'absolute',
-            top: 10,
+            top: 0,
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 1,
@@ -72,7 +72,7 @@ export default function Dropdown() {
                             <ClickAwayListener onClickAway={handleClose}>
                                 <Paper sx={{
                                     width: 800,
-                                    height: "calc(92vh - 20px)",
+                                    height: "87vh",
                                     overflowY: "auto",
                                     display: 'flex',
                                     flexDirection: 'column',

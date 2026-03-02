@@ -36,10 +36,10 @@ export class UserCreateWithoutMessagesInput {
     roles?: UserCreaterolesInput;
 
     @Field(() => FriendRequestCreateNestedManyWithoutCreatorInput, {nullable:true})
-    friendRequestsSent?: FriendRequestCreateNestedManyWithoutCreatorInput;
+    sentFriendRequests?: FriendRequestCreateNestedManyWithoutCreatorInput;
 
     @Field(() => FriendRequestCreateNestedManyWithoutReceiverInput, {nullable:true})
-    friendRequestsReceived?: FriendRequestCreateNestedManyWithoutReceiverInput;
+    receivedFriendRequests?: FriendRequestCreateNestedManyWithoutReceiverInput;
 
     @Field(() => FriendCreateNestedManyWithoutUser1Input, {nullable:true})
     friends?: FriendCreateNestedManyWithoutUser1Input;

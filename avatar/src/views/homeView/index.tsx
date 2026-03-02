@@ -28,7 +28,7 @@ export default function HomeView() {
 
     return (
         user ?
-            <Grid height="95vh" sx={{ position: 'relative' }}>
+            <Grid height="95vh" sx={{ position: 'relative', top:'5vh' }}>
                 <MapView />
                 <Dropdown />
                 <FriendsBox addChatUser={addChatUser} />

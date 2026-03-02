@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 generator nestgraphql {
@@ -32,8 +33,8 @@ model User {
   phoneNumber            String          @unique
   imgSrc                 String?
   roles                  Role[]          @default([USER])
-  friendRequestsSent     FriendRequest[] @relation("SentFriendRequests")
-  friendRequestsReceived FriendRequest[] @relation("ReceivedFriendRequests")
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
   friends                Friend[]        @relation("FriendshipUser1")
   friendsOf              Friend[]        @relation("FriendshipUser2")
   posts                  Post[]

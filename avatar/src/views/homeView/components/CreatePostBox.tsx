@@ -61,7 +61,7 @@ export default function CreatePostBox() {
 
         const sendRequest = async (accessToken: string) => {
             (headers as Record<string, string>)["Authorization"] = `Bearer ${accessToken}`;
-            return await fetch(`${process.env.REACT_APP_HOST}/graphql`, {
+            return await fetch(`${process.env.VITE_HOST}/graphql`, {
                 method: "POST",
                 headers,
                 body,
