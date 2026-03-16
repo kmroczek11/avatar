@@ -1,0 +1,51 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start API",
+      "type": "shell",
+      "command": "./scripts/dev/start_dev_environment.sh",
+      "options": {
+        "cwd": "${workspaceFolder}/api",
+        "shell": {
+          "executable": "C:\\Program Files\\Git\\bin\\bash.exe",
+          "args": [
+            "-c"
+          ]
+        }
+      },
+      "presentation": {
+        "panel": "new",
+        "name": "API"
+      }
+    },
+    {
+      "label": "Start Avatar",
+      "type": "shell",
+      "command": "./scripts/start_dev_environment.sh",
+      "options": {
+        "cwd": "${workspaceFolder}/avatar",
+        "shell": {
+          "executable": "C:\\Program Files\\Git\\bin\\bash.exe",
+          "args": [
+            "-c"
+          ]
+        }
+      },
+      "presentation": {
+        "panel": "new",
+        "name": "Avatar"
+      }
+    },
+    {
+      "label": "Start Dev",
+      "dependsOn": [
+        "Start API",
+        "Start Avatar"
+      ],
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    }
+  ]
+}

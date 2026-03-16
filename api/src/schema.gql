@@ -97,8 +97,8 @@ type Chat {
 }
 
 type UserCount {
-  friendRequestsSent: Int!
-  friendRequestsReceived: Int!
+  sentFriendRequests: Int!
+  receivedFriendRequests: Int!
   friends: Int!
   friendsOf: Int!
   posts: Int!
@@ -115,8 +115,8 @@ type User {
   phoneNumber: String!
   imgSrc: String
   roles: [Role!]
-  friendRequestsSent: [FriendRequest!]
-  friendRequestsReceived: [FriendRequest!]
+  sentFriendRequests: [FriendRequest!]
+  receivedFriendRequests: [FriendRequest!]
   friends: [Friend!]
   friendsOf: [Friend!]
   posts: [Post!]
@@ -138,8 +138,8 @@ type UserWithFriendRequestStatus {
   phoneNumber: String!
   imgSrc: String
   roles: [Role!]
-  friendRequestsSent: [FriendRequest!]
-  friendRequestsReceived: [FriendRequest!]
+  sentFriendRequests: [FriendRequest!]
+  receivedFriendRequests: [FriendRequest!]
   friends: [Friend!]
   friendsOf: [Friend!]
   posts: [Post!]
@@ -269,8 +269,8 @@ input UserCreateInput {
   phoneNumber: String!
   imgSrc: String
   roles: UserCreaterolesInput
-  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
-  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  sentFriendRequests: FriendRequestCreateNestedManyWithoutCreatorInput
+  receivedFriendRequests: FriendRequestCreateNestedManyWithoutReceiverInput
   friends: FriendCreateNestedManyWithoutUser1Input
   friendsOf: FriendCreateNestedManyWithoutUser2Input
   posts: PostCreateNestedManyWithoutAuthorInput
@@ -292,16 +292,16 @@ input FriendRequestCreateNestedManyWithoutCreatorInput {
 input FriendRequestCreateWithoutCreatorInput {
   id: String
   status: Status
-  receiver: UserCreateNestedOneWithoutFriendRequestsReceivedInput!
+  receiver: UserCreateNestedOneWithoutReceivedFriendRequestsInput!
 }
 
-input UserCreateNestedOneWithoutFriendRequestsReceivedInput {
-  create: UserCreateWithoutFriendRequestsReceivedInput
-  connectOrCreate: UserCreateOrConnectWithoutFriendRequestsReceivedInput
+input UserCreateNestedOneWithoutReceivedFriendRequestsInput {
+  create: UserCreateWithoutReceivedFriendRequestsInput
+  connectOrCreate: UserCreateOrConnectWithoutReceivedFriendRequestsInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutFriendRequestsReceivedInput {
+input UserCreateWithoutReceivedFriendRequestsInput {
   id: String
   firstName: String!
   lastName: String!
@@ -310,7 +310,7 @@ input UserCreateWithoutFriendRequestsReceivedInput {
   phoneNumber: String!
   imgSrc: String
   roles: UserCreaterolesInput
-  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
+  sentFriendRequests: FriendRequestCreateNestedManyWithoutCreatorInput
   friends: FriendCreateNestedManyWithoutUser1Input
   friendsOf: FriendCreateNestedManyWithoutUser2Input
   posts: PostCreateNestedManyWithoutAuthorInput
@@ -345,8 +345,8 @@ input UserCreateWithoutFriendsOfInput {
   phoneNumber: String!
   imgSrc: String
   roles: UserCreaterolesInput
-  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
-  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  sentFriendRequests: FriendRequestCreateNestedManyWithoutCreatorInput
+  receivedFriendRequests: FriendRequestCreateNestedManyWithoutReceiverInput
   friends: FriendCreateNestedManyWithoutUser1Input
   posts: PostCreateNestedManyWithoutAuthorInput
   chats: ChatCreateNestedManyWithoutUsersInput
@@ -363,16 +363,16 @@ input FriendRequestCreateNestedManyWithoutReceiverInput {
 input FriendRequestCreateWithoutReceiverInput {
   id: String
   status: Status
-  creator: UserCreateNestedOneWithoutFriendRequestsSentInput!
+  creator: UserCreateNestedOneWithoutSentFriendRequestsInput!
 }
 
-input UserCreateNestedOneWithoutFriendRequestsSentInput {
-  create: UserCreateWithoutFriendRequestsSentInput
-  connectOrCreate: UserCreateOrConnectWithoutFriendRequestsSentInput
+input UserCreateNestedOneWithoutSentFriendRequestsInput {
+  create: UserCreateWithoutSentFriendRequestsInput
+  connectOrCreate: UserCreateOrConnectWithoutSentFriendRequestsInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutFriendRequestsSentInput {
+input UserCreateWithoutSentFriendRequestsInput {
   id: String
   firstName: String!
   lastName: String!
@@ -381,7 +381,7 @@ input UserCreateWithoutFriendRequestsSentInput {
   phoneNumber: String!
   imgSrc: String
   roles: UserCreaterolesInput
-  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  receivedFriendRequests: FriendRequestCreateNestedManyWithoutReceiverInput
   friends: FriendCreateNestedManyWithoutUser1Input
   friendsOf: FriendCreateNestedManyWithoutUser2Input
   posts: PostCreateNestedManyWithoutAuthorInput
@@ -416,8 +416,8 @@ input UserCreateWithoutFriendsInput {
   phoneNumber: String!
   imgSrc: String
   roles: UserCreaterolesInput
-  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
-  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  sentFriendRequests: FriendRequestCreateNestedManyWithoutCreatorInput
+  receivedFriendRequests: FriendRequestCreateNestedManyWithoutReceiverInput
   friendsOf: FriendCreateNestedManyWithoutUser2Input
   posts: PostCreateNestedManyWithoutAuthorInput
   chats: ChatCreateNestedManyWithoutUsersInput
@@ -575,8 +575,8 @@ input UserWhereInput {
   phoneNumber: StringFilter
   imgSrc: StringNullableFilter
   roles: EnumRoleNullableListFilter
-  friendRequestsSent: FriendRequestListRelationFilter
-  friendRequestsReceived: FriendRequestListRelationFilter
+  sentFriendRequests: FriendRequestListRelationFilter
+  receivedFriendRequests: FriendRequestListRelationFilter
   friends: FriendListRelationFilter
   friendsOf: FriendListRelationFilter
   posts: PostListRelationFilter
@@ -764,8 +764,8 @@ input UserCreateWithoutMessagesInput {
   phoneNumber: String!
   imgSrc: String
   roles: UserCreaterolesInput
-  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
-  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  sentFriendRequests: FriendRequestCreateNestedManyWithoutCreatorInput
+  receivedFriendRequests: FriendRequestCreateNestedManyWithoutReceiverInput
   friends: FriendCreateNestedManyWithoutUser1Input
   friendsOf: FriendCreateNestedManyWithoutUser2Input
   posts: PostCreateNestedManyWithoutAuthorInput
@@ -789,8 +789,8 @@ input UserWhereUniqueInput {
   password: StringFilter
   imgSrc: StringNullableFilter
   roles: EnumRoleNullableListFilter
-  friendRequestsSent: FriendRequestListRelationFilter
-  friendRequestsReceived: FriendRequestListRelationFilter
+  sentFriendRequests: FriendRequestListRelationFilter
+  receivedFriendRequests: FriendRequestListRelationFilter
   friends: FriendListRelationFilter
   friendsOf: FriendListRelationFilter
   posts: PostListRelationFilter
@@ -890,8 +890,8 @@ input UserCreateWithoutChatsInput {
   phoneNumber: String!
   imgSrc: String
   roles: UserCreaterolesInput
-  friendRequestsSent: FriendRequestCreateNestedManyWithoutCreatorInput
-  friendRequestsReceived: FriendRequestCreateNestedManyWithoutReceiverInput
+  sentFriendRequests: FriendRequestCreateNestedManyWithoutCreatorInput
+  receivedFriendRequests: FriendRequestCreateNestedManyWithoutReceiverInput
   friends: FriendCreateNestedManyWithoutUser1Input
   friendsOf: FriendCreateNestedManyWithoutUser2Input
   posts: PostCreateNestedManyWithoutAuthorInput
@@ -962,9 +962,9 @@ input FriendCreateManyUser2Input {
   userId1: String!
 }
 
-input UserCreateOrConnectWithoutFriendRequestsSentInput {
+input UserCreateOrConnectWithoutSentFriendRequestsInput {
   where: UserWhereUniqueInput!
-  create: UserCreateWithoutFriendRequestsSentInput!
+  create: UserCreateWithoutSentFriendRequestsInput!
 }
 
 input FriendRequestCreateOrConnectWithoutReceiverInput {
@@ -1021,9 +1021,9 @@ input FriendCreateManyUser1Input {
   userId2: String!
 }
 
-input UserCreateOrConnectWithoutFriendRequestsReceivedInput {
+input UserCreateOrConnectWithoutReceivedFriendRequestsInput {
   where: UserWhereUniqueInput!
-  create: UserCreateWithoutFriendRequestsReceivedInput!
+  create: UserCreateWithoutReceivedFriendRequestsInput!
 }
 
 input FriendRequestCreateOrConnectWithoutCreatorInput {
